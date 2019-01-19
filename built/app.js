@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mixed_reality_extension_sdk_1 = require("@microsoft/mixed-reality-extension-sdk");
-class HelloWorld {
+class Demo {
     constructor(context, baseUrl) {
         this.context = context;
         this.baseUrl = baseUrl;
@@ -35,11 +35,11 @@ class HelloWorld {
         this.setupCesiumMan();
         this.setupSkull();
         this.setupSpheres();
-        setInterval(this.moveFrog, 1000);
+        // setInterval(this.moveFrog, 1000);
     }
     moveFrog() {
         console.log("tick");
-        //this.addToLog(Date.now().toString());
+        this.addToLog(Date.now().toString());
     }
     addToLog(message) {
         console.log(message);
@@ -128,7 +128,7 @@ class HelloWorld {
                 }
             }
         });
-        const boxActor = await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+        const boxActorPromise = mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: mixed_reality_extension_sdk_1.PrimitiveShape.Box,
                 dimensions: { x: 1.5, y: 0.25, z: 0.01 }
@@ -141,7 +141,8 @@ class HelloWorld {
                 }
             }
         });
-        const textActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const boxActor = boxActorPromise.value;
+        const textActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: boxActor.id,
@@ -156,6 +157,7 @@ class HelloWorld {
                 }
             }
         });
+        const textActor = textActorPromise.value;
         boxActor.createAnimation({
             animationName: 'expand',
             keyframes: this.expandAnimationData,
@@ -191,7 +193,7 @@ class HelloWorld {
         });
     }
     async setupSkull() {
-        const skullParentActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const skullParentActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Skull Parent',
                 transform: {
@@ -199,6 +201,7 @@ class HelloWorld {
                 }
             }
         });
+        const skullParentActor = skullParentActorPromise.value;
         skullParentActor.createAnimation({
             animationName: 'spin',
             wrapMode: mixed_reality_extension_sdk_1.AnimationWrapMode.Loop,
@@ -206,7 +209,7 @@ class HelloWorld {
             events: []
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
         skullParentActor.startAnimation("spin");
-        await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
+        mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
             resourceId: "1050090527044666141",
             actor: {
                 name: 'Skull',
@@ -221,7 +224,7 @@ class HelloWorld {
     async setupSpheres() {
         this.setupSphereActors();
         // Drop Button
-        const dropBoxActor = await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+        const dropBoxActorPromise = mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: mixed_reality_extension_sdk_1.PrimitiveShape.Box,
                 dimensions: { x: 0.6, y: 0.25, z: 0.01 }
@@ -234,7 +237,8 @@ class HelloWorld {
                 }
             }
         });
-        const dropTextActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const dropBoxActor = dropBoxActorPromise.value;
+        const dropTextActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: dropBoxActor.id,
@@ -249,6 +253,7 @@ class HelloWorld {
                 }
             }
         });
+        const dropTextActor = dropTextActorPromise.value;
         dropBoxActor.createAnimation({
             animationName: 'expand',
             keyframes: this.expandAnimationData,
@@ -274,7 +279,7 @@ class HelloWorld {
             dropTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
         });
         // Reset Button
-        const resetBoxActor = await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+        const resetBoxActorPromise = mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: mixed_reality_extension_sdk_1.PrimitiveShape.Box,
                 dimensions: { x: 0.7, y: 0.25, z: 0.01 }
@@ -287,7 +292,8 @@ class HelloWorld {
                 }
             }
         });
-        const resetTextActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const resetBoxActor = resetBoxActorPromise.value;
+        const resetTextActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: resetBoxActor.id,
@@ -302,6 +308,7 @@ class HelloWorld {
                 }
             }
         });
+        const resetTextActor = resetTextActorPromise.value;
         resetBoxActor.createAnimation({
             animationName: 'expand',
             keyframes: this.expandAnimationData,
@@ -372,5 +379,5 @@ class HelloWorld {
             }];
     }
 }
-exports.default = HelloWorld;
+exports.default = Demo;
 //# sourceMappingURL=app.js.map

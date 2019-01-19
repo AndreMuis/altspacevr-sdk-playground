@@ -14,7 +14,7 @@ import {
     createForwardPromise
 } from '@microsoft/mixed-reality-extension-sdk';
 
-export default class HelloWorld {
+export default class Demo {
     private isCesiumManWalking: Boolean = false;
     private sphereActors: Array<ForwardPromise<Actor>> = [];
     private frogActor: Actor = null;
@@ -33,7 +33,7 @@ export default class HelloWorld {
         this.setupSkull();
         this.setupSpheres();
 
-        setInterval(this.moveFrog, 1000);
+        // setInterval(this.moveFrog, 1000);
     }
 
     private userJoined = async (user: User) => {
@@ -43,7 +43,7 @@ export default class HelloWorld {
     private moveFrog() {
         console.log("tick");
 
-        //this.addToLog(Date.now().toString());
+        this.addToLog(Date.now().toString());
     }
 
     private addToLog(message: String) {
@@ -141,8 +141,8 @@ export default class HelloWorld {
                 }
             }
         });
-        
-        const boxActor = await Actor.CreatePrimitive(this.context, {
+
+        const boxActorPromise = Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: PrimitiveShape.Box,
                 dimensions: { x: 1.5, y: 0.25, z: 0.01 }
@@ -155,8 +155,9 @@ export default class HelloWorld {
                 }
             }
         });
+        const boxActor = boxActorPromise.value;
 
-        const textActor = await Actor.CreateEmpty(this.context, {
+        const textActorPromise = Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: boxActor.id,
@@ -171,6 +172,7 @@ export default class HelloWorld {
                 }
             }
         });
+        const textActor = textActorPromise.value;
 
         boxActor.createAnimation({
             animationName: 'expand',
@@ -218,7 +220,7 @@ export default class HelloWorld {
 
     private async setupSkull()
     {
-        const skullParentActor = await Actor.CreateEmpty(this.context, {
+        const skullParentActorPromise = Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Skull Parent',
                 transform: {
@@ -226,7 +228,8 @@ export default class HelloWorld {
                 }
             }
         });
-    
+        const skullParentActor = skullParentActorPromise.value;
+
         skullParentActor.createAnimation({
             animationName: 'spin',
             wrapMode: AnimationWrapMode.Loop,
@@ -236,7 +239,7 @@ export default class HelloWorld {
     
         skullParentActor.startAnimation("spin");
     
-        await Actor.CreateFromLibrary(this.context, {
+        Actor.CreateFromLibrary(this.context, {
             resourceId: "1050090527044666141",
             actor: {
                 name: 'Skull',
@@ -253,7 +256,7 @@ export default class HelloWorld {
         this.setupSphereActors()
 
         // Drop Button
-        const dropBoxActor = await Actor.CreatePrimitive(this.context, {
+        const dropBoxActorPromise = Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: PrimitiveShape.Box,
                 dimensions: { x: 0.6, y: 0.25, z: 0.01 }
@@ -266,8 +269,9 @@ export default class HelloWorld {
                 }
             }
         });
+        const dropBoxActor = dropBoxActorPromise.value;
 
-        const dropTextActor = await Actor.CreateEmpty(this.context, {
+        const dropTextActorPromise = Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: dropBoxActor.id,
@@ -282,6 +286,7 @@ export default class HelloWorld {
                 }
             }
         });
+        const dropTextActor  = dropTextActorPromise.value;
 
         dropBoxActor.createAnimation({
             animationName: 'expand',
@@ -316,7 +321,7 @@ export default class HelloWorld {
         });
 
         // Reset Button
-        const resetBoxActor = await Actor.CreatePrimitive(this.context, {
+        const resetBoxActorPromise = Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: PrimitiveShape.Box,
                 dimensions: { x: 0.7, y: 0.25, z: 0.01 }
@@ -329,8 +334,9 @@ export default class HelloWorld {
                 }
             }
         });
+        const resetBoxActor = resetBoxActorPromise.value;
 
-        const resetTextActor = await Actor.CreateEmpty(this.context, {
+        const resetTextActorPromise = Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: resetBoxActor.id,
@@ -345,6 +351,7 @@ export default class HelloWorld {
                 }
             }
         });
+        const resetTextActor = resetTextActorPromise.value;
 
         resetBoxActor.createAnimation({
             animationName: 'expand',

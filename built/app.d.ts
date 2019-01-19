@@ -1,5 +1,5 @@
 import { Context } from '@microsoft/mixed-reality-extension-sdk';
-export default class HelloWorld {
+export default class Demo {
     private context;
     private baseUrl;
     private isCesiumManWalking;
