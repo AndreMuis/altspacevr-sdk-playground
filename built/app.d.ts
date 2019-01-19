@@ -14,7 +14,7 @@ export default class Demo {
     setupScene(): void;
     private setupCesiumMan;
     private setupSkull;
-    setupSpheres(): Promise<boolean>;
+    setupSpheres(): boolean;
     private setupSphereActors;
     private generateSpinKeyframes;
     private expandAnimationData;

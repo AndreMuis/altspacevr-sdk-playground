@@ -218,7 +218,7 @@ export default class Demo {
         });
     }
 
-    private async setupSkull()
+    private setupSkull()
     {
         const skullParentActorPromise = Actor.CreateEmpty(this.context, {
             actor: {
@@ -252,7 +252,7 @@ export default class Demo {
         });
     }
 
-    public async setupSpheres() {
+    public setupSpheres() {
         this.setupSphereActors()
 
         // Drop Button
@@ -389,7 +389,7 @@ export default class Demo {
         return true;
     }
 
-    private async setupSphereActors()
+    private setupSphereActors()
     {
         this.sphereActors = [];
 
@@ -417,7 +417,7 @@ export default class Demo {
             }
         }
 
-        await Promise.all(this.sphereActors);
+        // await Promise.all(this.sphereActors);
 
         this.sphereActors.forEach(actor =>
             actor.value.enableRigidBody({

@@ -192,7 +192,7 @@ class Demo {
             textActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
         });
     }
-    async setupSkull() {
+    setupSkull() {
         const skullParentActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Skull Parent',
@@ -221,7 +221,7 @@ class Demo {
             }
         });
     }
-    async setupSpheres() {
+    setupSpheres() {
         this.setupSphereActors();
         // Drop Button
         const dropBoxActorPromise = mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
@@ -336,7 +336,7 @@ class Demo {
         });
         return true;
     }
-    async setupSphereActors() {
+    setupSphereActors() {
         this.sphereActors = [];
         for (let x = -12; x <= -8; x = x + 2) {
             for (let y = 5; y <= 15; y = y + 1) {
@@ -361,7 +361,7 @@ class Demo {
                 }
             }
         }
-        await Promise.all(this.sphereActors);
+        // await Promise.all(this.sphereActors);
         this.sphereActors.forEach(actor => actor.value.enableRigidBody({
             useGravity: false
         }));
