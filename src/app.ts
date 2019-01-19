@@ -379,6 +379,7 @@ export default class Demo {
             resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
 
             this.sphereActors.forEach(actor => actor.value.destroy());
+
             this.setupSphereActors();
         });
 
@@ -416,8 +417,6 @@ export default class Demo {
                 }
             }
         }
-
-        // await Promise.all(this.sphereActors);
 
         this.sphereActors.forEach(actor =>
             actor.value.enableRigidBody({

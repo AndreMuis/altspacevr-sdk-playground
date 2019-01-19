@@ -361,7 +361,6 @@ class Demo {
                 }
             }
         }
-        // await Promise.all(this.sphereActors);
         this.sphereActors.forEach(actor => actor.value.enableRigidBody({
             useGravity: false
         }));
