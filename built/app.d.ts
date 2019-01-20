@@ -3,6 +3,7 @@ export default class Demo {
     private context;
     private baseUrl;
     private isCesiumManWalking;
+    private skullActor;
     private sphereActors;
     private frogActor;
     private logActor;

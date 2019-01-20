@@ -5,6 +5,7 @@ import {
     ButtonBehavior,
     Context,
     ForwardPromise,
+    LookAtMode,
     PrimitiveShape,
     Quaternion,
     TextAnchorLocation,
@@ -22,6 +23,7 @@ import Server from './server'
 
 export default class Demo {
     private isCesiumManWalking: Boolean = false;
+    private skullActor: Actor = null;
     private sphereActors: Array<ForwardPromise<Actor>> = [];
     private frogActor: Actor = null;
     private logActor: Actor = null;
@@ -38,13 +40,15 @@ export default class Demo {
         this.setupCesiumMan();
         this.setupSkull();
         this.setupSpheres();
-        // this.setupGlTF();
+        this.setupGlTF();
 
         // setInterval(this.moveFrog, 1000);
     }
 
     private userJoined = async (user: User) => {
         this.addToLog(user.name);
+
+        this.skullActor.lookAt(user, LookAtMode.TargetXY);
     }
 
     private moveFrog() {
@@ -246,17 +250,19 @@ export default class Demo {
     
         skullParentActor.startAnimation("spin");
     
-        Actor.CreateFromLibrary(this.context, {
+        const skullActorPromise = Actor.CreateFromLibrary(this.context, {
             resourceId: "1050090527044666141",
             actor: {
                 name: 'Skull',
                 parentId: skullParentActor.id,
                 transform: {
                     position: { x: 0, y: 6, z: 9 },
+                    rotation: Quaternion.RotationAxis(Vector3.Up(), -Math.PI),
                     scale: { x: 2, y: 2, z: 2}
                 }
             }
         });
+        this.skullActor = skullActorPromise.value; 
     }
 
     public setupSpheres() {
@@ -399,14 +405,14 @@ export default class Demo {
 
     private setupGlTF()
     {
+        /*
         // Beach Ball
         const spherePrim = new GltfGen.Sphere(0.5);
 
         spherePrim.material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    embeddedFilePath: resolve(__dirname, '../public/beach-ball.png')
-                    // uri: `${this.baseUrl}/uv-grid.png` // alternate form (don't embed)
+                    uri: `${this.baseUrl}/beach-ball.png`
                 })
             })
         });
@@ -423,6 +429,70 @@ export default class Demo {
             resourceUrl: Server.registerStaticBuffer('sphere.glb', gltfFactory.generateGLTF())
         });
         sphere.value.transform.position = { x: -3, y: 0, z: -6 };
+        */
+
+        // Triangles
+        const prim1 = new GltfGen.MeshPrimitive({
+            vertices: [
+                new GltfGen.Vertex({ position: [0, 0, 0] }),
+                new GltfGen.Vertex({ position: [1, 0, 0] }),
+                new GltfGen.Vertex({ position: [0, 1, 0] })
+            ],
+            triangles: [0, 1, 2],
+            material: new GltfGen.Material({ name: 'red' })
+        });
+
+        const prim2 = new GltfGen.MeshPrimitive({
+            material: new GltfGen.Material({ name: 'blue' })
+        }, prim1);
+
+        const factory1 = new GltfGen.GltfFactory(
+            [new GltfGen.Scene({
+                nodes: [
+                    new GltfGen.Node({
+                        mesh: new GltfGen.Mesh({
+                            primitives: [prim1]
+                        })
+                    }),
+                    new GltfGen.Node({
+                        mesh: new GltfGen.Mesh({
+                            primitives: [prim2]
+                        })
+                    })
+                ]
+            })]
+        );
+
+        Actor.CreateFromGLTF(this.context, {
+            resourceUrl: Server.registerStaticBuffer('triangles.glb', factory1.generateGLTF()),
+            actor: {
+                transform: {
+                    position: { x: -3, y: 0, z: -9 },
+                }
+            }
+        });
+
+        // Triangle
+        const prim = new GltfGen.MeshPrimitive({
+            vertices: [
+                new GltfGen.Vertex({ position: [0, 0, 0], texCoord0: [0, 0] }),
+                new GltfGen.Vertex({ position: [1, 0, 0], texCoord0: [1, 0] }),
+                new GltfGen.Vertex({ position: [0, 1, 0], texCoord0: [0, 1] })
+            ],
+            triangles: [0, 1, 2]
+        });
+
+        const factory2 = GltfGen.GltfFactory.FromSinglePrimitive(prim).generateGLTF();
+    
+        Actor.CreateFromGLTF(this.context, {
+            resourceUrl: Server.registerStaticBuffer('triangle.glb', factory2),
+            actor: {
+                transform: {
+                    position: { x: -3, y: 0, z: -10 },
+                }
+            }
+        });
+
     }
 
     private setupSphereActors()

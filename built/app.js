@@ -12,18 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mixed_reality_extension_sdk_1 = require("@microsoft/mixed-reality-extension-sdk");
 const GltfGen = __importStar(require("@microsoft/gltf-gen"));
-const path_1 = require("path");
 const server_1 = __importDefault(require("./server"));
 class Demo {
     constructor(context, baseUrl) {
         this.context = context;
         this.baseUrl = baseUrl;
         this.isCesiumManWalking = false;
+        this.skullActor = null;
         this.sphereActors = [];
         this.frogActor = null;
         this.logActor = null;
         this.userJoined = async (user) => {
             this.addToLog(user.name);
+            this.skullActor.lookAt(user, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
         };
         this.expandAnimationData = [{
                 time: 0,
@@ -48,7 +49,7 @@ class Demo {
         this.setupCesiumMan();
         this.setupSkull();
         this.setupSpheres();
-        // this.setupGlTF();
+        this.setupGlTF();
         // setInterval(this.moveFrog, 1000);
     }
     moveFrog() {
@@ -223,17 +224,19 @@ class Demo {
             events: []
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
         skullParentActor.startAnimation("spin");
-        mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
+        const skullActorPromise = mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
             resourceId: "1050090527044666141",
             actor: {
                 name: 'Skull',
                 parentId: skullParentActor.id,
                 transform: {
                     position: { x: 0, y: 6, z: 9 },
+                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -Math.PI),
                     scale: { x: 2, y: 2, z: 2 }
                 }
             }
         });
+        this.skullActor = skullActorPromise.value;
     }
     setupSpheres() {
         this.setupSphereActors();
@@ -351,27 +354,84 @@ class Demo {
         return true;
     }
     setupGlTF() {
+        /*
         // Beach Ball
         const spherePrim = new GltfGen.Sphere(0.5);
+
         spherePrim.material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    embeddedFilePath: path_1.resolve(__dirname, '../public/beach-ball.png')
-                    // uri: `${this.baseUrl}/uv-grid.png` // alternate form (don't embed)
+                    uri: `${this.baseUrl}/beach-ball.png`
                 })
             })
         });
+
         const gltfFactory = new GltfGen.GltfFactory([new GltfGen.Scene({
-                nodes: [new GltfGen.Node({
-                        mesh: new GltfGen.Mesh({
-                            primitives: [spherePrim]
-                        })
-                    })]
-            })]);
-        const sphere = mixed_reality_extension_sdk_1.Actor.CreateFromGLTF(this.context, {
-            resourceUrl: server_1.default.registerStaticBuffer('sphere.glb', gltfFactory.generateGLTF())
+            nodes: [new GltfGen.Node({
+                mesh: new GltfGen.Mesh({
+                    primitives: [spherePrim]
+                })
+            })]
+        })]);
+
+        const sphere = Actor.CreateFromGLTF(this.context, {
+            resourceUrl: Server.registerStaticBuffer('sphere.glb', gltfFactory.generateGLTF())
         });
         sphere.value.transform.position = { x: -3, y: 0, z: -6 };
+        */
+        // Triangles
+        const prim1 = new GltfGen.MeshPrimitive({
+            vertices: [
+                new GltfGen.Vertex({ position: [0, 0, 0] }),
+                new GltfGen.Vertex({ position: [1, 0, 0] }),
+                new GltfGen.Vertex({ position: [0, 1, 0] })
+            ],
+            triangles: [0, 1, 2],
+            material: new GltfGen.Material({ name: 'red' })
+        });
+        const prim2 = new GltfGen.MeshPrimitive({
+            material: new GltfGen.Material({ name: 'blue' })
+        }, prim1);
+        const factory1 = new GltfGen.GltfFactory([new GltfGen.Scene({
+                nodes: [
+                    new GltfGen.Node({
+                        mesh: new GltfGen.Mesh({
+                            primitives: [prim1]
+                        })
+                    }),
+                    new GltfGen.Node({
+                        mesh: new GltfGen.Mesh({
+                            primitives: [prim2]
+                        })
+                    })
+                ]
+            })]);
+        mixed_reality_extension_sdk_1.Actor.CreateFromGLTF(this.context, {
+            resourceUrl: server_1.default.registerStaticBuffer('triangles.glb', factory1.generateGLTF()),
+            actor: {
+                transform: {
+                    position: { x: -3, y: 0, z: -9 },
+                }
+            }
+        });
+        // Triangle
+        const prim = new GltfGen.MeshPrimitive({
+            vertices: [
+                new GltfGen.Vertex({ position: [0, 0, 0], texCoord0: [0, 0] }),
+                new GltfGen.Vertex({ position: [1, 0, 0], texCoord0: [1, 0] }),
+                new GltfGen.Vertex({ position: [0, 1, 0], texCoord0: [0, 1] })
+            ],
+            triangles: [0, 1, 2]
+        });
+        const factory2 = GltfGen.GltfFactory.FromSinglePrimitive(prim).generateGLTF();
+        mixed_reality_extension_sdk_1.Actor.CreateFromGLTF(this.context, {
+            resourceUrl: server_1.default.registerStaticBuffer('triangle.glb', factory2),
+            actor: {
+                transform: {
+                    position: { x: -3, y: 0, z: -10 },
+                }
+            }
+        });
     }
     setupSphereActors() {
         this.sphereActors = [];
