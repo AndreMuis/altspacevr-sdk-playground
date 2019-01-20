@@ -15,6 +15,7 @@ export default class Demo {
     private setupCesiumMan;
     private setupSkull;
     setupSpheres(): boolean;
+    private setupGlTF;
     private setupSphereActors;
     private generateSpinKeyframes;
     private expandAnimationData;

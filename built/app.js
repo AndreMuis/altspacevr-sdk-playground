@@ -1,6 +1,19 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mixed_reality_extension_sdk_1 = require("@microsoft/mixed-reality-extension-sdk");
+const GltfGen = __importStar(require("@microsoft/gltf-gen"));
+const path_1 = require("path");
+const server_1 = __importDefault(require("./server"));
 class Demo {
     constructor(context, baseUrl) {
         this.context = context;
@@ -35,6 +48,7 @@ class Demo {
         this.setupCesiumMan();
         this.setupSkull();
         this.setupSpheres();
+        this.setupGlTF();
         // setInterval(this.moveFrog, 1000);
     }
     moveFrog() {
@@ -335,6 +349,29 @@ class Demo {
             resetTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
         });
         return true;
+    }
+    setupGlTF() {
+        // Beach Ball
+        const spherePrim = new GltfGen.Sphere(0.5);
+        spherePrim.material = new GltfGen.Material({
+            baseColorTexture: new GltfGen.Texture({
+                source: new GltfGen.Image({
+                    embeddedFilePath: path_1.resolve(__dirname, '../public/beach-ball.png')
+                    // uri: `${this.baseUrl}/uv-grid.png` // alternate form (don't embed)
+                })
+            })
+        });
+        const gltfFactory = new GltfGen.GltfFactory([new GltfGen.Scene({
+                nodes: [new GltfGen.Node({
+                        mesh: new GltfGen.Mesh({
+                            primitives: [spherePrim]
+                        })
+                    })]
+            })]);
+        const sphere = mixed_reality_extension_sdk_1.Actor.CreateFromGLTF(this.context, {
+            resourceUrl: server_1.default.registerStaticBuffer('sphere.glb', gltfFactory.generateGLTF())
+        });
+        sphere.value.transform.position = { x: -3, y: 0, z: -6 };
     }
     setupSphereActors() {
         this.sphereActors = [];

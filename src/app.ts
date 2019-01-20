@@ -14,9 +14,11 @@ import {
     createForwardPromise
 } from '@microsoft/mixed-reality-extension-sdk';
 
-import {
-    GltfFactory
-} from '@microsoft/gltf-gen';
+import * as GltfGen from '@microsoft/gltf-gen';
+
+import { resolve } from 'path';
+
+import Server from './server'
 
 export default class Demo {
     private isCesiumManWalking: Boolean = false;
@@ -36,32 +38,9 @@ export default class Demo {
         this.setupCesiumMan();
         this.setupSkull();
         this.setupSpheres();
+        this.setupGlTF();
 
         // setInterval(this.moveFrog, 1000);
-
-
-
-        const spherePrim = new GltfGen.Sphere(0.5);
-        spherePrim.material = new GltfGen.Material({
-            baseColorTexture: new GltfGen.Texture({
-                source: new GltfGen.Image({
-                    embeddedFilePath: resolve(__dirname, '../../public/uv-grid.png')
-                    // uri: `${this.baseUrl}/uv-grid.png` // alternate form (don't embed)
-                })
-            })
-        });
-        const gltfFactory = new GltfGen.GltfFactory([new GltfGen.Scene({
-            nodes: [new GltfGen.Node({
-                mesh: new GltfGen.Mesh({
-                    primitives: [spherePrim]
-                })
-            })]
-        })]);
-
-        const sphere = await MRE.Actor.CreateFromGLTF(this.app.context, {
-            resourceUrl: Server.registerStaticBuffer('sphere.glb', gltfFactory.generateGLTF())
-        });
-
     }
 
     private userJoined = async (user: User) => {
@@ -416,6 +395,34 @@ export default class Demo {
         });
 
         return true;
+    }
+
+    private setupGlTF()
+    {
+        // Beach Ball
+        const spherePrim = new GltfGen.Sphere(0.5);
+
+        spherePrim.material = new GltfGen.Material({
+            baseColorTexture: new GltfGen.Texture({
+                source: new GltfGen.Image({
+                    embeddedFilePath: resolve(__dirname, '../public/beach-ball.png')
+                    // uri: `${this.baseUrl}/uv-grid.png` // alternate form (don't embed)
+                })
+            })
+        });
+
+        const gltfFactory = new GltfGen.GltfFactory([new GltfGen.Scene({
+            nodes: [new GltfGen.Node({
+                mesh: new GltfGen.Mesh({
+                    primitives: [spherePrim]
+                })
+            })]
+        })]);
+
+        const sphere = Actor.CreateFromGLTF(this.context, {
+            resourceUrl: Server.registerStaticBuffer('sphere.glb', gltfFactory.generateGLTF())
+        });
+        sphere.value.transform.position = { x: -3, y: 0, z: -6 };
     }
 
     private setupSphereActors()

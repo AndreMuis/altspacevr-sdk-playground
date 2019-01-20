@@ -17,3 +17,5 @@ const server = new WebHost({
 
 // Handle new application sessions
 server.adapter.onConnection(context => new HelloWorld(context, server.baseUrl));
+
+export default server;

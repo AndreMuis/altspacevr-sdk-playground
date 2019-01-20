@@ -18,4 +18,5 @@ const server = new mixed_reality_extension_sdk_1.WebHost({
 });
 // Handle new application sessions
 server.adapter.onConnection(context => new app_1.default(context, server.baseUrl));
+exports.default = server;
 //# sourceMappingURL=server.js.map
