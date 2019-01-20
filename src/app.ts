@@ -14,6 +14,10 @@ import {
     createForwardPromise
 } from '@microsoft/mixed-reality-extension-sdk';
 
+import {
+    GltfFactory
+} from '@microsoft/gltf-gen';
+
 export default class Demo {
     private isCesiumManWalking: Boolean = false;
     private sphereActors: Array<ForwardPromise<Actor>> = [];
@@ -34,6 +38,30 @@ export default class Demo {
         this.setupSpheres();
 
         // setInterval(this.moveFrog, 1000);
+
+
+
+        const spherePrim = new GltfGen.Sphere(0.5);
+        spherePrim.material = new GltfGen.Material({
+            baseColorTexture: new GltfGen.Texture({
+                source: new GltfGen.Image({
+                    embeddedFilePath: resolve(__dirname, '../../public/uv-grid.png')
+                    // uri: `${this.baseUrl}/uv-grid.png` // alternate form (don't embed)
+                })
+            })
+        });
+        const gltfFactory = new GltfGen.GltfFactory([new GltfGen.Scene({
+            nodes: [new GltfGen.Node({
+                mesh: new GltfGen.Mesh({
+                    primitives: [spherePrim]
+                })
+            })]
+        })]);
+
+        const sphere = await MRE.Actor.CreateFromGLTF(this.app.context, {
+            resourceUrl: Server.registerStaticBuffer('sphere.glb', gltfFactory.generateGLTF())
+        });
+
     }
 
     private userJoined = async (user: User) => {
