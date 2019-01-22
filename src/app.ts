@@ -1,3 +1,9 @@
+// have to use await for Cesium Man
+// pressed event called twice
+// no animations on local
+// url: for gtlf doesn't work
+// GltfGen crashes on prod (triangles)
+
 import {
     Actor,
     AnimationKeyframe,
@@ -142,7 +148,7 @@ export default class Demo {
     private async setupCesiumMan()
     {
         const cesiumManActor = await Actor.CreateFromGLTF(this.context, {
-            resourceUrl: `https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb`,
+            resourceUrl: `http://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb`,
             actor: {
                 transform: {
                     position: { x: 0, y: -1, z: 5 },
@@ -182,14 +188,12 @@ export default class Demo {
         });
         const textActor = textActorPromise.value;
 
-        boxActor.createAnimation({
-            animationName: 'expand',
+        boxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
 
-        boxActor.createAnimation({
-            animationName: 'contract',
+        boxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
@@ -197,11 +201,11 @@ export default class Demo {
         const buttonBehavior = boxActor.setBehavior(ButtonBehavior);
 
         buttonBehavior.onHover('enter', (userId: string) => {
-            boxActor.startAnimation('expand');
+            boxActor.enableAnimation('expand');
         });
 
         buttonBehavior.onHover('exit', (userId: string) => {
-            boxActor.startAnimation('contract');
+            boxActor.enableAnimation('contract');
         });
 
         buttonBehavior.onClick('pressed', (userId: string) => {
@@ -211,13 +215,13 @@ export default class Demo {
             {
                 this.isCesiumManWalking = false;
                 textActor.text.contents = "Start Walking";
-                cesiumManActor.stopAnimation('animation:0');
+                cesiumManActor.disableAnimation('animation:0');
             }
             else
             {
                 this.isCesiumManWalking = true;   
                 textActor.text.contents = "Stop Walking";
-                cesiumManActor.startAnimation('animation:0');
+                cesiumManActor.enableAnimation('animation:0');
             } 
         });
 
@@ -238,14 +242,13 @@ export default class Demo {
         });
         const skullParentActor = skullParentActorPromise.value;
 
-        skullParentActor.createAnimation({
-            animationName: 'spin',
+        skullParentActor.createAnimation('spin', {
             wrapMode: AnimationWrapMode.Loop,
             keyframes: this.generateSpinKeyframes(10, Vector3.Up()),
             events: []
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
         
-        skullParentActor.startAnimation("spin");
+        skullParentActor.enableAnimation("spin");
     
         const skullActorPromise = Actor.CreateFromLibrary(this.context, {
             resourceId: "1050090527044666141",
@@ -298,14 +301,12 @@ export default class Demo {
         });
         const dropTextActor = dropTextActorPromise.value;
 
-        dropBoxActor.createAnimation({
-            animationName: 'expand',
+        dropBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
 
-        dropBoxActor.createAnimation({
-            animationName: 'contract',
+        dropBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
@@ -313,11 +314,11 @@ export default class Demo {
         const dropButtonBehavior = dropBoxActor.setBehavior(ButtonBehavior);
 
         dropButtonBehavior.onHover('enter', (userId: string) => {
-            dropBoxActor.startAnimation('expand');
+            dropBoxActor.enableAnimation('expand');
         });
 
         dropButtonBehavior.onHover('exit', (userId: string) => {
-            dropBoxActor.startAnimation('contract');
+            dropBoxActor.enableAnimation('contract');
         });
 
         dropButtonBehavior.onClick('pressed', (userId: string) => {
@@ -363,14 +364,12 @@ export default class Demo {
         });
         const resetTextActor = resetTextActorPromise.value;
 
-        resetBoxActor.createAnimation({
-            animationName: 'expand',
+        resetBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
 
-        resetBoxActor.createAnimation({
-            animationName: 'contract',
+        resetBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
@@ -378,11 +377,11 @@ export default class Demo {
         const resetButtonBehavior = resetBoxActor.setBehavior(ButtonBehavior);
 
         resetButtonBehavior.onHover('enter', (userId: string) => {
-            resetBoxActor.startAnimation('expand');
+            resetBoxActor.enableAnimation('expand');
         });
 
         resetButtonBehavior.onHover('exit', (userId: string) => {
-            resetBoxActor.startAnimation('contract');
+            resetBoxActor.enableAnimation('contract');
         });
 
         resetButtonBehavior.onClick('pressed', (userId: string) => {

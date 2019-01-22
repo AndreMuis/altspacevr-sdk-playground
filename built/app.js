@@ -1,4 +1,9 @@
 "use strict";
+// have to use await for Cesium Man
+// pressed event called twice
+// no animations on local
+// url: for gtlf doesn't work
+// GltfGen crashes on prod (triangles)
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -135,7 +140,7 @@ class Demo {
     }
     async setupCesiumMan() {
         const cesiumManActor = await mixed_reality_extension_sdk_1.Actor.CreateFromGLTF(this.context, {
-            resourceUrl: `https://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb`,
+            resourceUrl: `http://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb`,
             actor: {
                 transform: {
                     position: { x: 0, y: -1, z: 5 },
@@ -172,34 +177,32 @@ class Demo {
             }
         });
         const textActor = textActorPromise.value;
-        boxActor.createAnimation({
-            animationName: 'expand',
+        boxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
-        boxActor.createAnimation({
-            animationName: 'contract',
+        boxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
         const buttonBehavior = boxActor.setBehavior(mixed_reality_extension_sdk_1.ButtonBehavior);
         buttonBehavior.onHover('enter', (userId) => {
-            boxActor.startAnimation('expand');
+            boxActor.enableAnimation('expand');
         });
         buttonBehavior.onHover('exit', (userId) => {
-            boxActor.startAnimation('contract');
+            boxActor.enableAnimation('contract');
         });
         buttonBehavior.onClick('pressed', (userId) => {
             textActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
             if (this.isCesiumManWalking == true) {
                 this.isCesiumManWalking = false;
                 textActor.text.contents = "Start Walking";
-                cesiumManActor.stopAnimation('animation:0');
+                cesiumManActor.disableAnimation('animation:0');
             }
             else {
                 this.isCesiumManWalking = true;
                 textActor.text.contents = "Stop Walking";
-                cesiumManActor.startAnimation('animation:0');
+                cesiumManActor.enableAnimation('animation:0');
             }
         });
         buttonBehavior.onClick('released', (userId) => {
@@ -216,13 +219,12 @@ class Demo {
             }
         });
         const skullParentActor = skullParentActorPromise.value;
-        skullParentActor.createAnimation({
-            animationName: 'spin',
+        skullParentActor.createAnimation('spin', {
             wrapMode: mixed_reality_extension_sdk_1.AnimationWrapMode.Loop,
             keyframes: this.generateSpinKeyframes(10, mixed_reality_extension_sdk_1.Vector3.Up()),
             events: []
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
-        skullParentActor.startAnimation("spin");
+        skullParentActor.enableAnimation("spin");
         const skullActorPromise = mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
             resourceId: "1050090527044666141",
             actor: {
@@ -270,22 +272,20 @@ class Demo {
             }
         });
         const dropTextActor = dropTextActorPromise.value;
-        dropBoxActor.createAnimation({
-            animationName: 'expand',
+        dropBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
-        dropBoxActor.createAnimation({
-            animationName: 'contract',
+        dropBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
         const dropButtonBehavior = dropBoxActor.setBehavior(mixed_reality_extension_sdk_1.ButtonBehavior);
         dropButtonBehavior.onHover('enter', (userId) => {
-            dropBoxActor.startAnimation('expand');
+            dropBoxActor.enableAnimation('expand');
         });
         dropButtonBehavior.onHover('exit', (userId) => {
-            dropBoxActor.startAnimation('contract');
+            dropBoxActor.enableAnimation('contract');
         });
         dropButtonBehavior.onClick('pressed', (userId) => {
             dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
@@ -325,22 +325,20 @@ class Demo {
             }
         });
         const resetTextActor = resetTextActorPromise.value;
-        resetBoxActor.createAnimation({
-            animationName: 'expand',
+        resetBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
-        resetBoxActor.createAnimation({
-            animationName: 'contract',
+        resetBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
         const resetButtonBehavior = resetBoxActor.setBehavior(mixed_reality_extension_sdk_1.ButtonBehavior);
         resetButtonBehavior.onHover('enter', (userId) => {
-            resetBoxActor.startAnimation('expand');
+            resetBoxActor.enableAnimation('expand');
         });
         resetButtonBehavior.onHover('exit', (userId) => {
-            resetBoxActor.startAnimation('contract');
+            resetBoxActor.enableAnimation('contract');
         });
         resetButtonBehavior.onClick('pressed', (userId) => {
             resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
