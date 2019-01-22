@@ -49,12 +49,11 @@ class Demo {
         this.setupCesiumMan();
         this.setupSkull();
         this.setupSpheres();
-        // this.setupGlTF();
+        this.setupGlTF();
         // setInterval(this.moveFrog, 1000);
     }
     moveFrog() {
         console.log("tick");
-        this.addToLog(Date.now().toString());
     }
     addToLog(message) {
         console.log(message);
@@ -99,7 +98,7 @@ class Demo {
                 name: 'Cabin',
                 transform: {
                     position: { x: 15, y: -1, z: 0.0 },
-                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -Math.PI / 2.0),
+                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -90 * mixed_reality_extension_sdk_1.DegreesToRadians),
                     scale: { x: 0.8, y: 0.8, z: 0.8 }
                 }
             }
@@ -122,10 +121,10 @@ class Demo {
                 name: 'Text',
                 transform: {
                     position: { x: -3, y: 0, z: -3 },
-                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -Math.PI / 2.0)
+                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -90 * mixed_reality_extension_sdk_1.DegreesToRadians)
                 },
                 text: {
-                    contents: "log contents",
+                    contents: "log start",
                     anchor: mixed_reality_extension_sdk_1.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.1
@@ -231,7 +230,7 @@ class Demo {
                 parentId: skullParentActor.id,
                 transform: {
                     position: { x: 0, y: 6, z: 9 },
-                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -Math.PI),
+                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), 180 * mixed_reality_extension_sdk_1.DegreesToRadians),
                     scale: { x: 2, y: 2, z: 2 }
                 }
             }
@@ -248,7 +247,7 @@ class Demo {
             },
             addCollider: true,
             actor: {
-                name: 'Box',
+                name: 'Drop Box',
                 transform: {
                     position: { x: -10, y: 1, z: 5 }
                 }
@@ -303,7 +302,7 @@ class Demo {
             },
             addCollider: true,
             actor: {
-                name: 'Box',
+                name: 'Reset Box',
                 transform: {
                     position: { x: -9, y: 1, z: 5 }
                 }
@@ -351,7 +350,6 @@ class Demo {
         resetButtonBehavior.onClick('released', (userId) => {
             resetTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
         });
-        return true;
     }
     setupGlTF() {
         /*
@@ -468,10 +466,10 @@ class Demo {
                 value: { transform: { rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(axis, 0) } }
             }, {
                 time: 0.5 * duration,
-                value: { transform: { rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(axis, Math.PI) } }
+                value: { transform: { rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(axis, 180 * mixed_reality_extension_sdk_1.DegreesToRadians) } }
             }, {
                 time: 1 * duration,
-                value: { transform: { rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(axis, 2.0 * Math.PI) } }
+                value: { transform: { rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(axis, 360 * mixed_reality_extension_sdk_1.DegreesToRadians) } }
             }];
     }
 }

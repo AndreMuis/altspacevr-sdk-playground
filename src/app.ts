@@ -11,8 +11,7 @@ import {
     TextAnchorLocation,
     User,
     Vector3,
-    DegreesToRadians,
-    createForwardPromise
+    DegreesToRadians
 } from '@microsoft/mixed-reality-extension-sdk';
 
 import * as GltfGen from '@microsoft/gltf-gen';
@@ -40,7 +39,7 @@ export default class Demo {
         this.setupCesiumMan();
         this.setupSkull();
         this.setupSpheres();
-        // this.setupGlTF();
+        this.setupGlTF();
 
         // setInterval(this.moveFrog, 1000);
     }
@@ -53,8 +52,6 @@ export default class Demo {
 
     private moveFrog() {
         console.log("tick");
-
-        this.addToLog(Date.now().toString());
     }
 
     private addToLog(message: String) {
@@ -104,7 +101,7 @@ export default class Demo {
                 name: 'Cabin',
                 transform: {
                     position: { x: 15, y: -1, z: 0.0 },
-                    rotation: Quaternion.RotationAxis(Vector3.Up(), -Math.PI / 2.0),
+                    rotation: Quaternion.RotationAxis(Vector3.Up(), -90 * DegreesToRadians),
                     scale: { x: 0.8, y: 0.8, z: 0.8}
                 }
             }
@@ -129,10 +126,10 @@ export default class Demo {
                 name: 'Text',
                 transform: {
                     position: { x: -3, y: 0, z: -3 },
-                    rotation: Quaternion.RotationAxis(Vector3.Up(), -Math.PI / 2.0)
+                    rotation: Quaternion.RotationAxis(Vector3.Up(), -90 * DegreesToRadians)
                 },
                 text: {
-                    contents: "log contents",
+                    contents: "log start",
                     anchor: TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.1
@@ -247,7 +244,7 @@ export default class Demo {
             keyframes: this.generateSpinKeyframes(10, Vector3.Up()),
             events: []
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
-    
+        
         skullParentActor.startAnimation("spin");
     
         const skullActorPromise = Actor.CreateFromLibrary(this.context, {
@@ -257,7 +254,7 @@ export default class Demo {
                 parentId: skullParentActor.id,
                 transform: {
                     position: { x: 0, y: 6, z: 9 },
-                    rotation: Quaternion.RotationAxis(Vector3.Up(), -Math.PI),
+                    rotation: Quaternion.RotationAxis(Vector3.Up(), 180 * DegreesToRadians),
                     scale: { x: 2, y: 2, z: 2}
                 }
             }
@@ -276,7 +273,7 @@ export default class Demo {
             },
             addCollider: true,
             actor: {
-                name: 'Box',
+                name: 'Drop Box',
                 transform: {
                     position: { x: -10, y: 1, z: 5 }
                 }
@@ -299,7 +296,7 @@ export default class Demo {
                 }
             }
         });
-        const dropTextActor  = dropTextActorPromise.value;
+        const dropTextActor = dropTextActorPromise.value;
 
         dropBoxActor.createAnimation({
             animationName: 'expand',
@@ -341,7 +338,7 @@ export default class Demo {
             },
             addCollider: true,
             actor: {
-                name: 'Box',
+                name: 'Reset Box',
                 transform: {
                     position: { x: -9, y: 1, z: 5 }
                 }
@@ -399,8 +396,6 @@ export default class Demo {
         resetButtonBehavior.onClick('released', (userId: string) => {
             resetTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
         });
-
-        return true;
     }
 
     private setupGlTF()
@@ -492,7 +487,6 @@ export default class Demo {
                 }
             }
         });
-
     }
 
     private setupSphereActors()
@@ -536,10 +530,10 @@ export default class Demo {
             value: { transform: { rotation: Quaternion.RotationAxis(axis, 0) } }
         }, {
             time: 0.5 * duration,
-            value: { transform: { rotation: Quaternion.RotationAxis(axis, Math.PI) } }
+            value: { transform: { rotation: Quaternion.RotationAxis(axis, 180 * DegreesToRadians) } }
         }, {
             time: 1 * duration,
-            value: { transform: { rotation: Quaternion.RotationAxis(axis, 2.0 * Math.PI) } }
+            value: { transform: { rotation: Quaternion.RotationAxis(axis, 360 * DegreesToRadians) } }
         }];
     }
 
