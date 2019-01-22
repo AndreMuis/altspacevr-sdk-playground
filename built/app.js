@@ -49,7 +49,7 @@ class Demo {
         this.setupCesiumMan();
         this.setupSkull();
         this.setupSpheres();
-        this.setupGlTF();
+        // this.setupGlTF();
         // setInterval(this.moveFrog, 1000);
     }
     moveFrog() {
