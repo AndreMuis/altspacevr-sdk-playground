@@ -148,7 +148,7 @@ export default class Demo {
     private async setupCesiumMan()
     {
         const cesiumManActor = await Actor.CreateFromGltf(this.context, {
-            resourceUrl: `http://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb`,
+            resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
                     position: { x: 0, y: -1, z: 5 },
