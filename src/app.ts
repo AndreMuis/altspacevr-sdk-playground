@@ -45,7 +45,7 @@ export default class Demo {
         this.setupCesiumMan();
         this.setupSkull();
         this.setupSpheres();
-        // this.setupGlTF();
+        this.setupGlTF();
 
         // setInterval(this.moveFrog, 1000);
     }
@@ -397,33 +397,34 @@ export default class Demo {
         });
     }
 
-    private setupGlTF()
+    private async setupGlTF()
     {
-        /*
         // Beach Ball
-        const spherePrim = new GltfGen.Sphere(0.5);
-
-        spherePrim.material = new GltfGen.Material({
+        const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/beach-ball.png`
+                    uri: `${this.baseUrl}/beach-ball.png` 
                 })
             })
         });
+        const gltfFactory = new GltfGen.GltfFactory(null, null, [material]);
 
-        const gltfFactory = new GltfGen.GltfFactory([new GltfGen.Scene({
-            nodes: [new GltfGen.Node({
-                mesh: new GltfGen.Mesh({
-                    primitives: [spherePrim]
-                })
-            })]
-        })]);
+        const blobURL = Server.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
 
-        const sphere = Actor.CreateFromGltf(this.context, {
-            resourceUrl: Server.registerStaticBuffer('sphere.glb', gltfFactory.generateGLTF())
+        const mats = await this.context.assets.loadGltf('beachball', blobURL);
+
+        await Actor.CreatePrimitive(this.context, {
+            definition: {
+                shape: PrimitiveShape.Sphere,
+                radius: 1
+            },
+            actor: {
+                materialId: mats.materials.byIndex(0).id,
+                transform: {
+                    position: { x: -3, y: 1, z: -6 }
+                }
+            }
         });
-        sphere.value.transform.position = { x: -3, y: 0, z: -6 };
-        */
 
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({

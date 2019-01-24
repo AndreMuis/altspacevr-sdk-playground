@@ -54,7 +54,7 @@ class Demo {
         this.setupCesiumMan();
         this.setupSkull();
         this.setupSpheres();
-        // this.setupGlTF();
+        this.setupGlTF();
         // setInterval(this.moveFrog, 1000);
     }
     moveFrog() {
@@ -349,32 +349,30 @@ class Demo {
             resetTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
         });
     }
-    setupGlTF() {
-        /*
+    async setupGlTF() {
         // Beach Ball
-        const spherePrim = new GltfGen.Sphere(0.5);
-
-        spherePrim.material = new GltfGen.Material({
+        const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
                     uri: `${this.baseUrl}/beach-ball.png`
                 })
             })
         });
-
-        const gltfFactory = new GltfGen.GltfFactory([new GltfGen.Scene({
-            nodes: [new GltfGen.Node({
-                mesh: new GltfGen.Mesh({
-                    primitives: [spherePrim]
-                })
-            })]
-        })]);
-
-        const sphere = Actor.CreateFromGltf(this.context, {
-            resourceUrl: Server.registerStaticBuffer('sphere.glb', gltfFactory.generateGLTF())
+        const gltfFactory = new GltfGen.GltfFactory(null, null, [material]);
+        const blobURL = server_1.default.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
+        const mats = await this.context.assets.loadGltf('beachball', blobURL);
+        await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+            definition: {
+                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
+                radius: 1
+            },
+            actor: {
+                materialId: mats.materials.byIndex(0).id,
+                transform: {
+                    position: { x: -3, y: 1, z: -6 }
+                }
+            }
         });
-        sphere.value.transform.position = { x: -3, y: 0, z: -6 };
-        */
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
             vertices: [
