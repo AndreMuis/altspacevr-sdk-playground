@@ -139,8 +139,8 @@ class Demo {
         this.logActor = logActorPromise.value;
     }
     async setupCesiumMan() {
-        const cesiumManActor = await mixed_reality_extension_sdk_1.Actor.CreateFromGLTF(this.context, {
-            resourceUrl: `http://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb`,
+        const cesiumManActor = await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
+            resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
                     position: { x: 0, y: -1, z: 5 },
@@ -370,7 +370,7 @@ class Demo {
             })]
         })]);
 
-        const sphere = Actor.CreateFromGLTF(this.context, {
+        const sphere = Actor.CreateFromGltf(this.context, {
             resourceUrl: Server.registerStaticBuffer('sphere.glb', gltfFactory.generateGLTF())
         });
         sphere.value.transform.position = { x: -3, y: 0, z: -6 };
@@ -402,7 +402,7 @@ class Demo {
                     })
                 ]
             })]);
-        mixed_reality_extension_sdk_1.Actor.CreateFromGLTF(this.context, {
+        mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
             resourceUrl: server_1.default.registerStaticBuffer('triangles.glb', factory1.generateGLTF()),
             actor: {
                 transform: {
@@ -420,7 +420,7 @@ class Demo {
             triangles: [0, 1, 2]
         });
         const factory2 = GltfGen.GltfFactory.FromSinglePrimitive(prim).generateGLTF();
-        mixed_reality_extension_sdk_1.Actor.CreateFromGLTF(this.context, {
+        mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
             resourceUrl: server_1.default.registerStaticBuffer('triangle.glb', factory2),
             actor: {
                 transform: {

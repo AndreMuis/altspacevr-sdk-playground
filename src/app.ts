@@ -147,7 +147,7 @@ export default class Demo {
 
     private async setupCesiumMan()
     {
-        const cesiumManActor = await Actor.CreateFromGLTF(this.context, {
+        const cesiumManActor = await Actor.CreateFromGltf(this.context, {
             resourceUrl: `http://github.com/KhronosGroup/glTF-Sample-Models/raw/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb`,
             actor: {
                 transform: {
@@ -419,7 +419,7 @@ export default class Demo {
             })]
         })]);
 
-        const sphere = Actor.CreateFromGLTF(this.context, {
+        const sphere = Actor.CreateFromGltf(this.context, {
             resourceUrl: Server.registerStaticBuffer('sphere.glb', gltfFactory.generateGLTF())
         });
         sphere.value.transform.position = { x: -3, y: 0, z: -6 };
@@ -457,7 +457,7 @@ export default class Demo {
             })]
         );
 
-        Actor.CreateFromGLTF(this.context, {
+        Actor.CreateFromGltf(this.context, {
             resourceUrl: Server.registerStaticBuffer('triangles.glb', factory1.generateGLTF()),
             actor: {
                 transform: {
@@ -478,7 +478,7 @@ export default class Demo {
 
         const factory2 = GltfGen.GltfFactory.FromSinglePrimitive(prim).generateGLTF();
     
-        Actor.CreateFromGLTF(this.context, {
+        Actor.CreateFromGltf(this.context, {
             resourceUrl: Server.registerStaticBuffer('triangle.glb', factory2),
             actor: {
                 transform: {
