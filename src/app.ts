@@ -10,15 +10,19 @@ import {
     AnimationWrapMode,
     ButtonBehavior,
     Context,
+    DegreesToRadians,
     ForwardPromise,
     LookAtMode,
     PrimitiveShape,
     Quaternion,
     TextAnchorLocation,
     User,
-    Vector3,
-    DegreesToRadians
+    Vector3
 } from '@microsoft/mixed-reality-extension-sdk';
+
+import {
+    VideoPlayerManager
+} from '@microsoft/mixed-reality-extension-altspacevr-extras';
 
 import * as GltfGen from '@microsoft/gltf-gen';
 
@@ -31,9 +35,12 @@ export default class Demo {
     private skullActor: Actor = null;
     private sphereActors: Array<ForwardPromise<Actor>> = [];
     private frogActor: Actor = null;
+    private videoPlayerManager: VideoPlayerManager;
     private logActor: Actor = null;
 
     constructor(private context: Context, private baseUrl: string) {
+        this.videoPlayerManager = new VideoPlayerManager(context);
+
         this.context.onStarted(() => this.started());
 
         this.userJoined = this.userJoined.bind(this);
@@ -46,6 +53,8 @@ export default class Demo {
         this.setupSkull();
         this.setupSpheres();
         this.setupGlTF();
+        this.setupTeleporter();
+        this.setupVideoPlayer();
 
         // setInterval(this.moveFrog, 1000);
     }
@@ -131,7 +140,7 @@ export default class Demo {
             actor: {
                 name: 'Text',
                 transform: {
-                    position: { x: -3, y: 0, z: -3 },
+                    position: { x: -3, y: 0, z: 0 },
                     rotation: Quaternion.RotationAxis(Vector3.Up(), -90 * DegreesToRadians)
                 },
                 text: {
@@ -400,6 +409,7 @@ export default class Demo {
     private async setupGlTF()
     {
         // Beach Ball
+        /*
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
@@ -425,6 +435,7 @@ export default class Demo {
                 }
             }
         });
+        */
 
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
@@ -487,6 +498,53 @@ export default class Demo {
                 }
             }
         });
+    }
+
+    private setupTeleporter() {
+        const teleporterPromise = Actor.CreateFromLibrary(this.context, {
+            resourceId: "Teleporter: 1133592462367917034",
+            actor: {
+                name: 'teleporter',
+                transform: {
+                    position: { x: 5, y: -0.75, z: 5 }
+                }
+            }
+        });
+
+        const textActorPromise = Actor.CreateEmpty(this.context, {
+            actor: {
+                name: 'teleporter text',
+                parentId: teleporterPromise.value.id,
+                transform: {
+                    position: { x: 0, y: 2, z: 0 }
+                },
+                text: {
+                    contents: "Teleporter Test World",
+                    anchor: TextAnchorLocation.MiddleCenter,
+                    color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
+                    height: 0.2
+                }
+            }
+        });
+    }
+
+    private async setupVideoPlayer() 
+    {
+        const videoPlayer = await Actor.CreateEmpty(this.context, {
+            actor: {
+                name: 'video player',
+                transform: {
+                    position: { x: 0, y: 1, z: -7 },
+                    rotation: Quaternion.RotationAxis(Vector3.Up(), 180 * DegreesToRadians),
+                    scale: { x: 5, y: 5, z: 5 }
+                },
+            }
+        });
+
+        this.videoPlayerManager.play(
+            videoPlayer.id,
+            'https://www.youtube.com/watch?v=L_LUpnjgPso&t=33s',
+            0.0);
     }
 
     private setupSphereActors()

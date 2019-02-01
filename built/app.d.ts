@@ -6,6 +6,7 @@ export default class Demo {
     private skullActor;
     private sphereActors;
     private frogActor;
+    private videoPlayerManager;
     private logActor;
     constructor(context: Context, baseUrl: string);
     private started;
@@ -17,6 +18,8 @@ export default class Demo {
     private setupSkull;
     setupSpheres(): void;
     private setupGlTF;
+    private setupTeleporter;
+    private setupVideoPlayer;
     private setupSphereActors;
     private generateSpinKeyframes;
     private expandAnimationData;

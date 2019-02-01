@@ -16,6 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mixed_reality_extension_sdk_1 = require("@microsoft/mixed-reality-extension-sdk");
+const mixed_reality_extension_altspacevr_extras_1 = require("@microsoft/mixed-reality-extension-altspacevr-extras");
 const GltfGen = __importStar(require("@microsoft/gltf-gen"));
 const server_1 = __importDefault(require("./server"));
 class Demo {
@@ -45,6 +46,7 @@ class Demo {
                 time: 0.2,
                 value: { transform: { scale: { x: 1, y: 1, z: 1 } } }
             }];
+        this.videoPlayerManager = new mixed_reality_extension_altspacevr_extras_1.VideoPlayerManager(context);
         this.context.onStarted(() => this.started());
         this.userJoined = this.userJoined.bind(this);
         this.context.onUserJoined(this.userJoined);
@@ -55,6 +57,8 @@ class Demo {
         this.setupSkull();
         this.setupSpheres();
         this.setupGlTF();
+        this.setupTeleporter();
+        this.setupVideoPlayer();
         // setInterval(this.moveFrog, 1000);
     }
     moveFrog() {
@@ -125,7 +129,7 @@ class Demo {
             actor: {
                 name: 'Text',
                 transform: {
-                    position: { x: -3, y: 0, z: -3 },
+                    position: { x: -3, y: 0, z: 0 },
                     rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -90 * mixed_reality_extension_sdk_1.DegreesToRadians)
                 },
                 text: {
@@ -351,6 +355,7 @@ class Demo {
     }
     async setupGlTF() {
         // Beach Ball
+        /*
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
@@ -359,11 +364,14 @@ class Demo {
             })
         });
         const gltfFactory = new GltfGen.GltfFactory(null, null, [material]);
-        const blobURL = server_1.default.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
+
+        const blobURL = Server.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
+
         const mats = await this.context.assets.loadGltf('beachball', blobURL);
-        await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+
+        await Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
+                shape: PrimitiveShape.Sphere,
                 radius: 1
             },
             actor: {
@@ -373,6 +381,7 @@ class Demo {
                 }
             }
         });
+        */
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
             vertices: [
@@ -426,6 +435,45 @@ class Demo {
                 }
             }
         });
+    }
+    setupTeleporter() {
+        const teleporterPromise = mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
+            resourceId: "Teleporter: 1133592462367917034",
+            actor: {
+                name: 'teleporter',
+                transform: {
+                    position: { x: 5, y: -0.75, z: 5 }
+                }
+            }
+        });
+        const textActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+            actor: {
+                name: 'teleporter text',
+                parentId: teleporterPromise.value.id,
+                transform: {
+                    position: { x: 0, y: 2, z: 0 }
+                },
+                text: {
+                    contents: "Teleporter Test World",
+                    anchor: mixed_reality_extension_sdk_1.TextAnchorLocation.MiddleCenter,
+                    color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
+                    height: 0.2
+                }
+            }
+        });
+    }
+    async setupVideoPlayer() {
+        const videoPlayer = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+            actor: {
+                name: 'video player',
+                transform: {
+                    position: { x: 0, y: 1, z: -7 },
+                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), 180 * mixed_reality_extension_sdk_1.DegreesToRadians),
+                    scale: { x: 5, y: 5, z: 5 }
+                },
+            }
+        });
+        this.videoPlayerManager.play(videoPlayer.id, 'https://www.youtube.com/watch?v=L_LUpnjgPso&t=33s', 0.0);
     }
     setupSphereActors() {
         this.sphereActors = [];
