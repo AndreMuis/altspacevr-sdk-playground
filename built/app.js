@@ -52,13 +52,13 @@ class Demo {
         this.context.onUserJoined(this.userJoined);
     }
     started() {
-        this.setupScene();
+        // this.setupScene();
         this.setupCesiumMan();
-        this.setupSkull();
-        this.setupSpheres();
-        this.setupGlTF();
-        this.setupTeleporter();
-        this.setupVideoPlayer();
+        // this.setupSkull();
+        // this.setupSpheres();
+        // this.setupGlTF();
+        // this.setupTeleporter();
+        // this.setupVideoPlayer();
         // setInterval(this.moveFrog, 1000);
     }
     moveFrog() {

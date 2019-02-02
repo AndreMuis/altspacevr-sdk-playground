@@ -48,13 +48,13 @@ export default class Demo {
     }
 
     private started() {
-        this.setupScene();
+        // this.setupScene();
         this.setupCesiumMan();
-        this.setupSkull();
-        this.setupSpheres();
-        this.setupGlTF();
-        this.setupTeleporter();
-        this.setupVideoPlayer();
+        // this.setupSkull();
+        // this.setupSpheres();
+        // this.setupGlTF();
+        // this.setupTeleporter();
+        // this.setupVideoPlayer();
 
         // setInterval(this.moveFrog, 1000);
     }
