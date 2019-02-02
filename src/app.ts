@@ -51,7 +51,7 @@ export default class Demo {
         if (this.context.sessionId == 'local') {
             this.baseURLTranslated = 'http://127.0.0.1:3901';
         } else if (this.context.sessionId == 'production') {
-            this.baseURLTranslated = 'https://altspacevr-demo.herokuapp.com';
+            this.baseURLTranslated = 'http://altspacevr-demo.herokuapp.com';
         } else {
             console.log('session id is invalid. session id = ' + this.context.sessionId);
         }
