@@ -61,14 +61,14 @@ class Demo {
             console.log('session id is invalid. session id = ' + this.context.sessionId);
         }
     }
-    started() {
-        // this.setupScene();
-        // this.setupCesiumMan();
-        // this.setupSkull();
-        // this.setupSpheres();
-        this.setupGlTF();
-        // this.setupTeleporter();
-        // this.setupVideoPlayer();
+    async started() {
+        this.setupScene();
+        await this.setupCesiumMan();
+        this.setupSkull();
+        this.setupSpheres();
+        // this.setupGlTF();
+        this.setupTeleporter();
+        this.setupVideoPlayer();
         // setInterval(this.moveFrog, 1000);
     }
     moveFrog() {

@@ -57,14 +57,14 @@ export default class Demo {
         }
     }
 
-    private started() {
-        // this.setupScene();
-        // this.setupCesiumMan();
-        // this.setupSkull();
-        // this.setupSpheres();
-        this.setupGlTF();
-        // this.setupTeleporter();
-        // this.setupVideoPlayer();
+    private async started() {
+        this.setupScene();
+        await this.setupCesiumMan();
+        this.setupSkull();
+        this.setupSpheres();
+        // this.setupGlTF();
+        this.setupTeleporter();
+        this.setupVideoPlayer();
 
         // setInterval(this.moveFrog, 1000);
     }
@@ -446,7 +446,7 @@ export default class Demo {
             }
         });
         */
-       
+
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
             vertices: [
