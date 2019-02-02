@@ -63,10 +63,10 @@ class Demo {
     }
     started() {
         // this.setupScene();
-        this.setupCesiumMan();
+        // this.setupCesiumMan();
         // this.setupSkull();
         // this.setupSpheres();
-        // this.setupGlTF();
+        this.setupGlTF();
         // this.setupTeleporter();
         // this.setupVideoPlayer();
         // setInterval(this.moveFrog, 1000);
@@ -154,8 +154,6 @@ class Demo {
     }
     async setupCesiumMan() {
         const cesiumManActor = await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
-            // resourceUrl: 'https://rawcdn.githack.com/AndreMuis/altspacevr-demo/9aaefea676e1fe7545188052cc0dd1e9170d056a/public/CesiumMan.glb',
-            // resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             resourceUrl: `${this.baseURLTranslated}/CesiumMan.glb`,
             actor: {
                 transform: {
@@ -367,23 +365,19 @@ class Demo {
     }
     async setupGlTF() {
         // Beach Ball
-        /*
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/beach-ball.png`
+                    uri: `${this.baseURLTranslated}/beach-ball.png`
                 })
             })
         });
         const gltfFactory = new GltfGen.GltfFactory(null, null, [material]);
-
-        const blobURL = Server.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
-
-        const mats = await this.context.assets.loadGltf('beachball', blobURL);
-
-        await Actor.CreatePrimitive(this.context, {
+        const blobURL = server_1.default.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
+        const mats = await this.context.assetManager.loadGltf('beachball', blobURL);
+        await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: PrimitiveShape.Sphere,
+                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
                 radius: 1
             },
             actor: {
@@ -393,7 +387,6 @@ class Demo {
                 }
             }
         });
-        */
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
             vertices: [

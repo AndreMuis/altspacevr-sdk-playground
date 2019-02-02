@@ -59,10 +59,10 @@ export default class Demo {
 
     private started() {
         // this.setupScene();
-        this.setupCesiumMan();
+        // this.setupCesiumMan();
         // this.setupSkull();
         // this.setupSpheres();
-        // this.setupGlTF();
+        this.setupGlTF();
         // this.setupTeleporter();
         // this.setupVideoPlayer();
 
@@ -167,8 +167,6 @@ export default class Demo {
     private async setupCesiumMan()
     {
         const cesiumManActor = await Actor.CreateFromGltf(this.context, {
-            // resourceUrl: 'https://rawcdn.githack.com/AndreMuis/altspacevr-demo/9aaefea676e1fe7545188052cc0dd1e9170d056a/public/CesiumMan.glb',
-            // resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             resourceUrl: `${this.baseURLTranslated}/CesiumMan.glb`,
             actor: {
                 transform: {
@@ -421,11 +419,10 @@ export default class Demo {
     private async setupGlTF()
     {
         // Beach Ball
-        /*
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/beach-ball.png` 
+                    uri: `${this.baseURLTranslated}/beach-ball.png` 
                 })
             })
         });
@@ -433,7 +430,7 @@ export default class Demo {
 
         const blobURL = Server.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
 
-        const mats = await this.context.assets.loadGltf('beachball', blobURL);
+        const mats = await this.context.assetManager.loadGltf('beachball', blobURL);
 
         await Actor.CreatePrimitive(this.context, {
             definition: {
@@ -447,7 +444,6 @@ export default class Demo {
                 }
             }
         });
-        */
 
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
