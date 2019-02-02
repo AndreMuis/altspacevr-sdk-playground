@@ -2,6 +2,7 @@ import { Context } from '@microsoft/mixed-reality-extension-sdk';
 export default class Demo {
     private context;
     private baseUrl;
+    private baseURLTranslated;
     private isCesiumManWalking;
     private skullActor;
     private sphereActors;

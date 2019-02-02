@@ -23,6 +23,7 @@ class Demo {
     constructor(context, baseUrl) {
         this.context = context;
         this.baseUrl = baseUrl;
+        this.baseURLTranslated = '';
         this.isCesiumManWalking = false;
         this.skullActor = null;
         this.sphereActors = [];
@@ -50,6 +51,15 @@ class Demo {
         this.context.onStarted(() => this.started());
         this.userJoined = this.userJoined.bind(this);
         this.context.onUserJoined(this.userJoined);
+        if (this.context.sessionId == 'local') {
+            this.baseURLTranslated = 'http://127.0.0.1:3901';
+        }
+        else if (this.context.sessionId == 'production') {
+            this.baseURLTranslated = 'https://altspacevr-demo.herokuapp.com';
+        }
+        else {
+            console.log('session id is invalid. session id = ' + this.context.sessionId);
+        }
     }
     started() {
         // this.setupScene();

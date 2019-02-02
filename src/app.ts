@@ -31,6 +31,8 @@ import { resolve } from 'path';
 import Server from './server'
 
 export default class Demo {
+    private baseURLTranslated: String = '';
+
     private isCesiumManWalking: Boolean = false;
     private skullActor: Actor = null;
     private sphereActors: Array<ForwardPromise<Actor>> = [];
@@ -45,6 +47,14 @@ export default class Demo {
 
         this.userJoined = this.userJoined.bind(this);
         this.context.onUserJoined(this.userJoined);
+
+        if (this.context.sessionId == 'local') {
+            this.baseURLTranslated = 'http://127.0.0.1:3901';
+        } else if (this.context.sessionId == 'production') {
+            this.baseURLTranslated = 'https://altspacevr-demo.herokuapp.com';
+        } else {
+            console.log('session id is invalid. session id = ' + this.context.sessionId);
+        }
     }
 
     private started() {
