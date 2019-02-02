@@ -157,7 +157,7 @@ export default class Demo {
     private async setupCesiumMan()
     {
         const cesiumManActor = await Actor.CreateFromGltf(this.context, {
-            resourceUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb',
+            resourceUrl: 'https://rawcdn.githack.com/AndreMuis/altspacevr-demo/9aaefea676e1fe7545188052cc0dd1e9170d056a/public/CesiumMan.glb',
             // resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
