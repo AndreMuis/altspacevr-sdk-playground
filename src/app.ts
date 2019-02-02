@@ -11,7 +11,6 @@ import {
     ButtonBehavior,
     Context,
     DegreesToRadians,
-    ForwardPromise,
     LookAtMode,
     PrimitiveShape,
     Quaternion,
@@ -27,15 +26,42 @@ import {
 import * as GltfGen from '@microsoft/gltf-gen';
 
 import { resolve } from 'path';
-
 import Server from './server'
 
+import { ENAMETOOLONG } from 'constants';
+import { deflateSync } from 'zlib';
+
+enum Environment {
+    Unknown,
+    Local,
+    Production
+}
+
 export default class Demo {
-    private baseURLTranslated: String = '';
+    private environment: Environment = Environment.Unknown;
+    
+    get baseURLTranslated(): String {
+        switch(this.environment) { 
+            case Environment.Unknown: { 
+                return ""; 
+                break; 
+             } 
+             case Environment.Local: { 
+               return 'http://127.0.0.1:3901'; 
+               break; 
+            } 
+            case Environment.Production: { 
+               return 'http://altspacevr-demo.herokuapp.com';
+               break; 
+            } 
+         } 
+    }
+
+    private firstUser: User = null;
 
     private isCesiumManWalking: Boolean = false;
     private skullActor: Actor = null;
-    private sphereActors: Array<ForwardPromise<Actor>> = [];
+    private sphereActors: Array<Actor> = [];
     private frogActor: Actor = null;
     private videoPlayerManager: VideoPlayerManager;
     private logActor: Actor = null;
@@ -49,30 +75,35 @@ export default class Demo {
         this.context.onUserJoined(this.userJoined);
 
         if (this.context.sessionId == 'local') {
-            this.baseURLTranslated = 'http://127.0.0.1:3901';
+            this.environment = Environment.Local;
         } else if (this.context.sessionId == 'production') {
-            this.baseURLTranslated = 'http://altspacevr-demo.herokuapp.com';
+            this.environment = Environment.Production;
         } else {
+            this.environment = Environment.Unknown;
             console.log('session id is invalid. session id = ' + this.context.sessionId);
         }
     }
 
     private async started() {
-        this.setupScene();
+        await this.setupScene();
         await this.setupCesiumMan();
-        this.setupSkull();
-        this.setupSpheres();
-        // this.setupGlTF();
-        this.setupTeleporter();
-        this.setupVideoPlayer();
+        await this.setupSkull();
+        await this.setupSpheres();
+        await this.setupGlTF();
+        await this.setupTeleporter();
+        await this.setupVideoPlayer();
+
+        if (this.firstUser != null) {
+            this.skullActor.lookAt(this.firstUser, LookAtMode.TargetXY);
+        }
 
         // setInterval(this.moveFrog, 1000);
     }
 
     private userJoined = async (user: User) => {
-        this.addToLog(user.name);
+        this.firstUser = user;
 
-        this.skullActor.lookAt(user, LookAtMode.TargetXY);
+        this.addToLog(user.name);
     }
 
     private moveFrog() {
@@ -81,10 +112,13 @@ export default class Demo {
 
     private addToLog(message: String) {
         console.log(message);
-        this.logActor.text.contents = message + "\n" + this.logActor.text.contents;
+
+        if (this.logActor != null) { 
+            this.logActor.text.contents = message + "\n" + this.logActor.text.contents;
+        }
     }
 
-    public setupScene()
+    public async setupScene()
     {
         // Title
         Actor.CreateEmpty(this.context, {
@@ -133,7 +167,7 @@ export default class Demo {
         });
 
         // Frog
-        const frogActorPromise = Actor.CreateFromLibrary(this.context, {
+        this.frogActor = await Actor.CreateFromLibrary(this.context, {
             resourceId: "986410508452102645",
             actor: {
                 name: 'Frog',
@@ -143,10 +177,9 @@ export default class Demo {
                 }
             }
         });
-        this.frogActor = frogActorPromise.value;
 
         // Log
-        const logActorPromise = Actor.CreateEmpty(this.context, {
+        this.logActor = await Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 transform: {
@@ -161,7 +194,6 @@ export default class Demo {
                 }
             }
         });
-        this.logActor = logActorPromise.value;
     }
 
     private async setupCesiumMan()
@@ -175,7 +207,7 @@ export default class Demo {
             }
         });
 
-        const boxActorPromise = Actor.CreatePrimitive(this.context, {
+        const boxActor = await Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: PrimitiveShape.Box,
                 dimensions: { x: 1.5, y: 0.25, z: 0.01 }
@@ -188,9 +220,8 @@ export default class Demo {
                 }
             }
         });
-        const boxActor = boxActorPromise.value;
 
-        const textActorPromise = Actor.CreateEmpty(this.context, {
+        const textActor = await Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: boxActor.id,
@@ -205,14 +236,13 @@ export default class Demo {
                 }
             }
         });
-        const textActor = textActorPromise.value;
 
-        boxActor.createAnimation('expand', {
+        await boxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
 
-        boxActor.createAnimation('contract', {
+        await boxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
@@ -249,9 +279,9 @@ export default class Demo {
         });
     }
 
-    private setupSkull()
+    private async setupSkull()
     {
-        const skullParentActorPromise = Actor.CreateEmpty(this.context, {
+        const skullParentActor = await Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Skull Parent',
                 transform: {
@@ -259,9 +289,8 @@ export default class Demo {
                 }
             }
         });
-        const skullParentActor = skullParentActorPromise.value;
 
-        skullParentActor.createAnimation('spin', {
+        await skullParentActor.createAnimation('spin', {
             wrapMode: AnimationWrapMode.Loop,
             keyframes: this.generateSpinKeyframes(10, Vector3.Up()),
             events: []
@@ -269,7 +298,7 @@ export default class Demo {
         
         skullParentActor.enableAnimation("spin");
     
-        const skullActorPromise = Actor.CreateFromLibrary(this.context, {
+        this.skullActor = await Actor.CreateFromLibrary(this.context, {
             resourceId: "1050090527044666141",
             actor: {
                 name: 'Skull',
@@ -281,14 +310,13 @@ export default class Demo {
                 }
             }
         });
-        this.skullActor = skullActorPromise.value; 
     }
 
-    public setupSpheres() {
+    public async setupSpheres() {
         this.setupSphereActors()
 
         // Drop Button
-        const dropBoxActorPromise = Actor.CreatePrimitive(this.context, {
+        const dropBoxActor = await Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: PrimitiveShape.Box,
                 dimensions: { x: 0.6, y: 0.25, z: 0.01 }
@@ -301,9 +329,8 @@ export default class Demo {
                 }
             }
         });
-        const dropBoxActor = dropBoxActorPromise.value;
 
-        const dropTextActorPromise = Actor.CreateEmpty(this.context, {
+        const dropTextActor = await Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: dropBoxActor.id,
@@ -318,14 +345,13 @@ export default class Demo {
                 }
             }
         });
-        const dropTextActor = dropTextActorPromise.value;
 
-        dropBoxActor.createAnimation('expand', {
+        await dropBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
 
-        dropBoxActor.createAnimation('contract', {
+        await dropBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
@@ -343,7 +369,7 @@ export default class Demo {
         dropButtonBehavior.onClick('pressed', (userId: string) => {
             dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
 
-            this.sphereActors.forEach(actor => actor.value.rigidBody.useGravity = true);
+            this.sphereActors.forEach(actor => actor.rigidBody.useGravity = true);
         });
 
         dropButtonBehavior.onClick('released', (userId: string) => {
@@ -351,7 +377,7 @@ export default class Demo {
         });
 
         // Reset Button
-        const resetBoxActorPromise = Actor.CreatePrimitive(this.context, {
+        const resetBoxActor = await Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: PrimitiveShape.Box,
                 dimensions: { x: 0.7, y: 0.25, z: 0.01 }
@@ -364,9 +390,8 @@ export default class Demo {
                 }
             }
         });
-        const resetBoxActor = resetBoxActorPromise.value;
 
-        const resetTextActorPromise = Actor.CreateEmpty(this.context, {
+        const resetTextActor = await Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: resetBoxActor.id,
@@ -381,14 +406,13 @@ export default class Demo {
                 }
             }
         });
-        const resetTextActor = resetTextActorPromise.value;
 
-        resetBoxActor.createAnimation('expand', {
+        await resetBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
 
-        resetBoxActor.createAnimation('contract', {
+        await resetBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
@@ -406,7 +430,7 @@ export default class Demo {
         resetButtonBehavior.onClick('pressed', (userId: string) => {
             resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
 
-            this.sphereActors.forEach(actor => actor.value.destroy());
+            this.sphereActors.forEach(actor => actor.destroy());
 
             this.setupSphereActors();
         });
@@ -418,7 +442,6 @@ export default class Demo {
 
     private async setupGlTF()
     {
-        /*
         // Beach Ball
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
@@ -445,7 +468,6 @@ export default class Demo {
                 }
             }
         });
-        */
 
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
@@ -479,7 +501,7 @@ export default class Demo {
             })]
         );
 
-        Actor.CreateFromGltf(this.context, {
+        await Actor.CreateFromGltf(this.context, {
             resourceUrl: Server.registerStaticBuffer('triangles.glb', factory1.generateGLTF()),
             actor: {
                 transform: {
@@ -500,7 +522,7 @@ export default class Demo {
 
         const factory2 = GltfGen.GltfFactory.FromSinglePrimitive(prim).generateGLTF();
     
-        Actor.CreateFromGltf(this.context, {
+        await Actor.CreateFromGltf(this.context, {
             resourceUrl: Server.registerStaticBuffer('triangle.glb', factory2),
             actor: {
                 transform: {
@@ -510,8 +532,8 @@ export default class Demo {
         });
     }
 
-    private setupTeleporter() {
-        const teleporterPromise = Actor.CreateFromLibrary(this.context, {
+    private async setupTeleporter() {
+        const teleporterActor = await Actor.CreateFromLibrary(this.context, {
             resourceId: "Teleporter: 1133592462367917034",
             actor: {
                 name: 'teleporter',
@@ -521,10 +543,10 @@ export default class Demo {
             }
         });
 
-        const textActorPromise = Actor.CreateEmpty(this.context, {
+        await Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'teleporter text',
-                parentId: teleporterPromise.value.id,
+                parentId: teleporterActor.id,
                 transform: {
                     position: { x: 0, y: 2, z: 0 }
                 },
@@ -557,14 +579,14 @@ export default class Demo {
             0.0);
     }
 
-    private setupSphereActors()
+    private async setupSphereActors()
     {
         this.sphereActors = [];
 
         for (let x = -12; x <= -8; x = x + 2) {
             for (let y = 5; y <= 15; y = y + 1) {
                 for (let z = 8; z <= 13; z = z + 2) {
-                    const actor = Actor.CreatePrimitive(this.context, {
+                    const sphereActor = await Actor.CreatePrimitive(this.context, {
                         definition: {
                             shape: PrimitiveShape.Sphere,
                             radius: 0.4
@@ -580,16 +602,15 @@ export default class Demo {
                         }
                     });
 
-                    this.sphereActors.push(actor);
+                    this.sphereActors.push(sphereActor);
                 }
             }
         }
 
-        this.sphereActors.forEach(actor =>
-            actor.value.enableRigidBody({
-                useGravity: false
-            })
-        );
+        for(const actor of this.sphereActors)
+        {
+            await actor.enableRigidBody( { useGravity: false } )
+        }
     }
 
     private generateSpinKeyframes(duration: number, axis: Vector3): AnimationKeyframe[] {

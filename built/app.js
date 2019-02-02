@@ -19,19 +19,26 @@ const mixed_reality_extension_sdk_1 = require("@microsoft/mixed-reality-extensio
 const mixed_reality_extension_altspacevr_extras_1 = require("@microsoft/mixed-reality-extension-altspacevr-extras");
 const GltfGen = __importStar(require("@microsoft/gltf-gen"));
 const server_1 = __importDefault(require("./server"));
+var Environment;
+(function (Environment) {
+    Environment[Environment["Unknown"] = 0] = "Unknown";
+    Environment[Environment["Local"] = 1] = "Local";
+    Environment[Environment["Production"] = 2] = "Production";
+})(Environment || (Environment = {}));
 class Demo {
     constructor(context, baseUrl) {
         this.context = context;
         this.baseUrl = baseUrl;
-        this.baseURLTranslated = '';
+        this.environment = Environment.Unknown;
+        this.firstUser = null;
         this.isCesiumManWalking = false;
         this.skullActor = null;
         this.sphereActors = [];
         this.frogActor = null;
         this.logActor = null;
         this.userJoined = async (user) => {
+            this.firstUser = user;
             this.addToLog(user.name);
-            this.skullActor.lookAt(user, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
         };
         this.expandAnimationData = [{
                 time: 0,
@@ -52,23 +59,43 @@ class Demo {
         this.userJoined = this.userJoined.bind(this);
         this.context.onUserJoined(this.userJoined);
         if (this.context.sessionId == 'local') {
-            this.baseURLTranslated = 'http://127.0.0.1:3901';
+            this.environment = Environment.Local;
         }
         else if (this.context.sessionId == 'production') {
-            this.baseURLTranslated = 'http://altspacevr-demo.herokuapp.com';
+            this.environment = Environment.Production;
         }
         else {
+            this.environment = Environment.Unknown;
             console.log('session id is invalid. session id = ' + this.context.sessionId);
         }
     }
+    get baseURLTranslated() {
+        switch (this.environment) {
+            case Environment.Unknown: {
+                return "";
+                break;
+            }
+            case Environment.Local: {
+                return 'http://127.0.0.1:3901';
+                break;
+            }
+            case Environment.Production: {
+                return 'http://altspacevr-demo.herokuapp.com';
+                break;
+            }
+        }
+    }
     async started() {
-        this.setupScene();
+        await this.setupScene();
         await this.setupCesiumMan();
-        this.setupSkull();
-        this.setupSpheres();
-        // this.setupGlTF();
-        this.setupTeleporter();
-        this.setupVideoPlayer();
+        await this.setupSkull();
+        await this.setupSpheres();
+        await this.setupGlTF();
+        await this.setupTeleporter();
+        await this.setupVideoPlayer();
+        if (this.firstUser != null) {
+            this.skullActor.lookAt(this.firstUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
+        }
         // setInterval(this.moveFrog, 1000);
     }
     moveFrog() {
@@ -76,9 +103,11 @@ class Demo {
     }
     addToLog(message) {
         console.log(message);
-        this.logActor.text.contents = message + "\n" + this.logActor.text.contents;
+        if (this.logActor != null) {
+            this.logActor.text.contents = message + "\n" + this.logActor.text.contents;
+        }
     }
-    setupScene() {
+    async setupScene() {
         // Title
         mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
@@ -123,7 +152,7 @@ class Demo {
             }
         });
         // Frog
-        const frogActorPromise = mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
+        this.frogActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
             resourceId: "986410508452102645",
             actor: {
                 name: 'Frog',
@@ -133,9 +162,8 @@ class Demo {
                 }
             }
         });
-        this.frogActor = frogActorPromise.value;
         // Log
-        const logActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        this.logActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 transform: {
@@ -150,7 +178,6 @@ class Demo {
                 }
             }
         });
-        this.logActor = logActorPromise.value;
     }
     async setupCesiumMan() {
         const cesiumManActor = await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
@@ -161,7 +188,7 @@ class Demo {
                 }
             }
         });
-        const boxActorPromise = mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+        const boxActor = await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: mixed_reality_extension_sdk_1.PrimitiveShape.Box,
                 dimensions: { x: 1.5, y: 0.25, z: 0.01 }
@@ -174,8 +201,7 @@ class Demo {
                 }
             }
         });
-        const boxActor = boxActorPromise.value;
-        const textActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const textActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: boxActor.id,
@@ -190,12 +216,11 @@ class Demo {
                 }
             }
         });
-        const textActor = textActorPromise.value;
-        boxActor.createAnimation('expand', {
+        await boxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
-        boxActor.createAnimation('contract', {
+        await boxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
@@ -223,8 +248,8 @@ class Demo {
             textActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
         });
     }
-    setupSkull() {
-        const skullParentActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+    async setupSkull() {
+        const skullParentActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Skull Parent',
                 transform: {
@@ -232,14 +257,13 @@ class Demo {
                 }
             }
         });
-        const skullParentActor = skullParentActorPromise.value;
-        skullParentActor.createAnimation('spin', {
+        await skullParentActor.createAnimation('spin', {
             wrapMode: mixed_reality_extension_sdk_1.AnimationWrapMode.Loop,
             keyframes: this.generateSpinKeyframes(10, mixed_reality_extension_sdk_1.Vector3.Up()),
             events: []
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
         skullParentActor.enableAnimation("spin");
-        const skullActorPromise = mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
+        this.skullActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
             resourceId: "1050090527044666141",
             actor: {
                 name: 'Skull',
@@ -251,12 +275,11 @@ class Demo {
                 }
             }
         });
-        this.skullActor = skullActorPromise.value;
     }
-    setupSpheres() {
+    async setupSpheres() {
         this.setupSphereActors();
         // Drop Button
-        const dropBoxActorPromise = mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+        const dropBoxActor = await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: mixed_reality_extension_sdk_1.PrimitiveShape.Box,
                 dimensions: { x: 0.6, y: 0.25, z: 0.01 }
@@ -269,8 +292,7 @@ class Demo {
                 }
             }
         });
-        const dropBoxActor = dropBoxActorPromise.value;
-        const dropTextActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const dropTextActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: dropBoxActor.id,
@@ -285,12 +307,11 @@ class Demo {
                 }
             }
         });
-        const dropTextActor = dropTextActorPromise.value;
-        dropBoxActor.createAnimation('expand', {
+        await dropBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
-        dropBoxActor.createAnimation('contract', {
+        await dropBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
@@ -303,13 +324,13 @@ class Demo {
         });
         dropButtonBehavior.onClick('pressed', (userId) => {
             dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
-            this.sphereActors.forEach(actor => actor.value.rigidBody.useGravity = true);
+            this.sphereActors.forEach(actor => actor.rigidBody.useGravity = true);
         });
         dropButtonBehavior.onClick('released', (userId) => {
             dropTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
         });
         // Reset Button
-        const resetBoxActorPromise = mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+        const resetBoxActor = await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: mixed_reality_extension_sdk_1.PrimitiveShape.Box,
                 dimensions: { x: 0.7, y: 0.25, z: 0.01 }
@@ -322,8 +343,7 @@ class Demo {
                 }
             }
         });
-        const resetBoxActor = resetBoxActorPromise.value;
-        const resetTextActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const resetTextActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: resetBoxActor.id,
@@ -338,12 +358,11 @@ class Demo {
                 }
             }
         });
-        const resetTextActor = resetTextActorPromise.value;
-        resetBoxActor.createAnimation('expand', {
+        await resetBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
-        resetBoxActor.createAnimation('contract', {
+        await resetBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
@@ -356,7 +375,7 @@ class Demo {
         });
         resetButtonBehavior.onClick('pressed', (userId) => {
             resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
-            this.sphereActors.forEach(actor => actor.value.destroy());
+            this.sphereActors.forEach(actor => actor.destroy());
             this.setupSphereActors();
         });
         resetButtonBehavior.onClick('released', (userId) => {
@@ -364,7 +383,6 @@ class Demo {
         });
     }
     async setupGlTF() {
-        /*
         // Beach Ball
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
@@ -374,14 +392,11 @@ class Demo {
             })
         });
         const gltfFactory = new GltfGen.GltfFactory(null, null, [material]);
-
-        const blobURL = Server.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
-
+        const blobURL = server_1.default.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
         const mats = await this.context.assetManager.loadGltf('beachball', blobURL);
-
-        await Actor.CreatePrimitive(this.context, {
+        await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: PrimitiveShape.Sphere,
+                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
                 radius: 1
             },
             actor: {
@@ -391,7 +406,6 @@ class Demo {
                 }
             }
         });
-        */
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
             vertices: [
@@ -419,7 +433,7 @@ class Demo {
                     })
                 ]
             })]);
-        mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
+        await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
             resourceUrl: server_1.default.registerStaticBuffer('triangles.glb', factory1.generateGLTF()),
             actor: {
                 transform: {
@@ -437,7 +451,7 @@ class Demo {
             triangles: [0, 1, 2]
         });
         const factory2 = GltfGen.GltfFactory.FromSinglePrimitive(prim).generateGLTF();
-        mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
+        await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
             resourceUrl: server_1.default.registerStaticBuffer('triangle.glb', factory2),
             actor: {
                 transform: {
@@ -446,8 +460,8 @@ class Demo {
             }
         });
     }
-    setupTeleporter() {
-        const teleporterPromise = mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
+    async setupTeleporter() {
+        const teleporterActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
             resourceId: "Teleporter: 1133592462367917034",
             actor: {
                 name: 'teleporter',
@@ -456,10 +470,10 @@ class Demo {
                 }
             }
         });
-        const textActorPromise = mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'teleporter text',
-                parentId: teleporterPromise.value.id,
+                parentId: teleporterActor.id,
                 transform: {
                     position: { x: 0, y: 2, z: 0 }
                 },
@@ -485,12 +499,12 @@ class Demo {
         });
         this.videoPlayerManager.play(videoPlayer.id, 'https://www.youtube.com/watch?v=L_LUpnjgPso&t=33s', 0.0);
     }
-    setupSphereActors() {
+    async setupSphereActors() {
         this.sphereActors = [];
         for (let x = -12; x <= -8; x = x + 2) {
             for (let y = 5; y <= 15; y = y + 1) {
                 for (let z = 8; z <= 13; z = z + 2) {
-                    const actor = mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+                    const sphereActor = await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
                         definition: {
                             shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
                             radius: 0.4
@@ -506,13 +520,13 @@ class Demo {
                             }
                         }
                     });
-                    this.sphereActors.push(actor);
+                    this.sphereActors.push(sphereActor);
                 }
             }
         }
-        this.sphereActors.forEach(actor => actor.value.enableRigidBody({
-            useGravity: false
-        }));
+        for (const actor of this.sphereActors) {
+            await actor.enableRigidBody({ useGravity: false });
+        }
     }
     generateSpinKeyframes(duration, axis) {
         return [{
