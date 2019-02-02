@@ -155,8 +155,8 @@ class Demo {
     async setupCesiumMan() {
         const cesiumManActor = await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
             // resourceUrl: 'https://rawcdn.githack.com/AndreMuis/altspacevr-demo/9aaefea676e1fe7545188052cc0dd1e9170d056a/public/CesiumMan.glb',
-            resourceUrl: 'https://altspacevr-demo.herokuapp.com/CesiumMan.glb',
             // resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
+            resourceUrl: `${this.baseURLTranslated}/CesiumMan.glb`,
             actor: {
                 transform: {
                     position: { x: 0, y: -1, z: 5 },
