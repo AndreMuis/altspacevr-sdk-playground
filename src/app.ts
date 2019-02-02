@@ -89,7 +89,11 @@ export default class Demo {
         await this.setupCesiumMan();
         await this.setupSkull();
         await this.setupSpheres();
-        await this.setupGlTF();
+
+        if (this.environment != Environment.Production) {
+            await this.setupGlTF();
+        }
+
         await this.setupTeleporter();
         await this.setupVideoPlayer();
 
@@ -609,7 +613,7 @@ export default class Demo {
 
         for(const actor of this.sphereActors)
         {
-            await actor.enableRigidBody( { useGravity: false } )
+            await actor.enableRigidBody( { useGravity: false } );
         }
     }
 

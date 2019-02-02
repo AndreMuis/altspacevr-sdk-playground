@@ -90,7 +90,9 @@ class Demo {
         await this.setupCesiumMan();
         await this.setupSkull();
         await this.setupSpheres();
-        await this.setupGlTF();
+        if (this.environment != Environment.Production) {
+            await this.setupGlTF();
+        }
         await this.setupTeleporter();
         await this.setupVideoPlayer();
         if (this.firstUser != null) {
