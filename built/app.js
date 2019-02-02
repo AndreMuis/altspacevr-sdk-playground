@@ -144,7 +144,8 @@ class Demo {
     }
     async setupCesiumMan() {
         const cesiumManActor = await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
-            resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
+            resourceUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb',
+            // resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
                     position: { x: 0, y: -1, z: 5 },
