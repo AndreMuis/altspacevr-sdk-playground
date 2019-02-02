@@ -364,6 +364,7 @@ class Demo {
         });
     }
     async setupGlTF() {
+        /*
         // Beach Ball
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
@@ -373,11 +374,14 @@ class Demo {
             })
         });
         const gltfFactory = new GltfGen.GltfFactory(null, null, [material]);
-        const blobURL = server_1.default.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
+
+        const blobURL = Server.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
+
         const mats = await this.context.assetManager.loadGltf('beachball', blobURL);
-        await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+
+        await Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
+                shape: PrimitiveShape.Sphere,
                 radius: 1
             },
             actor: {
@@ -387,6 +391,7 @@ class Demo {
                 }
             }
         });
+        */
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
             vertices: [

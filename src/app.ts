@@ -418,6 +418,7 @@ export default class Demo {
 
     private async setupGlTF()
     {
+        /*
         // Beach Ball
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
@@ -444,7 +445,8 @@ export default class Demo {
                 }
             }
         });
-
+        */
+       
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
             vertices: [
