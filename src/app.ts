@@ -58,6 +58,7 @@ export default class Demo {
     private firstUser: User = null;
 
     private isCesiumManWalking: Boolean = false;
+    private cabinActor: Actor = null;
     private skullActor: Actor = null;
     private sphereActorPromises: Array<ForwardPromise<Actor>> = [];
     private videoPlayerManager: VideoPlayerManager;
@@ -153,7 +154,7 @@ export default class Demo {
         });
 
         // Cabin
-        Actor.CreateFromLibrary(this.context, {
+        this.cabinActor = await Actor.CreateFromLibrary(this.context, {
             resourceId: "993646440251130011",
             actor: {
                 name: 'Cabin',
@@ -271,8 +272,9 @@ export default class Demo {
         const skullParentActor = await Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Skull Parent',
+                parentId: this.cabinActor.id,
                 transform: {
-                    position: { x: 20, y: 0, z: 0 }
+                    position: { x: 0, y: 0, z: 0 }
                 }
             }
         });

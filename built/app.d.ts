@@ -6,6 +6,7 @@ export default class Demo {
     readonly baseURLTranslated: String;
     private firstUser;
     private isCesiumManWalking;
+    private cabinActor;
     private skullActor;
     private sphereActorPromises;
     private videoPlayerManager;

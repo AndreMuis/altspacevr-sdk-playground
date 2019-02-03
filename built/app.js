@@ -29,6 +29,7 @@ class Demo {
         this.environment = Environment.Unknown;
         this.firstUser = null;
         this.isCesiumManWalking = false;
+        this.cabinActor = null;
         this.skullActor = null;
         this.sphereActorPromises = [];
         this.logActor = null;
@@ -137,7 +138,7 @@ class Demo {
             }
         });
         // Cabin
-        mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
+        this.cabinActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
             resourceId: "993646440251130011",
             actor: {
                 name: 'Cabin',
@@ -238,8 +239,9 @@ class Demo {
         const skullParentActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Skull Parent',
+                parentId: this.cabinActor.id,
                 transform: {
-                    position: { x: 20, y: 0, z: 0 }
+                    position: { x: 0, y: 0, z: 0 }
                 }
             }
         });
