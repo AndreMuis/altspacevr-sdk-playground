@@ -1,6 +1,3 @@
-// have to use await for Cesium Man
-// pressed event called twice
-// no animations on local
 // url: for gtlf doesn't work
 // GltfGen crashes on prod (triangles)
 
@@ -63,7 +60,6 @@ export default class Demo {
     private isCesiumManWalking: Boolean = false;
     private skullActor: Actor = null;
     private sphereActorPromises: Array<ForwardPromise<Actor>> = [];
-    private frogActor: Actor = null;
     private videoPlayerManager: VideoPlayerManager;
     private logActor: Actor = null;
 
@@ -101,8 +97,6 @@ export default class Demo {
         if (this.firstUser != null) {
             this.skullActor.lookAt(this.firstUser, LookAtMode.TargetXY);
         }
-
-        // setInterval(this.moveFrog, 1000);
     }
 
     private userJoined = async (user: User) => {
@@ -113,10 +107,6 @@ export default class Demo {
         }
 
         this.addToLog(user.name);
-    }
-
-    private moveFrog() {
-        console.log("tick");
     }
 
     private addToLog(message: String) {
@@ -171,18 +161,6 @@ export default class Demo {
                     position: { x: 18, y: -1, z: 0.0 },
                     rotation: Quaternion.RotationAxis(Vector3.Up(), -90 * DegreesToRadians),
                     scale: { x: 0.8, y: 0.8, z: 0.8}
-                }
-            }
-        });
-
-        // Frog
-        this.frogActor = await Actor.CreateFromLibrary(this.context, {
-            resourceId: "986410508452102645",
-            actor: {
-                name: 'Frog',
-                transform: {
-                    position: { x: 0, y: -1.3, z: 0 },
-                    scale: { x: 2, y: 2, z: 2}
                 }
             }
         });
@@ -308,14 +286,13 @@ export default class Demo {
         skullParentActor.enableAnimation("spin");
     
         this.skullActor = await Actor.CreateFromLibrary(this.context, {
-            resourceId: "1050090527044666141",
+            resourceId: "986410464940392936", // 1050090527044666141
             actor: {
-                name: 'Skull',
+                name: 'frog',
                 parentId: skullParentActor.id,
                 transform: {
                     position: { x: 0, y: 6, z: 9 },
-                    rotation: Quaternion.RotationAxis(Vector3.Up(), 180 * DegreesToRadians),
-                    scale: { x: 2, y: 2, z: 2}
+                    scale: { x: 7, y: 7, z: 7}
                 }
             }
         });

@@ -8,13 +8,11 @@ export default class Demo {
     private isCesiumManWalking;
     private skullActor;
     private sphereActorPromises;
-    private frogActor;
     private videoPlayerManager;
     private logActor;
     constructor(context: Context, baseUrl: string);
     private started;
     private userJoined;
-    private moveFrog;
     private addToLog;
     setupScene(): Promise<void>;
     private setupCesiumMan;

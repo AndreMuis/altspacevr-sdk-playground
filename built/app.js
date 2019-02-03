@@ -1,7 +1,4 @@
 "use strict";
-// have to use await for Cesium Man
-// pressed event called twice
-// no animations on local
 // url: for gtlf doesn't work
 // GltfGen crashes on prod (triangles)
 var __importStar = (this && this.__importStar) || function (mod) {
@@ -34,7 +31,6 @@ class Demo {
         this.isCesiumManWalking = false;
         this.skullActor = null;
         this.sphereActorPromises = [];
-        this.frogActor = null;
         this.logActor = null;
         this.userJoined = async (user) => {
             this.firstUser = user;
@@ -101,10 +97,6 @@ class Demo {
         if (this.firstUser != null) {
             this.skullActor.lookAt(this.firstUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
         }
-        // setInterval(this.moveFrog, 1000);
-    }
-    moveFrog() {
-        console.log("tick");
     }
     addToLog(message) {
         console.log(message);
@@ -153,17 +145,6 @@ class Demo {
                     position: { x: 18, y: -1, z: 0.0 },
                     rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -90 * mixed_reality_extension_sdk_1.DegreesToRadians),
                     scale: { x: 0.8, y: 0.8, z: 0.8 }
-                }
-            }
-        });
-        // Frog
-        this.frogActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
-            resourceId: "986410508452102645",
-            actor: {
-                name: 'Frog',
-                transform: {
-                    position: { x: 0, y: -1.3, z: 0 },
-                    scale: { x: 2, y: 2, z: 2 }
                 }
             }
         });
@@ -269,14 +250,13 @@ class Demo {
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
         skullParentActor.enableAnimation("spin");
         this.skullActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
-            resourceId: "1050090527044666141",
+            resourceId: "986410464940392936",
             actor: {
-                name: 'Skull',
+                name: 'frog',
                 parentId: skullParentActor.id,
                 transform: {
                     position: { x: 0, y: 6, z: 9 },
-                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), 180 * mixed_reality_extension_sdk_1.DegreesToRadians),
-                    scale: { x: 2, y: 2, z: 2 }
+                    scale: { x: 7, y: 7, z: 7 }
                 }
             }
         });
