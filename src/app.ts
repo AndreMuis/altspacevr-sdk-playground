@@ -554,7 +554,7 @@ export default class Demo {
             actor: {
                 name: 'video player',
                 transform: {
-                    position: { x: 0, y: 1, z: -8 },
+                    position: { x: 0, y: 0.5, z: -6 },
                     rotation: Quaternion.RotationAxis(Vector3.Up(), 180 * DegreesToRadians),
                     scale: { x: 2, y: 2, z: 2 }
                 },
