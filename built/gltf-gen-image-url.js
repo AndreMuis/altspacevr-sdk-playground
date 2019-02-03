@@ -27,7 +27,8 @@ class Demo {
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/beach-ball.png`
+                    // uri: `${this.baseUrl}/beach-ball.png` 
+                    uri: `http://altspacevr-demo.herokuapp.com/beach-ball.png`
                 })
             })
         });
