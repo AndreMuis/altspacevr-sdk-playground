@@ -7,7 +7,7 @@ export default class Demo {
     private firstUser;
     private isCesiumManWalking;
     private skullActor;
-    private sphereActors;
+    private sphereActorPromises;
     private frogActor;
     private videoPlayerManager;
     private logActor;

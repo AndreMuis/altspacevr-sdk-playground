@@ -33,11 +33,14 @@ class Demo {
         this.firstUser = null;
         this.isCesiumManWalking = false;
         this.skullActor = null;
-        this.sphereActors = [];
+        this.sphereActorPromises = [];
         this.frogActor = null;
         this.logActor = null;
         this.userJoined = async (user) => {
             this.firstUser = user;
+            if (this.firstUser != null) {
+                this.skullActor.lookAt(this.firstUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
+            }
             this.addToLog(user.name);
         };
         this.expandAnimationData = [{
@@ -326,7 +329,7 @@ class Demo {
         });
         dropButtonBehavior.onClick('pressed', (userId) => {
             dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
-            this.sphereActors.forEach(actor => actor.rigidBody.useGravity = true);
+            this.sphereActorPromises.forEach(promise => promise.value.rigidBody.useGravity = true);
         });
         dropButtonBehavior.onClick('released', (userId) => {
             dropTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
@@ -377,7 +380,7 @@ class Demo {
         });
         resetButtonBehavior.onClick('pressed', (userId) => {
             resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
-            this.sphereActors.forEach(actor => actor.destroy());
+            this.sphereActorPromises.forEach(promise => promise.value.destroy());
             this.setupSphereActors();
         });
         resetButtonBehavior.onClick('released', (userId) => {
@@ -493,20 +496,20 @@ class Demo {
             actor: {
                 name: 'video player',
                 transform: {
-                    position: { x: 0, y: 1, z: -7 },
+                    position: { x: 0, y: 1, z: -9 },
                     rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), 180 * mixed_reality_extension_sdk_1.DegreesToRadians),
-                    scale: { x: 5, y: 5, z: 5 }
+                    scale: { x: 4, y: 4, z: 4 }
                 },
             }
         });
         this.videoPlayerManager.play(videoPlayer.id, 'https://www.youtube.com/watch?v=L_LUpnjgPso&t=33s', 0.0);
     }
     async setupSphereActors() {
-        this.sphereActors = [];
+        this.sphereActorPromises = [];
         for (let x = -12; x <= -8; x = x + 2) {
             for (let y = 5; y <= 15; y = y + 1) {
                 for (let z = 8; z <= 13; z = z + 2) {
-                    const sphereActor = await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+                    const sphereActorPromise = mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
                         definition: {
                             shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
                             radius: 0.4
@@ -522,12 +525,12 @@ class Demo {
                             }
                         }
                     });
-                    this.sphereActors.push(sphereActor);
+                    this.sphereActorPromises.push(sphereActorPromise);
                 }
             }
         }
-        for (const actor of this.sphereActors) {
-            await actor.enableRigidBody({ useGravity: false });
+        for (const promise of this.sphereActorPromises) {
+            promise.value.enableRigidBody({ useGravity: false });
         }
     }
     generateSpinKeyframes(duration, axis) {

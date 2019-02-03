@@ -11,6 +11,7 @@ import {
     ButtonBehavior,
     Context,
     DegreesToRadians,
+    ForwardPromise,
     LookAtMode,
     PrimitiveShape,
     Quaternion,
@@ -61,7 +62,7 @@ export default class Demo {
 
     private isCesiumManWalking: Boolean = false;
     private skullActor: Actor = null;
-    private sphereActors: Array<Actor> = [];
+    private sphereActorPromises: Array<ForwardPromise<Actor>> = [];
     private frogActor: Actor = null;
     private videoPlayerManager: VideoPlayerManager;
     private logActor: Actor = null;
@@ -106,6 +107,10 @@ export default class Demo {
 
     private userJoined = async (user: User) => {
         this.firstUser = user;
+
+        if (this.firstUser != null) {
+            this.skullActor.lookAt(this.firstUser, LookAtMode.TargetXY);
+        }
 
         this.addToLog(user.name);
     }
@@ -373,7 +378,7 @@ export default class Demo {
         dropButtonBehavior.onClick('pressed', (userId: string) => {
             dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
 
-            this.sphereActors.forEach(actor => actor.rigidBody.useGravity = true);
+            this.sphereActorPromises.forEach(promise => promise.value.rigidBody.useGravity = true);
         });
 
         dropButtonBehavior.onClick('released', (userId: string) => {
@@ -434,7 +439,7 @@ export default class Demo {
         resetButtonBehavior.onClick('pressed', (userId: string) => {
             resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
 
-            this.sphereActors.forEach(actor => actor.destroy());
+            this.sphereActorPromises.forEach(promise => promise.value.destroy());
 
             this.setupSphereActors();
         });
@@ -570,9 +575,9 @@ export default class Demo {
             actor: {
                 name: 'video player',
                 transform: {
-                    position: { x: 0, y: 1, z: -7 },
+                    position: { x: 0, y: 1, z: -9 },
                     rotation: Quaternion.RotationAxis(Vector3.Up(), 180 * DegreesToRadians),
-                    scale: { x: 5, y: 5, z: 5 }
+                    scale: { x: 4, y: 4, z: 4 }
                 },
             }
         });
@@ -585,12 +590,12 @@ export default class Demo {
 
     private async setupSphereActors()
     {
-        this.sphereActors = [];
+        this.sphereActorPromises = [];
 
         for (let x = -12; x <= -8; x = x + 2) {
             for (let y = 5; y <= 15; y = y + 1) {
                 for (let z = 8; z <= 13; z = z + 2) {
-                    const sphereActor = await Actor.CreatePrimitive(this.context, {
+                    const sphereActorPromise = Actor.CreatePrimitive(this.context, {
                         definition: {
                             shape: PrimitiveShape.Sphere,
                             radius: 0.4
@@ -606,14 +611,14 @@ export default class Demo {
                         }
                     });
 
-                    this.sphereActors.push(sphereActor);
+                    this.sphereActorPromises.push(sphereActorPromise);
                 }
             }
         }
 
-        for(const actor of this.sphereActors)
+        for(const promise of this.sphereActorPromises)
         {
-            await actor.enableRigidBody( { useGravity: false } );
+            promise.value.enableRigidBody( { useGravity: false } );
         }
     }
 
