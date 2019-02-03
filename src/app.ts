@@ -158,7 +158,7 @@ export default class Demo {
             actor: {
                 name: 'Cabin',
                 transform: {
-                    position: { x: 18, y: -1, z: 0.0 },
+                    position: { x: 20, y: -1, z: 0.0 },
                     rotation: Quaternion.RotationAxis(Vector3.Up(), -90 * DegreesToRadians),
                     scale: { x: 0.8, y: 0.8, z: 0.8}
                 }
@@ -170,7 +170,7 @@ export default class Demo {
             actor: {
                 name: 'Text',
                 transform: {
-                    position: { x: -3, y: 0, z: 0 },
+                    position: { x: -5, y: 0, z: 0 },
                     rotation: Quaternion.RotationAxis(Vector3.Up(), -90 * DegreesToRadians)
                 },
                 text: {
@@ -189,7 +189,7 @@ export default class Demo {
             resourceUrl: `${this.baseURLTranslated}/CesiumMan.glb`,
             actor: {
                 transform: {
-                    position: { x: 0, y: -1, z: 5 },
+                    position: { x: 0, y: -1, z: 7 },
                 }
             }
         });
@@ -203,7 +203,7 @@ export default class Demo {
             actor: {
                 name: 'Box',
                 transform: {
-                    position: { x: 0.0, y: 1, z: 5 }
+                    position: { x: 0.0, y: 1, z: 7 }
                 }
             }
         });
@@ -272,7 +272,7 @@ export default class Demo {
             actor: {
                 name: 'Skull Parent',
                 transform: {
-                    position: { x: 15, y: 0, z: 0 }
+                    position: { x: 20, y: 0, z: 0 }
                 }
             }
         });
@@ -292,7 +292,7 @@ export default class Demo {
                 parentId: skullParentActor.id,
                 transform: {
                     position: { x: 0, y: 6, z: 9 },
-                    scale: { x: 7, y: 7, z: 7}
+                    scale: { x: 6, y: 6, z: 6}
                 }
             }
         });
@@ -311,7 +311,7 @@ export default class Demo {
             actor: {
                 name: 'Drop Box',
                 transform: {
-                    position: { x: -10, y: 1, z: 5 }
+                    position: { x: -10, y: 1, z: 7 }
                 }
             }
         });
@@ -372,7 +372,7 @@ export default class Demo {
             actor: {
                 name: 'Reset Box',
                 transform: {
-                    position: { x: -9, y: 1, z: 5 }
+                    position: { x: -9, y: 1, z: 7 }
                 }
             }
         });
@@ -524,7 +524,7 @@ export default class Demo {
             actor: {
                 name: 'teleporter',
                 transform: {
-                    position: { x: 6, y: -1.6, z: 5 }
+                    position: { x: 7, y: -1.6, z: 7 }
                 }
             }
         });
@@ -552,9 +552,9 @@ export default class Demo {
             actor: {
                 name: 'video player',
                 transform: {
-                    position: { x: 0, y: 1, z: -10 },
+                    position: { x: 0, y: 1, z: -8 },
                     rotation: Quaternion.RotationAxis(Vector3.Up(), 180 * DegreesToRadians),
-                    scale: { x: 3, y: 3, z: 3 }
+                    scale: { x: 2, y: 2, z: 2 }
                 },
             }
         });
@@ -571,7 +571,7 @@ export default class Demo {
 
         for (let x = -12; x <= -8; x = x + 2) {
             for (let y = 5; y <= 15; y = y + 1) {
-                for (let z = 8; z <= 13; z = z + 2) {
+                for (let z = 10; z <= 15; z = z + 2) {
                     const sphereActorPromise = Actor.CreatePrimitive(this.context, {
                         definition: {
                             shape: PrimitiveShape.Sphere,
