@@ -2,7 +2,6 @@ import {
     Actor,
     Context,
     DegreesToRadians,
-    PrimitiveShape,
     Quaternion,
     Vector3
 } from '@microsoft/mixed-reality-extension-sdk';
@@ -19,7 +18,6 @@ export default class GltfGenCrash {
 
     private async started() {
         await this.setupGlTF();
-        await this.createSphere();
     }
 
     private async setupGlTF()
@@ -43,23 +41,6 @@ export default class GltfGenCrash {
                     rotation: Quaternion.RotationAxis(Vector3.Up(), 180 * DegreesToRadians),
                 }
             }
-        });
-    }
-
-    private async createSphere() {
-        await Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: PrimitiveShape.Sphere,
-                radius: 0.5,
-                uSegments: 10,
-                vSegments: 10
-            },
-            actor: {
-                name: 'sphere',
-                transform: {
-                    position: { x: 0, y: 2, z: 3 }
-                }
-            }   
         });
     }
 }

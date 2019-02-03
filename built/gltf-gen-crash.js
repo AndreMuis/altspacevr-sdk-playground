@@ -21,7 +21,6 @@ class GltfGenCrash {
     }
     async started() {
         await this.setupGlTF();
-        await this.createSphere();
     }
     async setupGlTF() {
         const primitive = new GltfGen.MeshPrimitive({
@@ -39,22 +38,6 @@ class GltfGenCrash {
                 transform: {
                     position: { x: 0, y: 0, z: 3 },
                     rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), 180 * mixed_reality_extension_sdk_1.DegreesToRadians),
-                }
-            }
-        });
-    }
-    async createSphere() {
-        await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
-                radius: 0.5,
-                uSegments: 10,
-                vSegments: 10
-            },
-            actor: {
-                name: 'sphere',
-                transform: {
-                    position: { x: 0, y: 2, z: 3 }
                 }
             }
         });

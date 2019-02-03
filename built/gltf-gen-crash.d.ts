@@ -5,6 +5,5 @@ export default class GltfGenCrash {
     constructor(context: Context, baseUrl: string);
     private started;
     private setupGlTF;
-    private createSphere;
 }
 //# sourceMappingURL=gltf-gen-crash.d.ts.map
