@@ -1,6 +1,4 @@
 "use strict";
-// bug: url: for gtlf doesn't work
-// bug: GltfGen crashes on prod (triangles)
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};

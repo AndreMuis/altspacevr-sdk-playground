@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mixed_reality_extension_sdk_1 = require("@microsoft/mixed-reality-extension-sdk");
 const GltfGen = __importStar(require("@microsoft/gltf-gen"));
 const server_1 = __importDefault(require("./server"));
-class Demo {
+class GltfGenImageUrl {
     constructor(context, baseUrl) {
         this.context = context;
         this.baseUrl = baseUrl;
@@ -27,8 +27,8 @@ class Demo {
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    // uri: `${this.baseUrl}/beach-ball.png` 
-                    uri: `http://altspacevr-demo.herokuapp.com/beach-ball.png`
+                    uri: `${this.baseUrl}/beach-ball.png`
+                    // uri: `http://altspacevr-demo.herokuapp.com/beach-ball.png`
                 })
             })
         });
@@ -49,5 +49,5 @@ class Demo {
         });
     }
 }
-exports.default = Demo;
+exports.default = GltfGenImageUrl;
 //# sourceMappingURL=gltf-gen-image-url.js.map

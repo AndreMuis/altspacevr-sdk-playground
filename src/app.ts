@@ -1,6 +1,3 @@
-// bug: url: for gtlf doesn't work
-// bug: GltfGen crashes on prod (triangles)
-
 import {
     Actor,
     AnimationKeyframe,

@@ -10,6 +10,7 @@ import Demo from './app';
 import EaseCurve from './ease-curve';
 import LookAt from './look-at';
 import GltfGenImageUrl from './gltf-gen-image-url';
+import GltfGenCrash from './gltf-gen-crash';
 
 import { userInfo } from 'os';
 
@@ -25,6 +26,7 @@ const server = new WebHost({
 // server.adapter.onConnection(context => new Demo(context, server.baseUrl));
 // server.adapter.onConnection(context => new EaseCurve(context, server.baseUrl));
 // server.adapter.onConnection(context => new LookAt(context, server.baseUrl));
-server.adapter.onConnection(context => new GltfGenImageUrl(context, server.baseUrl));
+// server.adapter.onConnection(context => new GltfGenImageUrl(context, server.baseUrl));
+server.adapter.onConnection(context => new GltfGenCrash(context, server.baseUrl));
 
 export default server;

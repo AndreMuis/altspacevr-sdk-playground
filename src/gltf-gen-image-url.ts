@@ -8,7 +8,7 @@ import * as GltfGen from '@microsoft/gltf-gen';
 
 import Server from './server'
 
-export default class Demo {
+export default class GltfGenImageUrl {
     constructor(private context: Context, private baseUrl: string) {
         this.context.onStarted(() => this.started());
     }
@@ -23,8 +23,8 @@ export default class Demo {
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    // uri: `${this.baseUrl}/beach-ball.png` 
-                    uri: `http://altspacevr-demo.herokuapp.com/beach-ball.png`
+                    uri: `${this.baseUrl}/beach-ball.png` 
+                    // uri: `http://altspacevr-demo.herokuapp.com/beach-ball.png`
                 })
             })
         });
