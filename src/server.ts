@@ -5,7 +5,12 @@
 
 import { WebHost } from '@microsoft/mixed-reality-extension-sdk';
 import { resolve as resolvePath } from 'path';
-import HelloWorld from './app';
+
+import Demo from './app';
+import EaseCurve from './ease-curve';
+import LookAt from './look-at';
+import GltfGenImageUrl from './gltf-gen-image-url';
+
 import { userInfo } from 'os';
 
 process.on('uncaughtException', err => console.log('uncaughtException', err));
@@ -17,6 +22,9 @@ const server = new WebHost({
 });
 
 // Handle new application sessions
-server.adapter.onConnection(context => new HelloWorld(context, server.baseUrl));
+// server.adapter.onConnection(context => new Demo(context, server.baseUrl));
+// server.adapter.onConnection(context => new EaseCurve(context, server.baseUrl));
+// server.adapter.onConnection(context => new LookAt(context, server.baseUrl));
+server.adapter.onConnection(context => new GltfGenImageUrl(context, server.baseUrl));
 
 export default server;

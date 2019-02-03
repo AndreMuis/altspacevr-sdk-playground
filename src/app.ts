@@ -1,7 +1,5 @@
 // bug: url: for gtlf doesn't work
 // bug: GltfGen crashes on prod (triangles)
-// feature: specify ease function for key frame animations
-// bug: some kit objects face the wrong direction
 
 import {
     Actor,
@@ -67,12 +65,12 @@ export default class Demo {
     private logActor: Actor = null;
 
     constructor(private context: Context, private baseUrl: string) {
-        this.videoPlayerManager = new VideoPlayerManager(context);
-
         this.context.onStarted(() => this.started());
 
         this.userJoined = this.userJoined.bind(this);
         this.context.onUserJoined(this.userJoined);
+
+        this.videoPlayerManager = new VideoPlayerManager(context);
 
         if (this.context.sessionId == 'local') {
             this.environment = Environment.Local;
@@ -105,7 +103,7 @@ export default class Demo {
     private userJoined = async (user: User) => {
         this.firstUser = user;
 
-        if (this.firstUser != null) {
+        if (this.skullActor != null) {
             this.skullActor.lookAt(this.firstUser, LookAtMode.TargetXY);
         }
 

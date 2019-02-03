@@ -1,8 +1,6 @@
 "use strict";
 // bug: url: for gtlf doesn't work
 // bug: GltfGen crashes on prod (triangles)
-// feature: specify ease function for key frame animations
-// bug: some kit objects face the wrong direction
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -37,7 +35,7 @@ class Demo {
         this.logActor = null;
         this.userJoined = async (user) => {
             this.firstUser = user;
-            if (this.firstUser != null) {
+            if (this.skullActor != null) {
                 this.skullActor.lookAt(this.firstUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
             }
             this.addToLog(user.name);
@@ -56,10 +54,10 @@ class Demo {
                 time: 0.2,
                 value: { transform: { scale: { x: 1, y: 1, z: 1 } } }
             }];
-        this.videoPlayerManager = new mixed_reality_extension_altspacevr_extras_1.VideoPlayerManager(context);
         this.context.onStarted(() => this.started());
         this.userJoined = this.userJoined.bind(this);
         this.context.onUserJoined(this.userJoined);
+        this.videoPlayerManager = new mixed_reality_extension_altspacevr_extras_1.VideoPlayerManager(context);
         if (this.context.sessionId == 'local') {
             this.environment = Environment.Local;
         }
