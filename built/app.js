@@ -1,6 +1,8 @@
 "use strict";
-// url: for gtlf doesn't work
-// GltfGen crashes on prod (triangles)
+// bug: url: for gtlf doesn't work
+// bug: GltfGen crashes on prod (triangles)
+// feature: specify ease function for key frame animations
+// bug: some kit objects face the wrong direction
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -90,7 +92,7 @@ class Demo {
         await this.setupCesiumMan();
         await this.setupSkull();
         await this.setupSpheres();
-        if (this.environment != Environment.Production) {
+        if (this.environment == Environment.Local) {
             await this.setupGlTF();
         }
         await this.setupTeleporter();
@@ -511,9 +513,7 @@ class Demo {
                 }
             }
         }
-        for (const promise of this.sphereActorPromises) {
-            promise.value.enableRigidBody({ useGravity: false });
-        }
+        this.sphereActorPromises.forEach(promise => promise.value.enableRigidBody({ useGravity: false }));
     }
     generateSpinKeyframes(duration, axis) {
         return [{

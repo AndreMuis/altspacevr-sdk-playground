@@ -1,5 +1,7 @@
-// url: for gtlf doesn't work
-// GltfGen crashes on prod (triangles)
+// bug: url: for gtlf doesn't work
+// bug: GltfGen crashes on prod (triangles)
+// feature: specify ease function for key frame animations
+// bug: some kit objects face the wrong direction
 
 import {
     Actor,
@@ -88,7 +90,7 @@ export default class Demo {
         await this.setupSkull();
         await this.setupSpheres();
 
-        if (this.environment != Environment.Production) {
+        if (this.environment == Environment.Local) {
             await this.setupGlTF();
         }
 
@@ -595,10 +597,7 @@ export default class Demo {
             }
         }
 
-        for(const promise of this.sphereActorPromises)
-        {
-            promise.value.enableRigidBody( { useGravity: false } );
-        }
+        this.sphereActorPromises.forEach(promise => promise.value.enableRigidBody( { useGravity: false } ));
     }
 
     private generateSpinKeyframes(duration: number, axis: Vector3): AnimationKeyframe[] {
