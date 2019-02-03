@@ -92,9 +92,9 @@ class Demo {
         await this.setupCesiumMan();
         await this.setupSkull();
         await this.setupSpheres();
-        if (this.environment == Environment.Local) {
-            await this.setupGlTF();
-        }
+        //if (this.environment == Environment.Local) {
+        await this.setupGlTF();
+        //}
         await this.setupTeleporter();
         await this.setupVideoPlayer();
         if (this.firstUser != null) {
@@ -372,6 +372,7 @@ class Demo {
         });
     }
     async setupGlTF() {
+        /*
         // Beach Ball
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
@@ -381,11 +382,14 @@ class Demo {
             })
         });
         const gltfFactory = new GltfGen.GltfFactory(null, null, [material]);
-        const blobURL = server_1.default.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
+
+        const blobURL = Server.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
+
         const mats = await this.context.assetManager.loadGltf('beachball', blobURL);
-        await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+
+        await Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
+                shape: PrimitiveShape.Sphere,
                 radius: 0.5
             },
             actor: {
@@ -395,6 +399,7 @@ class Demo {
                 }
             }
         });
+        */
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
             vertices: [
@@ -430,6 +435,7 @@ class Demo {
                 }
             }
         });
+        /*
         // Triangle
         const prim = new GltfGen.MeshPrimitive({
             vertices: [
@@ -439,15 +445,18 @@ class Demo {
             ],
             triangles: [0, 1, 2]
         });
+
         const factory2 = GltfGen.GltfFactory.FromSinglePrimitive(prim).generateGLTF();
-        await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
-            resourceUrl: server_1.default.registerStaticBuffer('triangle.glb', factory2),
+    
+        await Actor.CreateFromGltf(this.context, {
+            resourceUrl: Server.registerStaticBuffer('triangle.glb', factory2),
             actor: {
                 transform: {
                     position: { x: -3, y: 0, z: -7 },
                 }
             }
         });
+        */
     }
     async setupTeleporter() {
         const teleporterActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {

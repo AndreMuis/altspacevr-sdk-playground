@@ -90,9 +90,9 @@ export default class Demo {
         await this.setupSkull();
         await this.setupSpheres();
 
-        if (this.environment == Environment.Local) {
+        //if (this.environment == Environment.Local) {
             await this.setupGlTF();
-        }
+        //}
 
         await this.setupTeleporter();
         await this.setupVideoPlayer();
@@ -432,6 +432,7 @@ export default class Demo {
 
     private async setupGlTF()
     {
+        /*
         // Beach Ball
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
@@ -458,6 +459,7 @@ export default class Demo {
                 }
             }
         });
+        */
 
         // Triangles
         const prim1 = new GltfGen.MeshPrimitive({
@@ -500,6 +502,7 @@ export default class Demo {
             }
         });
 
+        /*
         // Triangle
         const prim = new GltfGen.MeshPrimitive({
             vertices: [
@@ -520,6 +523,7 @@ export default class Demo {
                 }
             }
         });
+        */
     }
 
     private async setupTeleporter() {
