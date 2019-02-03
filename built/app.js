@@ -150,7 +150,7 @@ class Demo {
             actor: {
                 name: 'Cabin',
                 transform: {
-                    position: { x: 15, y: -1, z: 0.0 },
+                    position: { x: 18, y: -1, z: 0.0 },
                     rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -90 * mixed_reality_extension_sdk_1.DegreesToRadians),
                     scale: { x: 0.8, y: 0.8, z: 0.8 }
                 }
@@ -402,12 +402,12 @@ class Demo {
         await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
-                radius: 1
+                radius: 0.5
             },
             actor: {
                 materialId: mats.materials.byIndex(0).id,
                 transform: {
-                    position: { x: -3, y: 1, z: -6 }
+                    position: { x: -3, y: 0, z: -3 }
                 }
             }
         });
@@ -442,7 +442,7 @@ class Demo {
             resourceUrl: server_1.default.registerStaticBuffer('triangles.glb', factory1.generateGLTF()),
             actor: {
                 transform: {
-                    position: { x: -3, y: 0, z: -9 },
+                    position: { x: -3, y: 0, z: -6 },
                 }
             }
         });
@@ -460,7 +460,7 @@ class Demo {
             resourceUrl: server_1.default.registerStaticBuffer('triangle.glb', factory2),
             actor: {
                 transform: {
-                    position: { x: -3, y: 0, z: -10 },
+                    position: { x: -3, y: 0, z: -7 },
                 }
             }
         });
@@ -471,7 +471,7 @@ class Demo {
             actor: {
                 name: 'teleporter',
                 transform: {
-                    position: { x: 5, y: -0.75, z: 5 }
+                    position: { x: 6, y: -1.6, z: 5 }
                 }
             }
         });
@@ -496,9 +496,9 @@ class Demo {
             actor: {
                 name: 'video player',
                 transform: {
-                    position: { x: 0, y: 1, z: -9 },
+                    position: { x: 0, y: 1, z: -10 },
                     rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), 180 * mixed_reality_extension_sdk_1.DegreesToRadians),
-                    scale: { x: 4, y: 4, z: 4 }
+                    scale: { x: 3, y: 3, z: 3 }
                 },
             }
         });

@@ -168,7 +168,7 @@ export default class Demo {
             actor: {
                 name: 'Cabin',
                 transform: {
-                    position: { x: 15, y: -1, z: 0.0 },
+                    position: { x: 18, y: -1, z: 0.0 },
                     rotation: Quaternion.RotationAxis(Vector3.Up(), -90 * DegreesToRadians),
                     scale: { x: 0.8, y: 0.8, z: 0.8}
                 }
@@ -468,12 +468,12 @@ export default class Demo {
         await Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: PrimitiveShape.Sphere,
-                radius: 1
+                radius: 0.5
             },
             actor: {
                 materialId: mats.materials.byIndex(0).id,
                 transform: {
-                    position: { x: -3, y: 1, z: -6 }
+                    position: { x: -3, y: 0, z: -3 }
                 }
             }
         });
@@ -514,7 +514,7 @@ export default class Demo {
             resourceUrl: Server.registerStaticBuffer('triangles.glb', factory1.generateGLTF()),
             actor: {
                 transform: {
-                    position: { x: -3, y: 0, z: -9 },
+                    position: { x: -3, y: 0, z: -6 },
                 }
             }
         });
@@ -535,7 +535,7 @@ export default class Demo {
             resourceUrl: Server.registerStaticBuffer('triangle.glb', factory2),
             actor: {
                 transform: {
-                    position: { x: -3, y: 0, z: -10 },
+                    position: { x: -3, y: 0, z: -7 },
                 }
             }
         });
@@ -547,7 +547,7 @@ export default class Demo {
             actor: {
                 name: 'teleporter',
                 transform: {
-                    position: { x: 5, y: -0.75, z: 5 }
+                    position: { x: 6, y: -1.6, z: 5 }
                 }
             }
         });
@@ -575,9 +575,9 @@ export default class Demo {
             actor: {
                 name: 'video player',
                 transform: {
-                    position: { x: 0, y: 1, z: -9 },
+                    position: { x: 0, y: 1, z: -10 },
                     rotation: Quaternion.RotationAxis(Vector3.Up(), 180 * DegreesToRadians),
-                    scale: { x: 4, y: 4, z: 4 }
+                    scale: { x: 3, y: 3, z: 3 }
                 },
             }
         });
