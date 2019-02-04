@@ -431,7 +431,7 @@ export default class Demo {
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
                     // uri: `${this.baseURLTranslated}/beach-ball.png`
-                    uri: "http://altspacevr-demo.herokuapp.com/beach-ball.png"
+                    uri: "https://altspacevr-demo.herokuapp.com/beach-ball.png"
                 })
             })
         });
