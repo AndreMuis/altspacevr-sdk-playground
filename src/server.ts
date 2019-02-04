@@ -23,7 +23,7 @@ const server = new WebHost({
 });
 
 // Handle new application sessions
-server.adapter.onConnection(context => new Demo(context, server.baseUrl));
+server.adapter.onConnection(context => new Demo(context, server.baseDir, server.baseUrl));
 // server.adapter.onConnection(context => new EaseCurve(context, server.baseUrl));
 // server.adapter.onConnection(context => new LookAt(context, server.baseUrl));
 // server.adapter.onConnection(context => new GltfGenImageUrl(context, server.baseUrl));

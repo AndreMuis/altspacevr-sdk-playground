@@ -61,7 +61,7 @@ export default class Demo {
     private videoPlayerManager: VideoPlayerManager;
     private logActor: Actor = null;
 
-    constructor(private context: Context, private baseUrl: string) {
+    constructor(private context: Context, private baseDir: string, private baseUrl: string) {
         this.context.onStarted(() => this.started());
 
         this.userJoined = this.userJoined.bind(this);
@@ -430,7 +430,8 @@ export default class Demo {
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/beach-ball.png`
+                    // uri: `${this.baseUrl}/beach-ball.png`
+                    uri: `http://altspacevr-demo.herokuapp.com/beach-ball.png`
                 })
             })
         });

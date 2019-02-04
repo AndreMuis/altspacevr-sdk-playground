@@ -1,6 +1,7 @@
 import { Context } from '@microsoft/mixed-reality-extension-sdk';
 export default class Demo {
     private context;
+    private baseDir;
     private baseUrl;
     private environment;
     readonly baseURLTranslated: String;
@@ -11,7 +12,7 @@ export default class Demo {
     private sphereActorPromises;
     private videoPlayerManager;
     private logActor;
-    constructor(context: Context, baseUrl: string);
+    constructor(context: Context, baseDir: string, baseUrl: string);
     private started;
     private userJoined;
     private addToLog;

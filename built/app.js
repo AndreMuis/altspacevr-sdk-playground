@@ -21,8 +21,9 @@ var Environment;
     Environment[Environment["Production"] = 2] = "Production";
 })(Environment || (Environment = {}));
 class Demo {
-    constructor(context, baseUrl) {
+    constructor(context, baseDir, baseUrl) {
         this.context = context;
+        this.baseDir = baseDir;
         this.baseUrl = baseUrl;
         this.environment = Environment.Unknown;
         this.firstUser = null;
@@ -371,7 +372,8 @@ class Demo {
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/beach-ball.png`
+                    // uri: `${this.baseUrl}/beach-ball.png`
+                    uri: `http://altspacevr-demo.herokuapp.com/beach-ball.png`
                 })
             })
         });
