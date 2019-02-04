@@ -85,9 +85,9 @@ export default class Demo {
         await this.setupSkull();
         await this.setupSpheres();
 
-        if (this.environment == Environment.Local) {
+        //if (this.environment == Environment.Local) {
             await this.setupGlTF();
-        }
+        //}
 
         await this.setupTeleporter();
         await this.setupVideoPlayer();
@@ -427,91 +427,29 @@ export default class Demo {
 
     private async setupGlTF()
     {
-        // Beach Ball
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    uri: `${this.baseURLTranslated}/beach-ball.png` 
+                    uri: `${this.baseUrl}/beach-ball.png`
                 })
             })
         });
+
         const gltfFactory = new GltfGen.GltfFactory(null, null, [material]);
 
-        const blobURL = Server.registerStaticBuffer('beachball', gltfFactory.generateGLTF());
-
-        const mats = await this.context.assetManager.loadGltf('beachball', blobURL);
-
+        const buffer = Server.registerStaticBuffer('beach-ball', gltfFactory.generateGLTF());
+    
+        const mats = await this.context.assetManager.loadGltf('beach-ball', buffer);
+    
         await Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: PrimitiveShape.Sphere,
-                radius: 0.5
+                radius: 1
             },
             actor: {
                 materialId: mats.materials.byIndex(0).id,
                 transform: {
-                    position: { x: -3, y: 0, z: -3 }
-                }
-            }
-        });
-
-        // Triangles
-        const prim1 = new GltfGen.MeshPrimitive({
-            vertices: [
-                new GltfGen.Vertex({ position: [0, 0, 0] }),
-                new GltfGen.Vertex({ position: [1, 0, 0] }),
-                new GltfGen.Vertex({ position: [0, 1, 0] })
-            ],
-            triangles: [0, 1, 2],
-            material: new GltfGen.Material({ name: 'red' })
-        });
-
-        const prim2 = new GltfGen.MeshPrimitive({
-            material: new GltfGen.Material({ name: 'blue' })
-        }, prim1);
-
-        const factory1 = new GltfGen.GltfFactory(
-            [new GltfGen.Scene({
-                nodes: [
-                    new GltfGen.Node({
-                        mesh: new GltfGen.Mesh({
-                            primitives: [prim1]
-                        })
-                    }),
-                    new GltfGen.Node({
-                        mesh: new GltfGen.Mesh({
-                            primitives: [prim2]
-                        })
-                    })
-                ]
-            })]
-        );
-
-        await Actor.CreateFromGltf(this.context, {
-            resourceUrl: Server.registerStaticBuffer('triangles.glb', factory1.generateGLTF()),
-            actor: {
-                transform: {
-                    position: { x: -3, y: 0, z: -6 },
-                }
-            }
-        });
-
-        // Triangle
-        const prim = new GltfGen.MeshPrimitive({
-            vertices: [
-                new GltfGen.Vertex({ position: [0, 0, 0], texCoord0: [0, 0] }),
-                new GltfGen.Vertex({ position: [1, 0, 0], texCoord0: [1, 0] }),
-                new GltfGen.Vertex({ position: [0, 1, 0], texCoord0: [0, 1] })
-            ],
-            triangles: [0, 1, 2]
-        });
-
-        const factory2 = GltfGen.GltfFactory.FromSinglePrimitive(prim).generateGLTF();
-    
-        await Actor.CreateFromGltf(this.context, {
-            resourceUrl: Server.registerStaticBuffer('triangle.glb', factory2),
-            actor: {
-                transform: {
-                    position: { x: -3, y: 0, z: -7 },
+                    position: { x: 0, y: 0, z: 2 }
                 }
             }
         });
