@@ -1,18 +1,15 @@
 import { Context } from '@microsoft/mixed-reality-extension-sdk';
 export default class Demo {
     private context;
-    private baseDir;
     private baseUrl;
-    private environment;
-    readonly baseURLTranslated: String;
-    private firstUser;
+    private lastUser;
     private isCesiumManWalking;
     private cabinActor;
     private skullActor;
     private sphereActorPromises;
     private videoPlayerManager;
     private logActor;
-    constructor(context: Context, baseDir: string, baseUrl: string);
+    constructor(context: Context, baseUrl: string);
     private started;
     private userJoined;
     private addToLog;

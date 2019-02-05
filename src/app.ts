@@ -20,11 +20,7 @@ import {
 
 import * as GltfGen from '@microsoft/gltf-gen';
 
-import { resolve } from 'path';
 import Server from './server'
-
-import { ENAMETOOLONG } from 'constants';
-import { deflateSync } from 'zlib';
 
 enum Environment {
     Unknown,
@@ -33,26 +29,7 @@ enum Environment {
 }
 
 export default class Demo {
-    private environment: Environment = Environment.Unknown;
-    
-    get baseURLTranslated(): String {
-        switch(this.environment) { 
-            case Environment.Unknown: { 
-                return ""; 
-                break; 
-             } 
-             case Environment.Local: { 
-               return 'http://127.0.0.1:3901'; 
-               break; 
-            } 
-            case Environment.Production: { 
-               return 'http://altspacevr-demo.herokuapp.com';
-               break; 
-            } 
-         } 
-    }
-
-    private firstUser: User = null;
+    private lastUser: User = null;
 
     private isCesiumManWalking: Boolean = false;
     private cabinActor: Actor = null;
@@ -61,22 +38,13 @@ export default class Demo {
     private videoPlayerManager: VideoPlayerManager;
     private logActor: Actor = null;
 
-    constructor(private context: Context, private baseDir: string, private baseUrl: string) {
+    constructor(private context: Context, private baseUrl: string) {
         this.context.onStarted(() => this.started());
 
         this.userJoined = this.userJoined.bind(this);
         this.context.onUserJoined(this.userJoined);
 
         this.videoPlayerManager = new VideoPlayerManager(context);
-
-        if (this.context.sessionId == 'local') {
-            this.environment = Environment.Local;
-        } else if (this.context.sessionId == 'production') {
-            this.environment = Environment.Production;
-        } else {
-            this.environment = Environment.Unknown;
-            console.log('session id is invalid. session id = ' + this.context.sessionId);
-        }
     }
 
     private async started() {
@@ -86,24 +54,20 @@ export default class Demo {
         await this.setupCesiumMan();
         await this.setupSkull();
         await this.setupSpheres();
-
-        //if (this.environment == Environment.Local) {
-            await this.setupGlTF();
-        //}
-
+        await this.setupGlTF();
         await this.setupTeleporter();
         await this.setupVideoPlayer();
 
-        if (this.firstUser != null) {
-            this.skullActor.lookAt(this.firstUser, LookAtMode.TargetXY);
+        if (this.lastUser != null) {
+            this.skullActor.lookAt(this.lastUser, LookAtMode.TargetXY);
         }
     }
 
     private userJoined = async (user: User) => {
-        this.firstUser = user;
+        this.lastUser = user;
 
         if (this.skullActor != null) {
-            this.skullActor.lookAt(this.firstUser, LookAtMode.TargetXY);
+            this.skullActor.lookAt(this.lastUser, LookAtMode.TargetXY);
         }
 
         this.addToLog(user.name);
@@ -186,7 +150,7 @@ export default class Demo {
     private async setupCesiumMan()
     {
         const cesiumManActor = await Actor.CreateFromGltf(this.context, {
-            resourceUrl: 'http://rawcdn.githack.com/AndreMuis/altspacevr-demo/e3a2b1bd7bbea3c2c3ca30e5d420432a64b0ee6a/public/CesiumMan.glb',
+            resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
                     position: { x: 0, y: -1, z: 7 },
@@ -432,7 +396,7 @@ export default class Demo {
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    uri: "http://pluspng.com/img-png/angry-dog-png-hd-dog-png-image-png-image-257.png"
+                    uri: `${this.baseUrl}/beach-ball.png`
                 })
             })
         });

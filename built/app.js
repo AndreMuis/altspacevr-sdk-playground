@@ -21,21 +21,19 @@ var Environment;
     Environment[Environment["Production"] = 2] = "Production";
 })(Environment || (Environment = {}));
 class Demo {
-    constructor(context, baseDir, baseUrl) {
+    constructor(context, baseUrl) {
         this.context = context;
-        this.baseDir = baseDir;
         this.baseUrl = baseUrl;
-        this.environment = Environment.Unknown;
-        this.firstUser = null;
+        this.lastUser = null;
         this.isCesiumManWalking = false;
         this.cabinActor = null;
         this.skullActor = null;
         this.sphereActorPromises = [];
         this.logActor = null;
         this.userJoined = async (user) => {
-            this.firstUser = user;
+            this.lastUser = user;
             if (this.skullActor != null) {
-                this.skullActor.lookAt(this.firstUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
+                this.skullActor.lookAt(this.lastUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
             }
             this.addToLog(user.name);
         };
@@ -57,32 +55,6 @@ class Demo {
         this.userJoined = this.userJoined.bind(this);
         this.context.onUserJoined(this.userJoined);
         this.videoPlayerManager = new mixed_reality_extension_altspacevr_extras_1.VideoPlayerManager(context);
-        if (this.context.sessionId == 'local') {
-            this.environment = Environment.Local;
-        }
-        else if (this.context.sessionId == 'production') {
-            this.environment = Environment.Production;
-        }
-        else {
-            this.environment = Environment.Unknown;
-            console.log('session id is invalid. session id = ' + this.context.sessionId);
-        }
-    }
-    get baseURLTranslated() {
-        switch (this.environment) {
-            case Environment.Unknown: {
-                return "";
-                break;
-            }
-            case Environment.Local: {
-                return 'http://127.0.0.1:3901';
-                break;
-            }
-            case Environment.Production: {
-                return 'http://altspacevr-demo.herokuapp.com';
-                break;
-            }
-        }
     }
     async started() {
         console.log(this.baseUrl);
@@ -90,13 +62,11 @@ class Demo {
         await this.setupCesiumMan();
         await this.setupSkull();
         await this.setupSpheres();
-        //if (this.environment == Environment.Local) {
         await this.setupGlTF();
-        //}
         await this.setupTeleporter();
         await this.setupVideoPlayer();
-        if (this.firstUser != null) {
-            this.skullActor.lookAt(this.firstUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
+        if (this.lastUser != null) {
+            this.skullActor.lookAt(this.lastUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
         }
     }
     addToLog(message) {
@@ -168,7 +138,7 @@ class Demo {
     }
     async setupCesiumMan() {
         const cesiumManActor = await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
-            resourceUrl: 'http://rawcdn.githack.com/AndreMuis/altspacevr-demo/e3a2b1bd7bbea3c2c3ca30e5d420432a64b0ee6a/public/CesiumMan.glb',
+            resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
                     position: { x: 0, y: -1, z: 7 },
@@ -373,7 +343,7 @@ class Demo {
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    uri: "http://pluspng.com/img-png/angry-dog-png-hd-dog-png-image-png-image-257.png"
+                    uri: `${this.baseUrl}/beach-ball.png`
                 })
             })
         });
