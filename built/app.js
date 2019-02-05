@@ -24,6 +24,7 @@ class Demo {
     constructor(context, baseUrl) {
         this.context = context;
         this.baseUrl = baseUrl;
+        this.assetGroup = null;
         this.lastUser = null;
         this.isCesiumManWalking = false;
         this.cabinActor = null;
@@ -57,12 +58,11 @@ class Demo {
         this.videoPlayerManager = new mixed_reality_extension_altspacevr_extras_1.VideoPlayerManager(context);
     }
     async started() {
-        console.log(this.baseUrl);
+        await this.loadMaterials();
         await this.setupScene();
         await this.setupCesiumMan();
         await this.setupSkull();
         await this.setupSpheres();
-        await this.setupGlTF();
         await this.setupTeleporter();
         await this.setupVideoPlayer();
         if (this.lastUser != null) {
@@ -74,6 +74,25 @@ class Demo {
         if (this.logActor != null) {
             this.logActor.text.contents = message + "\n" + this.logActor.text.contents;
         }
+    }
+    async loadMaterials() {
+        const beachBallMaterial = new GltfGen.Material({
+            baseColorTexture: new GltfGen.Texture({
+                source: new GltfGen.Image({
+                    uri: `${this.baseUrl}/beach-ball.png`
+                })
+            })
+        });
+        const grassMaterial = new GltfGen.Material({
+            baseColorTexture: new GltfGen.Texture({
+                source: new GltfGen.Image({
+                    uri: `${this.baseUrl}/grass.png`
+                })
+            })
+        });
+        const gltfFactory = new GltfGen.GltfFactory(null, null, [grassMaterial, beachBallMaterial]);
+        const buffer = server_1.default.registerStaticBuffer('gltf-buffer', gltfFactory.generateGLTF());
+        this.assetGroup = await this.context.assetManager.loadGltf('gltf-buffer', buffer);
     }
     async setupScene() {
         // Title
@@ -96,12 +115,13 @@ class Demo {
             definition: {
                 shape: mixed_reality_extension_sdk_1.PrimitiveShape.Plane,
                 dimensions: { x: 1000, y: 0, z: 1000 },
-                uSegments: 1,
-                vSegments: 1
+                uSegments: 1000,
+                vSegments: 1000
             },
             addCollider: true,
             actor: {
                 name: 'Plane',
+                materialId: this.assetGroup.materials.byIndex(0).id,
                 transform: {
                     position: { x: 0, y: -1.6, z: 0 }
                 }
@@ -339,30 +359,6 @@ class Demo {
             resetTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
         });
     }
-    async setupGlTF() {
-        const material = new GltfGen.Material({
-            baseColorTexture: new GltfGen.Texture({
-                source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/beach-ball.png`
-                })
-            })
-        });
-        const gltfFactory = new GltfGen.GltfFactory(null, null, [material]);
-        const buffer = server_1.default.registerStaticBuffer('beach-ball', gltfFactory.generateGLTF());
-        const mats = await this.context.assetManager.loadGltf('beach-ball', buffer);
-        await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
-                radius: 1
-            },
-            actor: {
-                materialId: mats.materials.byIndex(0).id,
-                transform: {
-                    position: { x: 0, y: 0, z: 2 }
-                }
-            }
-        });
-    }
     async setupTeleporter() {
         const teleporterActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
             resourceId: "Teleporter: 1133592462367917034",
@@ -414,6 +410,7 @@ class Demo {
                         },
                         addCollider: true,
                         actor: {
+                            materialId: this.assetGroup.materials.byIndex(1).id,
                             transform: {
                                 position: {
                                     x: x + Math.random() / 2.0,

@@ -11,7 +11,8 @@ import {
     Quaternion,
     TextAnchorLocation,
     User,
-    Vector3
+    Vector3,
+    AssetGroup
 } from '@microsoft/mixed-reality-extension-sdk';
 
 import {
@@ -29,6 +30,7 @@ enum Environment {
 }
 
 export default class Demo {
+    private assetGroup: AssetGroup = null;
     private lastUser: User = null;
 
     private isCesiumManWalking: Boolean = false;
@@ -48,13 +50,12 @@ export default class Demo {
     }
 
     private async started() {
-        console.log(this.baseUrl);
+        await this.loadMaterials();
 
         await this.setupScene();
         await this.setupCesiumMan();
         await this.setupSkull();
         await this.setupSpheres();
-        await this.setupGlTF();
         await this.setupTeleporter();
         await this.setupVideoPlayer();
 
@@ -81,6 +82,31 @@ export default class Demo {
         }
     }
 
+    private async loadMaterials()
+    {
+        const beachBallMaterial = new GltfGen.Material({
+            baseColorTexture: new GltfGen.Texture({
+                source: new GltfGen.Image({
+                    uri: `${this.baseUrl}/beach-ball.png`
+                })
+            })
+        });
+
+        const grassMaterial = new GltfGen.Material({
+            baseColorTexture: new GltfGen.Texture({
+                source: new GltfGen.Image({
+                    uri: `${this.baseUrl}/grass.png`
+                })
+            })
+        });
+
+        const gltfFactory = new GltfGen.GltfFactory(null, null, [grassMaterial, beachBallMaterial]);
+
+        const buffer = Server.registerStaticBuffer('gltf-buffer', gltfFactory.generateGLTF());
+    
+        this.assetGroup = await this.context.assetManager.loadGltf('gltf-buffer', buffer);
+    }
+
     public async setupScene()
     {
         // Title
@@ -104,12 +130,13 @@ export default class Demo {
             definition: {
                 shape: PrimitiveShape.Plane,
                 dimensions: { x: 1000, y: 0, z: 1000 },
-                uSegments: 1,
-                vSegments: 1
+                uSegments: 1000,
+                vSegments: 1000
             },
             addCollider: true,
             actor: {
                 name: 'Plane',
+                materialId: this.assetGroup.materials.byIndex(0).id,
                 transform: {
                     position: { x: 0, y: -1.6, z: 0 }
                 }
@@ -391,36 +418,6 @@ export default class Demo {
         });
     }
 
-    private async setupGlTF()
-    {
-        const material = new GltfGen.Material({
-            baseColorTexture: new GltfGen.Texture({
-                source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/beach-ball.png`
-                })
-            })
-        });
-
-        const gltfFactory = new GltfGen.GltfFactory(null, null, [material]);
-
-        const buffer = Server.registerStaticBuffer('beach-ball', gltfFactory.generateGLTF());
-    
-        const mats = await this.context.assetManager.loadGltf('beach-ball', buffer);
-    
-        await Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: PrimitiveShape.Sphere,
-                radius: 1
-            },
-            actor: {
-                materialId: mats.materials.byIndex(0).id,
-                transform: {
-                    position: { x: 0, y: 0, z: 2 }
-                }
-            }
-        });
-    }
-
     private async setupTeleporter() {
         const teleporterActor = await Actor.CreateFromLibrary(this.context, {
             resourceId: "Teleporter: 1133592462367917034",
@@ -482,6 +479,7 @@ export default class Demo {
                         },
                         addCollider: true,
                         actor: {
+                            materialId: this.assetGroup.materials.byIndex(1).id,
                             transform: {
                                 position: {
                                     x: x + Math.random() / 2.0, 

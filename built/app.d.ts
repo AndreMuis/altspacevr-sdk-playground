@@ -2,6 +2,7 @@ import { Context } from '@microsoft/mixed-reality-extension-sdk';
 export default class Demo {
     private context;
     private baseUrl;
+    private assetGroup;
     private lastUser;
     private isCesiumManWalking;
     private cabinActor;
@@ -13,11 +14,11 @@ export default class Demo {
     private started;
     private userJoined;
     private addToLog;
+    private loadMaterials;
     setupScene(): Promise<void>;
     private setupCesiumMan;
     private setupSkull;
     setupSpheres(): Promise<void>;
-    private setupGlTF;
     private setupTeleporter;
     private setupVideoPlayer;
     private setupSphereActors;
