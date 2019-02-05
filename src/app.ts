@@ -23,12 +23,6 @@ import * as GltfGen from '@microsoft/gltf-gen';
 
 import Server from './server'
 
-enum Environment {
-    Unknown,
-    Local,
-    Production
-}
-
 export default class Demo {
     private assetGroup: AssetGroup = null;
     private lastUser: User = null;
@@ -461,7 +455,7 @@ export default class Demo {
 
         this.videoPlayerManager.play(
             videoPlayer.id,
-            'https://www.youtube.com/watch?v=L_LUpnjgPso&t=33s',
+            'http://www.youtube.com/watch?v=L_LUpnjgPso&t=33s',
             0.0);
     }
 

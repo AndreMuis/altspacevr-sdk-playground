@@ -14,12 +14,6 @@ const mixed_reality_extension_sdk_1 = require("@microsoft/mixed-reality-extensio
 const mixed_reality_extension_altspacevr_extras_1 = require("@microsoft/mixed-reality-extension-altspacevr-extras");
 const GltfGen = __importStar(require("@microsoft/gltf-gen"));
 const server_1 = __importDefault(require("./server"));
-var Environment;
-(function (Environment) {
-    Environment[Environment["Unknown"] = 0] = "Unknown";
-    Environment[Environment["Local"] = 1] = "Local";
-    Environment[Environment["Production"] = 2] = "Production";
-})(Environment || (Environment = {}));
 class Demo {
     constructor(context, baseUrl) {
         this.context = context;
@@ -396,7 +390,7 @@ class Demo {
                 },
             }
         });
-        this.videoPlayerManager.play(videoPlayer.id, 'https://www.youtube.com/watch?v=L_LUpnjgPso&t=33s', 0.0);
+        this.videoPlayerManager.play(videoPlayer.id, 'http://www.youtube.com/watch?v=L_LUpnjgPso&t=33s', 0.0);
     }
     async setupSphereActors() {
         this.sphereActorPromises = [];
