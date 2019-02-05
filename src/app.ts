@@ -430,8 +430,7 @@ export default class Demo {
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    uri: `${this.baseURLTranslated}/beach-ball.png`
-                    // uri: "http://altspacevr-demo.herokuapp.com/beach-ball.png"
+                    uri: "http://rawcdn.githack.com/AndreMuis/altspacevr-demo/8511c656692e3ddfb9cc72e46b34312f049cd0a4/public/beach-ball.png"
                 })
             })
         });
