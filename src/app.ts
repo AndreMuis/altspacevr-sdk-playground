@@ -80,6 +80,8 @@ export default class Demo {
     }
 
     private async started() {
+        console.log(this.baseUrl);
+
         await this.setupScene();
         await this.setupCesiumMan();
         await this.setupSkull();

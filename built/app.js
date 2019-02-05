@@ -85,6 +85,7 @@ class Demo {
         }
     }
     async started() {
+        console.log(this.baseUrl);
         await this.setupScene();
         await this.setupCesiumMan();
         await this.setupSkull();
