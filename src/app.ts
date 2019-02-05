@@ -85,9 +85,9 @@ export default class Demo {
         await this.setupSkull();
         await this.setupSpheres();
 
-        //if (this.environment == Environment.Local) {
+        if (this.environment == Environment.Local) {
             await this.setupGlTF();
-        //}
+        }
 
         await this.setupTeleporter();
         await this.setupVideoPlayer();
@@ -184,7 +184,7 @@ export default class Demo {
     private async setupCesiumMan()
     {
         const cesiumManActor = await Actor.CreateFromGltf(this.context, {
-            resourceUrl: `${this.baseURLTranslated}/CesiumMan.glb`,
+            resourceUrl: 'http://rawcdn.githack.com/AndreMuis/altspacevr-demo/e3a2b1bd7bbea3c2c3ca30e5d420432a64b0ee6a/public/CesiumMan.glb',
             actor: {
                 transform: {
                     position: { x: 0, y: -1, z: 7 },
@@ -430,8 +430,8 @@ export default class Demo {
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    // uri: `${this.baseURLTranslated}/beach-ball.png`
-                    uri: "https://altspacevr-demo.herokuapp.com/beach-ball.png"
+                    uri: `${this.baseURLTranslated}/beach-ball.png`
+                    // uri: "http://altspacevr-demo.herokuapp.com/beach-ball.png"
                 })
             })
         });
