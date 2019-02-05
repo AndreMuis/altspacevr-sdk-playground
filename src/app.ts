@@ -430,7 +430,8 @@ export default class Demo {
         const material = new GltfGen.Material({
             baseColorTexture: new GltfGen.Texture({
                 source: new GltfGen.Image({
-                    uri: "http://rawcdn.githack.com/AndreMuis/altspacevr-demo/8511c656692e3ddfb9cc72e46b34312f049cd0a4/public/beach-ball.png"
+                    //uri: "http://rawcdn.githack.com/AndreMuis/altspacevr-demo/8511c656692e3ddfb9cc72e46b34312f049cd0a4/public/beach-ball.png"
+                    uri: "http://pluspng.com/img-png/angry-dog-png-hd-dog-png-image-png-image-257.png"
                 })
             })
         });
