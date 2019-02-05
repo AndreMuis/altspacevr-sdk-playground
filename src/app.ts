@@ -85,9 +85,9 @@ export default class Demo {
         await this.setupSkull();
         await this.setupSpheres();
 
-        if (this.environment == Environment.Local) {
+        //if (this.environment == Environment.Local) {
             await this.setupGlTF();
-        }
+        //}
 
         await this.setupTeleporter();
         await this.setupVideoPlayer();
