@@ -1,1 +1,0 @@
-{"version":3,"file":"gltf-gen-image-url.d.ts","sourceRoot":"","sources":["../src/gltf-gen-image-url.ts"],"names":[],"mappings":"AAAA,OAAO,EAEH,OAAO,EAEV,MAAM,wCAAwC,CAAC;AAMhD,MAAM,CAAC,OAAO,OAAO,eAAe;IACpB,OAAO,CAAC,OAAO;IAAW,OAAO,CAAC,OAAO;gBAAjC,OAAO,EAAE,OAAO,EAAU,OAAO,EAAE,MAAM;YAI/C,OAAO;YAIP,SAAS;CA8B1B"}

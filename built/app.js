@@ -155,7 +155,7 @@ class Demo {
             resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
-                    position: { x: 0, y: -1, z: 7 },
+                    position: { x: 0, y: -1, z: 7 }
                 }
             }
         });

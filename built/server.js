@@ -20,5 +20,7 @@ const server = new mixed_reality_extension_sdk_1.WebHost({
 server.adapter.onConnection(context => new app_1.default(context, server.baseUrl));
 // server.adapter.onConnection(context => new EaseCurve(context, server.baseUrl));
 // server.adapter.onConnection(context => new LookAt(context, server.baseUrl));
+// server.adapter.onConnection(context => new PlaneMaterial(context, server.baseUrl));
+// server.adapter.onConnection(context => new MaterialDisappears(context, server.baseUrl));
 exports.default = server;
 //# sourceMappingURL=server.js.map

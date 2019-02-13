@@ -40,9 +40,9 @@ export default class Demo {
         this.userJoined = this.userJoined.bind(this);
         this.context.onUserJoined(this.userJoined);
 
-        this.videoPlayerManager = new VideoPlayerManager(context);
+        this.videoPlayerManager = new VideoPlayerManager(context)
     }
-
+    
     private async started() {
         await this.loadMaterials();
 
@@ -174,7 +174,7 @@ export default class Demo {
             resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
-                    position: { x: 0, y: -1, z: 7 },
+                    position: { x: 0, y: -1, z: 7 }
                 }
             }
         });
