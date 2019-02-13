@@ -127,7 +127,7 @@ class Demo {
             actor: {
                 name: 'Cabin',
                 transform: {
-                    position: { x: 20, y: -1.4, z: 0.0 },
+                    position: { x: 20, y: -1.5, z: 0.0 },
                     rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -90 * mixed_reality_extension_sdk_1.DegreesToRadians),
                     scale: { x: 0.8, y: 0.8, z: 0.8 }
                 }
@@ -155,7 +155,8 @@ class Demo {
             resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
-                    position: { x: 0, y: -1.6, z: 7 }
+                    position: { x: 0, y: -1.6, z: 7 },
+                    scale: { x: 1.5, y: 1.5, z: 1.5 }
                 }
             }
         });
@@ -176,7 +177,7 @@ class Demo {
             actor: {
                 name: 'Box',
                 transform: {
-                    position: { x: 0.0, y: 0.4, z: 7 }
+                    position: { x: 0.0, y: 1.2, z: 7 }
                 }
             }
         });
