@@ -11,7 +11,7 @@ import * as GltfGen from '@microsoft/gltf-gen';
 
 import Server from './server'
 
-export default class PlaneMaterial {
+export default class PlaneTiling {
     constructor(private context: Context, private baseUrl: string) {
         this.context.onStarted(() => this.started());
     }
@@ -31,31 +31,35 @@ export default class PlaneMaterial {
     
         const assetGroup = await this.context.assetManager.loadGltf('gltf-buffer', buffer);
 
-        // Sphere
+        // Plane - not tiled
         Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: PrimitiveShape.Sphere,
-                radius: 0.5
+                shape: PrimitiveShape.Plane,
+                dimensions: { x: 1, y: 0, z: 1 },
+                uSegments: 1,
+                vSegments: 1
             },
             actor: {
                 materialId: assetGroup.materials.byIndex(0).id,
                 transform: {
                     position: { x: -1, y: 0.5, z: 3 },
-                    rotation: Quaternion.RotationAxis(Vector3.Up(), 180 * DegreesToRadians)
-                }
+                    rotation: Quaternion.RotationAxis(Vector3.Right(), -90 * DegreesToRadians)
+                },
             }
         });
 
-        // Plane
+        // Plane - tiled
         Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: PrimitiveShape.Plane,
-                dimensions: { x: 1, y: 0, z: 1 },
+                dimensions: { x: 2, y: 0, z: 2 },
+                uSegments: 2,
+                vSegments: 2
             },
             actor: {
                 materialId: assetGroup.materials.byIndex(0).id,
                 transform: {
-                    position: { x: 1, y: 0.5, z: 3 },
+                    position: { x: 1, y: 1, z: 3 },
                     rotation: Quaternion.RotationAxis(Vector3.Right(), -90 * DegreesToRadians)
                 },
             }

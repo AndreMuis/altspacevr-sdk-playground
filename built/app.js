@@ -105,17 +105,17 @@ class Demo {
             }
         });
         // Ground
+        const grassMaterial = this.assetGroup.materials.byIndex(0);
+        grassMaterial.mainTextureScale.set(1000, 1000);
         mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: mixed_reality_extension_sdk_1.PrimitiveShape.Plane,
-                dimensions: { x: 1000, y: 0, z: 1000 },
-                uSegments: 1000,
-                vSegments: 1000
+                dimensions: { x: 1000, y: 0, z: 1000 }
             },
             addCollider: true,
             actor: {
                 name: 'Plane',
-                materialId: this.assetGroup.materials.byIndex(0).id,
+                materialId: grassMaterial.id,
                 transform: {
                     position: { x: 0, y: -1.6, z: 0 }
                 }
@@ -156,6 +156,14 @@ class Demo {
             actor: {
                 transform: {
                     position: { x: 0, y: -1, z: 7 }
+                }
+            }
+        });
+        await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
+            resourceUrl: `${this.baseUrl}/DamagedHelmet.glb`,
+            actor: {
+                transform: {
+                    position: { x: 0, y: 0, z: 2 }
                 }
             }
         });

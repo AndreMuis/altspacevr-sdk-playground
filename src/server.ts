@@ -9,8 +9,7 @@ import { resolve as resolvePath } from 'path';
 import Demo from './app';
 import EaseCurve from './ease-curve';
 import LookAt from './look-at';
-import PlaneMaterial from './plane-material';
-import MaterialDisappears from './material-disappears';
+import PlaneTiling from './plane-tiling';
 
 import { userInfo } from 'os';
 
@@ -22,11 +21,9 @@ const server = new WebHost({
     baseDir: resolvePath(__dirname, '../public')
 });
 
-// Handle new application sessions
 server.adapter.onConnection(context => new Demo(context, server.baseUrl));
 // server.adapter.onConnection(context => new EaseCurve(context, server.baseUrl));
 // server.adapter.onConnection(context => new LookAt(context, server.baseUrl));
-// server.adapter.onConnection(context => new PlaneMaterial(context, server.baseUrl));
-// server.adapter.onConnection(context => new MaterialDisappears(context, server.baseUrl));
+// server.adapter.onConnection(context => new PlaneTiling(context, server.baseUrl));
 
 export default server;
