@@ -421,7 +421,7 @@ export default class Demo {
             resourceUrl: `${this.baseUrl}/DamagedHelmet.glb`,
             actor: {
                 transform: {
-                    position: { x: -8, y: 0.5, z: -7 }
+                    position: { x: -9, y: 0.5, z: -9 }
                 }
             }
         });
@@ -440,6 +440,7 @@ export default class Demo {
             keyframes: this.generateSpinKeyframes(5, Vector3.Up()),
             events: []
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
+
         lightParentActor.enableAnimation("spin");
     
         await Actor.CreatePrimitive(this.context, {
