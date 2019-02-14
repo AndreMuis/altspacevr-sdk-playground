@@ -19,6 +19,7 @@ export default class Demo {
     private setupCesiumMan;
     private setupSkull;
     setupSpheres(): Promise<void>;
+    setupLight(): Promise<void>;
     private setupTeleporter;
     private setupVideoPlayer;
     private setupSphereActors;

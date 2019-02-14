@@ -51,6 +51,7 @@ export default class Demo {
         await this.setupCesiumMan();
         await this.setupSkull();
         await this.setupSpheres();
+        await this.setupLight();
         await this.setupTeleporter();
         await this.setupVideoPlayer();
 
@@ -178,15 +179,6 @@ export default class Demo {
                 transform: {
                     position: { x: 0, y: -1.6, z: 7 },
                     scale: {x: 1.5, y: 1.5, z: 1.5}
-                }
-            }
-        });
-
-        await Actor.CreateFromGltf(this.context, {
-            resourceUrl: `${this.baseUrl}/DamagedHelmet.glb`,
-            actor: {
-                transform: {
-                    position: { x: 0, y: 0, z: 2 }
                 }
             }
         });
@@ -421,6 +413,47 @@ export default class Demo {
 
         resetButtonBehavior.onClick('released', (userId: string) => {
             resetTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
+        });
+    }
+
+    public async setupLight() {
+        const helmetActor = await Actor.CreateFromGltf(this.context, {
+            resourceUrl: `${this.baseUrl}/DamagedHelmet.glb`,
+            actor: {
+                transform: {
+                    position: { x: -8, y: 0.5, z: -7 }
+                }
+            }
+        });
+
+        const lightParentActor = await Actor.CreateEmpty(this.context, {
+            actor: {
+                parentId: helmetActor.id,
+                transform: {
+                    position: { x: 0, y: 0, z: 0 }
+                }
+            }
+        });
+
+        await lightParentActor.createAnimation('spin', {
+            wrapMode: AnimationWrapMode.Loop,
+            keyframes: this.generateSpinKeyframes(5, Vector3.Up()),
+            events: []
+        }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
+        lightParentActor.enableAnimation("spin");
+    
+        await Actor.CreatePrimitive(this.context, {
+            definition: {
+                shape: PrimitiveShape.Sphere,
+                radius: 0.2
+            },
+            actor: {
+                parentId: lightParentActor.id,
+                transform: {
+                    position: { x: 3, y: 0, z: 0 }
+                },
+                light: { type: 'point', intensity: 4, range: 10 }
+            }
         });
     }
 
