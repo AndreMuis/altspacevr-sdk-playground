@@ -421,7 +421,7 @@ export default class Demo {
             resourceUrl: `${this.baseUrl}/DamagedHelmet.glb`,
             actor: {
                 transform: {
-                    position: { x: -9, y: 0.5, z: -9 }
+                    position: { x: -10, y: 0.5, z: -10 }
                 }
             }
         });

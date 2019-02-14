@@ -360,7 +360,7 @@ class Demo {
             resourceUrl: `${this.baseUrl}/DamagedHelmet.glb`,
             actor: {
                 transform: {
-                    position: { x: -8, y: 0.5, z: -7 }
+                    position: { x: -10, y: 0.5, z: -10 }
                 }
             }
         });
