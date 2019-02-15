@@ -21,9 +21,9 @@ const server = new WebHost({
     baseDir: resolvePath(__dirname, '../public')
 });
 
-// server.adapter.onConnection(context => new Demo(context, server.baseUrl));
+server.adapter.onConnection(context => new Demo(context, server.baseUrl));
 // server.adapter.onConnection(context => new EaseCurve(context, server.baseUrl));
 // server.adapter.onConnection(context => new LookAt(context, server.baseUrl));
-server.adapter.onConnection(context => new PlaneTiling(context, server.baseUrl));
+// server.adapter.onConnection(context => new PlaneTiling(context, server.baseUrl));
 
 export default server;
