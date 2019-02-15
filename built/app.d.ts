@@ -2,8 +2,9 @@ import { Context } from '@microsoft/mixed-reality-extension-sdk';
 export default class Demo {
     private context;
     private baseUrl;
-    private assetGroup;
     private lastUser;
+    private grassMaterial;
+    private beachBallMaterial;
     private isCesiumManWalking;
     private cabinActor;
     private skullActor;

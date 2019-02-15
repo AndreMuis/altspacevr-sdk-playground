@@ -25,8 +25,10 @@ import * as GltfGen from '@microsoft/gltf-gen';
 import Server from './server'
 
 export default class Demo {
-    private assetGroup: AssetGroup = null;
     private lastUser: User = null;
+
+    private grassMaterial: Material = null;
+    private beachBallMaterial: Material = null;
 
     private isCesiumManWalking: Boolean = false;
     private cabinActor: Actor = null;
@@ -80,27 +82,21 @@ export default class Demo {
 
     private async loadMaterials()
     {
-        const beachBallMaterial = new GltfGen.Material({
-            baseColorTexture: new GltfGen.Texture({
-                source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/beach-ball.png`
-                })
-            })
+        const beachBallTexture = await this.context.assetManager.createTexture('beach-ball', {
+            uri: `${this.baseUrl}/beach-ball.png`
         });
 
-        const grassMaterial = new GltfGen.Material({
-            baseColorTexture: new GltfGen.Texture({
-                source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/grass.png`
-                })
-            })
+        this.beachBallMaterial = await this.context.assetManager.createMaterial('beach-ball', {
+            mainTextureId: beachBallTexture.id
         });
 
-        const gltfFactory = new GltfGen.GltfFactory(null, null, [grassMaterial, beachBallMaterial]);
+        const grassTexture = await this.context.assetManager.createTexture('grass', {
+            uri: `${this.baseUrl}/grass.png`
+        });
 
-        const buffer = Server.registerStaticBuffer('gltf-buffer', gltfFactory.generateGLTF());
-    
-        this.assetGroup = await this.context.assetManager.loadGltf('gltf-buffer', buffer);
+        this.grassMaterial = await this.context.assetManager.createMaterial('grass', {
+            mainTextureId: grassTexture.id
+        });
     }
 
     public async setupScene()
@@ -122,8 +118,7 @@ export default class Demo {
         });
 
         // Ground
-        const grassMaterial: Material = this.assetGroup.materials.byIndex(0);
-        grassMaterial.mainTextureScale.set(1000, 1000);
+        this.grassMaterial.mainTextureScale.set(1000, 1000);
 
         Actor.CreatePrimitive(this.context, {
             definition: {
@@ -133,7 +128,7 @@ export default class Demo {
             addCollider: true,
             actor: {
                 name: 'Plane',
-                materialId: grassMaterial.id,
+                materialId: this.grassMaterial.id,
                 transform: {
                     position: { x: 0, y: -1.6, z: 0 }
                 }
@@ -519,7 +514,7 @@ export default class Demo {
                         },
                         addCollider: true,
                         actor: {
-                            materialId: this.assetGroup.materials.byIndex(1).id,
+                            materialId: this.beachBallMaterial.id,
                             transform: {
                                 position: {
                                     x: x + Math.random() / 2.0, 

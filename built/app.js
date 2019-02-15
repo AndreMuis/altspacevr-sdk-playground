@@ -1,25 +1,14 @@
 "use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mixed_reality_extension_sdk_1 = require("@microsoft/mixed-reality-extension-sdk");
 const mixed_reality_extension_altspacevr_extras_1 = require("@microsoft/mixed-reality-extension-altspacevr-extras");
-const GltfGen = __importStar(require("@microsoft/gltf-gen"));
-const server_1 = __importDefault(require("./server"));
 class Demo {
     constructor(context, baseUrl) {
         this.context = context;
         this.baseUrl = baseUrl;
-        this.assetGroup = null;
         this.lastUser = null;
+        this.grassMaterial = null;
+        this.beachBallMaterial = null;
         this.isCesiumManWalking = false;
         this.cabinActor = null;
         this.skullActor = null;
@@ -71,23 +60,18 @@ class Demo {
         }
     }
     async loadMaterials() {
-        const beachBallMaterial = new GltfGen.Material({
-            baseColorTexture: new GltfGen.Texture({
-                source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/beach-ball.png`
-                })
-            })
+        const beachBallTexture = await this.context.assetManager.createTexture('beach-ball', {
+            uri: `${this.baseUrl}/beach-ball.png`
         });
-        const grassMaterial = new GltfGen.Material({
-            baseColorTexture: new GltfGen.Texture({
-                source: new GltfGen.Image({
-                    uri: `${this.baseUrl}/grass.png`
-                })
-            })
+        this.beachBallMaterial = await this.context.assetManager.createMaterial('beach-ball', {
+            mainTextureId: beachBallTexture.id
         });
-        const gltfFactory = new GltfGen.GltfFactory(null, null, [grassMaterial, beachBallMaterial]);
-        const buffer = server_1.default.registerStaticBuffer('gltf-buffer', gltfFactory.generateGLTF());
-        this.assetGroup = await this.context.assetManager.loadGltf('gltf-buffer', buffer);
+        const grassTexture = await this.context.assetManager.createTexture('grass', {
+            uri: `${this.baseUrl}/grass.png`
+        });
+        this.grassMaterial = await this.context.assetManager.createMaterial('grass', {
+            mainTextureId: grassTexture.id
+        });
     }
     async setupScene() {
         // Title
@@ -106,8 +90,7 @@ class Demo {
             }
         });
         // Ground
-        const grassMaterial = this.assetGroup.materials.byIndex(0);
-        grassMaterial.mainTextureScale.set(1000, 1000);
+        this.grassMaterial.mainTextureScale.set(1000, 1000);
         mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: mixed_reality_extension_sdk_1.PrimitiveShape.Plane,
@@ -116,7 +99,7 @@ class Demo {
             addCollider: true,
             actor: {
                 name: 'Plane',
-                materialId: grassMaterial.id,
+                materialId: this.grassMaterial.id,
                 transform: {
                     position: { x: 0, y: -1.6, z: 0 }
                 }
@@ -443,7 +426,7 @@ class Demo {
                         },
                         addCollider: true,
                         actor: {
-                            materialId: this.assetGroup.materials.byIndex(1).id,
+                            materialId: this.beachBallMaterial.id,
                             transform: {
                                 position: {
                                     x: x + Math.random() / 2.0,
