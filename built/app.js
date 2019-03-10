@@ -239,7 +239,7 @@ class Demo {
                 parentId: skullParentActor.id,
                 transform: {
                     position: { x: 0, y: 6, z: 9 },
-                    scale: { x: 6, y: 6, z: 6 }
+                    scale: { x: 3, y: 3, z: 3 }
                 }
             }
         });
