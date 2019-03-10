@@ -114,7 +114,7 @@ class Demo {
         });
         // Cabin
         this.cabinActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
-            resourceId: "993646440251130011",
+            resourceId: "artifact:993646440251130011",
             actor: {
                 name: 'Cabin',
                 transform: {
@@ -228,7 +228,7 @@ class Demo {
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
         skullParentActor.enableAnimation("spin");
         this.skullActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
-            resourceId: "986410464940392936",
+            resourceId: "artifact:986410464940392936",
             actor: {
                 name: 'frog',
                 parentId: skullParentActor.id,
@@ -384,7 +384,7 @@ class Demo {
     }
     async setupTeleporter() {
         const teleporterActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
-            resourceId: "Teleporter: 1133592462367917034",
+            resourceId: "teleporter:1133592462367917034",
             actor: {
                 name: 'teleporter',
                 transform: {

@@ -114,7 +114,7 @@ export default class Demo {
 
         // Cabin
         this.cabinActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
-            resourceId: "993646440251130011",
+            resourceId: "artifact:993646440251130011",
             actor: {
                 name: 'Cabin',
                 transform: {
@@ -248,7 +248,7 @@ export default class Demo {
         skullParentActor.enableAnimation("spin");
     
         this.skullActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
-            resourceId: "986410464940392936", // 1050090527044666141
+            resourceId: "artifact:986410464940392936", // 1050090527044666141
             actor: {
                 name: 'frog',
                 parentId: skullParentActor.id,
@@ -432,7 +432,7 @@ export default class Demo {
 
     private async setupTeleporter() {
         const teleporterActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
-            resourceId: "Teleporter: 1133592462367917034",
+            resourceId: "teleporter:1133592462367917034",
             actor: {
                 name: 'teleporter',
                 transform: {
