@@ -1,49 +1,26 @@
-import {
-    Actor,
-    AnimationKeyframe,
-    AnimationWrapMode,
-    ButtonBehavior,
-    Context,
-    DegreesToRadians,
-    ForwardPromise,
-    LookAtMode,
-    PrimitiveShape,
-    Quaternion,
-    TextAnchorLocation,
-    User,
-    Vector3,
-    AssetGroup,
-    Material
-} from '@microsoft/mixed-reality-extension-sdk';
-
-import {
-    VideoPlayerManager
-} from '@microsoft/mixed-reality-extension-altspacevr-extras';
-
-import * as GltfGen from '@microsoft/gltf-gen';
-
-import Server from './server'
+import * as MRESDK from '@microsoft/mixed-reality-extension-sdk';
+import * as MREEXT from '@microsoft/mixed-reality-extension-altspacevr-extras';
 
 export default class Demo {
-    private lastUser: User = null;
+    private lastUser: MRESDK.User = null;
 
-    private grassMaterial: Material = null;
-    private beachBallMaterial: Material = null;
+    private grassMaterial: MRESDK.Material = null;
+    private beachBallMaterial: MRESDK.Material = null;
 
     private isCesiumManWalking: Boolean = false;
-    private cabinActor: Actor = null;
-    private skullActor: Actor = null;
-    private sphereActorPromises: Array<ForwardPromise<Actor>> = [];
-    private videoPlayerManager: VideoPlayerManager;
-    private logActor: Actor = null;
+    private cabinActor: MRESDK.Actor = null;
+    private skullActor: MRESDK.Actor = null;
+    private sphereActorPromises: Array<MRESDK.ForwardPromise<MRESDK.Actor>> = [];
+    private videoPlayerManager: MREEXT.VideoPlayerManager;
+    private logActor: MRESDK.Actor = null;
 
-    constructor(private context: Context, private baseUrl: string) {
+    constructor(private context: MRESDK.Context, private baseUrl: string) {
         this.context.onStarted(() => this.started());
 
         this.userJoined = this.userJoined.bind(this);
         this.context.onUserJoined(this.userJoined);
 
-        this.videoPlayerManager = new VideoPlayerManager(context)
+        this.videoPlayerManager = new MREEXT.VideoPlayerManager(context)
     }
     
     private async started() {
@@ -58,15 +35,15 @@ export default class Demo {
         await this.setupVideoPlayer();
 
         if (this.lastUser != null) {
-            this.skullActor.lookAt(this.lastUser, LookAtMode.TargetXY);
+            this.skullActor.lookAt(this.lastUser, MRESDK.LookAtMode.TargetXY);
         }
     }
 
-    private userJoined = async (user: User) => {
+    private userJoined = async (user: MRESDK.User) => {
         this.lastUser = user;
 
         if (this.skullActor != null) {
-            this.skullActor.lookAt(this.lastUser, LookAtMode.TargetXY);
+            this.skullActor.lookAt(this.lastUser, MRESDK.LookAtMode.TargetXY);
         }
 
         this.addToLog(user.name);
@@ -102,7 +79,7 @@ export default class Demo {
     public async setupScene()
     {
         // Title
-        Actor.CreateEmpty(this.context, {
+        MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 transform: {
@@ -110,7 +87,7 @@ export default class Demo {
                 },
                 text: {
                     contents: "SDK Playground",
-                    anchor: TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 255 / 255, g: 255 / 255, b: 255 / 255 },
                     height: 1.0
                 }
@@ -120,9 +97,9 @@ export default class Demo {
         // Ground
         this.grassMaterial.mainTextureScale.set(1000, 1000);
 
-        Actor.CreatePrimitive(this.context, {
+        MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: PrimitiveShape.Plane,
+                shape: MRESDK.PrimitiveShape.Plane,
                 dimensions: { x: 1000, y: 0, z: 1000 }
             },
             addCollider: true,
@@ -136,29 +113,29 @@ export default class Demo {
         });
 
         // Cabin
-        this.cabinActor = await Actor.CreateFromLibrary(this.context, {
+        this.cabinActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
             resourceId: "993646440251130011",
             actor: {
                 name: 'Cabin',
                 transform: {
                     position: { x: 20, y: -1.5, z: 0.0 },
-                    rotation: Quaternion.RotationAxis(Vector3.Up(), -90 * DegreesToRadians),
+                    rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians),
                     scale: { x: 0.8, y: 0.8, z: 0.8}
                 }
             }
         });
 
         // Log
-        this.logActor = await Actor.CreateEmpty(this.context, {
+        this.logActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 transform: {
                     position: { x: -5, y: 0, z: 0 },
-                    rotation: Quaternion.RotationAxis(Vector3.Up(), -90 * DegreesToRadians)
+                    rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                 },
                 text: {
                     contents: "log start",
-                    anchor: TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.1
                 }
@@ -168,7 +145,7 @@ export default class Demo {
 
     private async setupCesiumMan()
     {
-        const cesiumManActor = await Actor.CreateFromGltf(this.context, {
+        const cesiumManActor = await MRESDK.Actor.CreateFromGltf(this.context, {
             resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
@@ -178,9 +155,9 @@ export default class Demo {
             }
         });
 
-        const boxActor = await Actor.CreatePrimitive(this.context, {
+        const boxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: PrimitiveShape.Box,
+                shape: MRESDK.PrimitiveShape.Box,
                 dimensions: { x: 1.5, y: 0.25, z: 0.01 }
             },
             addCollider: true,
@@ -192,7 +169,7 @@ export default class Demo {
             }
         });
 
-        const textActor = await Actor.CreateEmpty(this.context, {
+        const textActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: boxActor.id,
@@ -201,7 +178,7 @@ export default class Demo {
                 },
                 text: {
                     contents: "Start Walking",
-                    anchor: TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.2
                 }
@@ -218,7 +195,7 @@ export default class Demo {
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
 
-        const buttonBehavior = boxActor.setBehavior(ButtonBehavior);
+        const buttonBehavior = boxActor.setBehavior(MRESDK.ButtonBehavior);
 
         buttonBehavior.onHover('enter', (userId: string) => {
             boxActor.enableAnimation('expand');
@@ -252,7 +229,7 @@ export default class Demo {
 
     private async setupSkull()
     {
-        const skullParentActor = await Actor.CreateEmpty(this.context, {
+        const skullParentActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Skull Parent',
                 parentId: this.cabinActor.id,
@@ -263,14 +240,14 @@ export default class Demo {
         });
 
         await skullParentActor.createAnimation('spin', {
-            wrapMode: AnimationWrapMode.Loop,
-            keyframes: this.generateSpinKeyframes(10, Vector3.Up()),
+            wrapMode: MRESDK.AnimationWrapMode.Loop,
+            keyframes: this.generateSpinKeyframes(10, MRESDK.Vector3.Up()),
             events: []
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
         
         skullParentActor.enableAnimation("spin");
     
-        this.skullActor = await Actor.CreateFromLibrary(this.context, {
+        this.skullActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
             resourceId: "986410464940392936", // 1050090527044666141
             actor: {
                 name: 'frog',
@@ -287,9 +264,9 @@ export default class Demo {
         this.setupSphereActors()
 
         // Drop Button
-        const dropBoxActor = await Actor.CreatePrimitive(this.context, {
+        const dropBoxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: PrimitiveShape.Box,
+                shape: MRESDK.PrimitiveShape.Box,
                 dimensions: { x: 0.6, y: 0.25, z: 0.01 }
             },
             addCollider: true,
@@ -301,7 +278,7 @@ export default class Demo {
             }
         });
 
-        const dropTextActor = await Actor.CreateEmpty(this.context, {
+        const dropTextActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: dropBoxActor.id,
@@ -310,7 +287,7 @@ export default class Demo {
                 },
                 text: {
                     contents: "Drop",
-                    anchor: TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.2
                 }
@@ -327,7 +304,7 @@ export default class Demo {
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
 
-        const dropButtonBehavior = dropBoxActor.setBehavior(ButtonBehavior);
+        const dropButtonBehavior = dropBoxActor.setBehavior(MRESDK.ButtonBehavior);
 
         dropButtonBehavior.onHover('enter', (userId: string) => {
             dropBoxActor.enableAnimation('expand');
@@ -348,9 +325,9 @@ export default class Demo {
         });
 
         // Reset Button
-        const resetBoxActor = await Actor.CreatePrimitive(this.context, {
+        const resetBoxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: PrimitiveShape.Box,
+                shape: MRESDK.PrimitiveShape.Box,
                 dimensions: { x: 0.7, y: 0.25, z: 0.01 }
             },
             addCollider: true,
@@ -362,7 +339,7 @@ export default class Demo {
             }
         });
 
-        const resetTextActor = await Actor.CreateEmpty(this.context, {
+        const resetTextActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: resetBoxActor.id,
@@ -371,7 +348,7 @@ export default class Demo {
                 },
                 text: {
                     contents: "Reset",
-                    anchor: TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.2
                 }
@@ -388,7 +365,7 @@ export default class Demo {
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
 
-        const resetButtonBehavior = resetBoxActor.setBehavior(ButtonBehavior);
+        const resetButtonBehavior = resetBoxActor.setBehavior(MRESDK.ButtonBehavior);
 
         resetButtonBehavior.onHover('enter', (userId: string) => {
             resetBoxActor.enableAnimation('expand');
@@ -412,7 +389,7 @@ export default class Demo {
     }
 
     public async setupLight() {
-        const helmetActor = await Actor.CreateFromGltf(this.context, {
+        const helmetActor = await MRESDK.Actor.CreateFromGltf(this.context, {
             resourceUrl: `${this.baseUrl}/DamagedHelmet.glb`,
             actor: {
                 transform: {
@@ -421,7 +398,7 @@ export default class Demo {
             }
         });
 
-        const lightParentActor = await Actor.CreateEmpty(this.context, {
+        const lightParentActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 parentId: helmetActor.id,
                 transform: {
@@ -431,16 +408,16 @@ export default class Demo {
         });
 
         await lightParentActor.createAnimation('spin', {
-            wrapMode: AnimationWrapMode.Loop,
-            keyframes: this.generateSpinKeyframes(5, Vector3.Up()),
+            wrapMode: MRESDK.AnimationWrapMode.Loop,
+            keyframes: this.generateSpinKeyframes(5, MRESDK.Vector3.Up()),
             events: []
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
 
         lightParentActor.enableAnimation("spin");
     
-        await Actor.CreatePrimitive(this.context, {
+        await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: PrimitiveShape.Sphere,
+                shape: MRESDK.PrimitiveShape.Sphere,
                 radius: 0.2
             },
             actor: {
@@ -454,7 +431,7 @@ export default class Demo {
     }
 
     private async setupTeleporter() {
-        const teleporterActor = await Actor.CreateFromLibrary(this.context, {
+        const teleporterActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
             resourceId: "Teleporter: 1133592462367917034",
             actor: {
                 name: 'teleporter',
@@ -464,7 +441,7 @@ export default class Demo {
             }
         });
 
-        await Actor.CreateEmpty(this.context, {
+        await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'teleporter text',
                 parentId: teleporterActor.id,
@@ -473,7 +450,7 @@ export default class Demo {
                 },
                 text: {
                     contents: "Teleporter Test World",
-                    anchor: TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.2
                 }
@@ -483,12 +460,12 @@ export default class Demo {
 
     private async setupVideoPlayer() 
     {
-        const videoPlayer = await Actor.CreateEmpty(this.context, {
+        const videoPlayer = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'video player',
                 transform: {
                     position: { x: 0, y: 0.5, z: -6 },
-                    rotation: Quaternion.RotationAxis(Vector3.Up(), 180 * DegreesToRadians),
+                    rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 180 * MRESDK.DegreesToRadians),
                     scale: { x: 2, y: 2, z: 2 }
                 },
             }
@@ -507,9 +484,9 @@ export default class Demo {
         for (let x = -12; x <= -8; x = x + 2) {
             for (let y = 5; y <= 15; y = y + 1) {
                 for (let z = 10; z <= 15; z = z + 2) {
-                    const sphereActorPromise = Actor.CreatePrimitive(this.context, {
+                    const sphereActorPromise = MRESDK.Actor.CreatePrimitive(this.context, {
                         definition: {
-                            shape: PrimitiveShape.Sphere,
+                            shape: MRESDK.PrimitiveShape.Sphere,
                             radius: 0.4
                         },
                         addCollider: true,
@@ -532,20 +509,20 @@ export default class Demo {
         this.sphereActorPromises.forEach(promise => promise.value.enableRigidBody( { useGravity: false } ));
     }
 
-    private generateSpinKeyframes(duration: number, axis: Vector3): AnimationKeyframe[] {
+    private generateSpinKeyframes(duration: number, axis: MRESDK.Vector3): MRESDK.AnimationKeyframe[] {
         return [{
             time: 0 * duration,
-            value: { transform: { rotation: Quaternion.RotationAxis(axis, 0) } }
+            value: { transform: { rotation: MRESDK.Quaternion.RotationAxis(axis, 0) } }
         }, {
             time: 0.5 * duration,
-            value: { transform: { rotation: Quaternion.RotationAxis(axis, 180 * DegreesToRadians) } }
+            value: { transform: { rotation: MRESDK.Quaternion.RotationAxis(axis, 180 * MRESDK.DegreesToRadians) } }
         }, {
             time: 1 * duration,
-            value: { transform: { rotation: Quaternion.RotationAxis(axis, 360 * DegreesToRadians) } }
+            value: { transform: { rotation: MRESDK.Quaternion.RotationAxis(axis, 360 * MRESDK.DegreesToRadians) } }
         }];
     }
 
-    private expandAnimationData: AnimationKeyframe[] = [{
+    private expandAnimationData: MRESDK.AnimationKeyframe[] = [{
         time: 0,
         value: { transform: { scale: { x: 1, y: 1, z: 1 } } }
     }, {
@@ -553,7 +530,7 @@ export default class Demo {
         value: { transform: { scale: { x: 1.1, y: 1.1, z: 1.1 } } }
     }];
 
-    private contractAnimationData: AnimationKeyframe[] = [{
+    private contractAnimationData: MRESDK.AnimationKeyframe[] = [{
         time: 0,
         value: { transform: { scale: { x: 1.1, y: 1.1, z: 1.1 } } }
     }, {

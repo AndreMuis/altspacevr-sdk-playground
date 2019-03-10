@@ -32,8 +32,8 @@
     "typescript": "3.0.3"
   },
   "dependencies": {
-    "@microsoft/gltf-gen": "^0.6.3",
-    "@microsoft/mixed-reality-extension-sdk": "^0.6.3",
-    "@microsoft/mixed-reality-extension-altspacevr-extras": "^0.6.3"
+    "@microsoft/gltf-gen": "^0.7.3",
+    "@microsoft/mixed-reality-extension-sdk": "^0.7.3",
+    "@microsoft/mixed-reality-extension-altspacevr-extras": "^0.7.3"
   }
 }

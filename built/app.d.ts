@@ -1,4 +1,4 @@
-import { Context } from '@microsoft/mixed-reality-extension-sdk';
+import * as MRESDK from '@microsoft/mixed-reality-extension-sdk';
 export default class Demo {
     private context;
     private baseUrl;
@@ -11,7 +11,7 @@ export default class Demo {
     private sphereActorPromises;
     private videoPlayerManager;
     private logActor;
-    constructor(context: Context, baseUrl: string);
+    constructor(context: MRESDK.Context, baseUrl: string);
     private started;
     private userJoined;
     private addToLog;

@@ -1,7 +1,14 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mixed_reality_extension_sdk_1 = require("@microsoft/mixed-reality-extension-sdk");
-const mixed_reality_extension_altspacevr_extras_1 = require("@microsoft/mixed-reality-extension-altspacevr-extras");
+const MRESDK = __importStar(require("@microsoft/mixed-reality-extension-sdk"));
+const MREEXT = __importStar(require("@microsoft/mixed-reality-extension-altspacevr-extras"));
 class Demo {
     constructor(context, baseUrl) {
         this.context = context;
@@ -17,7 +24,7 @@ class Demo {
         this.userJoined = async (user) => {
             this.lastUser = user;
             if (this.skullActor != null) {
-                this.skullActor.lookAt(this.lastUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
+                this.skullActor.lookAt(this.lastUser, MRESDK.LookAtMode.TargetXY);
             }
             this.addToLog(user.name);
         };
@@ -38,7 +45,7 @@ class Demo {
         this.context.onStarted(() => this.started());
         this.userJoined = this.userJoined.bind(this);
         this.context.onUserJoined(this.userJoined);
-        this.videoPlayerManager = new mixed_reality_extension_altspacevr_extras_1.VideoPlayerManager(context);
+        this.videoPlayerManager = new MREEXT.VideoPlayerManager(context);
     }
     async started() {
         await this.loadMaterials();
@@ -50,7 +57,7 @@ class Demo {
         await this.setupTeleporter();
         await this.setupVideoPlayer();
         if (this.lastUser != null) {
-            this.skullActor.lookAt(this.lastUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
+            this.skullActor.lookAt(this.lastUser, MRESDK.LookAtMode.TargetXY);
         }
     }
     addToLog(message) {
@@ -75,7 +82,7 @@ class Demo {
     }
     async setupScene() {
         // Title
-        mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 transform: {
@@ -83,7 +90,7 @@ class Demo {
                 },
                 text: {
                     contents: "SDK Playground",
-                    anchor: mixed_reality_extension_sdk_1.TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 255 / 255, g: 255 / 255, b: 255 / 255 },
                     height: 1.0
                 }
@@ -91,9 +98,9 @@ class Demo {
         });
         // Ground
         this.grassMaterial.mainTextureScale.set(1000, 1000);
-        mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+        MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Plane,
+                shape: MRESDK.PrimitiveShape.Plane,
                 dimensions: { x: 1000, y: 0, z: 1000 }
             },
             addCollider: true,
@@ -106,28 +113,28 @@ class Demo {
             }
         });
         // Cabin
-        this.cabinActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
+        this.cabinActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
             resourceId: "993646440251130011",
             actor: {
                 name: 'Cabin',
                 transform: {
                     position: { x: 20, y: -1.5, z: 0.0 },
-                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -90 * mixed_reality_extension_sdk_1.DegreesToRadians),
+                    rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians),
                     scale: { x: 0.8, y: 0.8, z: 0.8 }
                 }
             }
         });
         // Log
-        this.logActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        this.logActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 transform: {
                     position: { x: -5, y: 0, z: 0 },
-                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), -90 * mixed_reality_extension_sdk_1.DegreesToRadians)
+                    rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                 },
                 text: {
                     contents: "log start",
-                    anchor: mixed_reality_extension_sdk_1.TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.1
                 }
@@ -135,7 +142,7 @@ class Demo {
         });
     }
     async setupCesiumMan() {
-        const cesiumManActor = await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
+        const cesiumManActor = await MRESDK.Actor.CreateFromGltf(this.context, {
             resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
@@ -144,9 +151,9 @@ class Demo {
                 }
             }
         });
-        const boxActor = await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+        const boxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Box,
+                shape: MRESDK.PrimitiveShape.Box,
                 dimensions: { x: 1.5, y: 0.25, z: 0.01 }
             },
             addCollider: true,
@@ -157,7 +164,7 @@ class Demo {
                 }
             }
         });
-        const textActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const textActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: boxActor.id,
@@ -166,7 +173,7 @@ class Demo {
                 },
                 text: {
                     contents: "Start Walking",
-                    anchor: mixed_reality_extension_sdk_1.TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.2
                 }
@@ -180,7 +187,7 @@ class Demo {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
-        const buttonBehavior = boxActor.setBehavior(mixed_reality_extension_sdk_1.ButtonBehavior);
+        const buttonBehavior = boxActor.setBehavior(MRESDK.ButtonBehavior);
         buttonBehavior.onHover('enter', (userId) => {
             boxActor.enableAnimation('expand');
         });
@@ -205,7 +212,7 @@ class Demo {
         });
     }
     async setupSkull() {
-        const skullParentActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const skullParentActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Skull Parent',
                 parentId: this.cabinActor.id,
@@ -215,12 +222,12 @@ class Demo {
             }
         });
         await skullParentActor.createAnimation('spin', {
-            wrapMode: mixed_reality_extension_sdk_1.AnimationWrapMode.Loop,
-            keyframes: this.generateSpinKeyframes(10, mixed_reality_extension_sdk_1.Vector3.Up()),
+            wrapMode: MRESDK.AnimationWrapMode.Loop,
+            keyframes: this.generateSpinKeyframes(10, MRESDK.Vector3.Up()),
             events: []
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
         skullParentActor.enableAnimation("spin");
-        this.skullActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
+        this.skullActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
             resourceId: "986410464940392936",
             actor: {
                 name: 'frog',
@@ -235,9 +242,9 @@ class Demo {
     async setupSpheres() {
         this.setupSphereActors();
         // Drop Button
-        const dropBoxActor = await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+        const dropBoxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Box,
+                shape: MRESDK.PrimitiveShape.Box,
                 dimensions: { x: 0.6, y: 0.25, z: 0.01 }
             },
             addCollider: true,
@@ -248,7 +255,7 @@ class Demo {
                 }
             }
         });
-        const dropTextActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const dropTextActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: dropBoxActor.id,
@@ -257,7 +264,7 @@ class Demo {
                 },
                 text: {
                     contents: "Drop",
-                    anchor: mixed_reality_extension_sdk_1.TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.2
                 }
@@ -271,7 +278,7 @@ class Demo {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
-        const dropButtonBehavior = dropBoxActor.setBehavior(mixed_reality_extension_sdk_1.ButtonBehavior);
+        const dropButtonBehavior = dropBoxActor.setBehavior(MRESDK.ButtonBehavior);
         dropButtonBehavior.onHover('enter', (userId) => {
             dropBoxActor.enableAnimation('expand');
         });
@@ -286,9 +293,9 @@ class Demo {
             dropTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
         });
         // Reset Button
-        const resetBoxActor = await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+        const resetBoxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Box,
+                shape: MRESDK.PrimitiveShape.Box,
                 dimensions: { x: 0.7, y: 0.25, z: 0.01 }
             },
             addCollider: true,
@@ -299,7 +306,7 @@ class Demo {
                 }
             }
         });
-        const resetTextActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const resetTextActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'Text',
                 parentId: resetBoxActor.id,
@@ -308,7 +315,7 @@ class Demo {
                 },
                 text: {
                     contents: "Reset",
-                    anchor: mixed_reality_extension_sdk_1.TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.2
                 }
@@ -322,7 +329,7 @@ class Demo {
             keyframes: this.contractAnimationData,
             events: []
         }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
-        const resetButtonBehavior = resetBoxActor.setBehavior(mixed_reality_extension_sdk_1.ButtonBehavior);
+        const resetButtonBehavior = resetBoxActor.setBehavior(MRESDK.ButtonBehavior);
         resetButtonBehavior.onHover('enter', (userId) => {
             resetBoxActor.enableAnimation('expand');
         });
@@ -339,7 +346,7 @@ class Demo {
         });
     }
     async setupLight() {
-        const helmetActor = await mixed_reality_extension_sdk_1.Actor.CreateFromGltf(this.context, {
+        const helmetActor = await MRESDK.Actor.CreateFromGltf(this.context, {
             resourceUrl: `${this.baseUrl}/DamagedHelmet.glb`,
             actor: {
                 transform: {
@@ -347,7 +354,7 @@ class Demo {
                 }
             }
         });
-        const lightParentActor = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const lightParentActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 parentId: helmetActor.id,
                 transform: {
@@ -356,14 +363,14 @@ class Demo {
             }
         });
         await lightParentActor.createAnimation('spin', {
-            wrapMode: mixed_reality_extension_sdk_1.AnimationWrapMode.Loop,
-            keyframes: this.generateSpinKeyframes(5, mixed_reality_extension_sdk_1.Vector3.Up()),
+            wrapMode: MRESDK.AnimationWrapMode.Loop,
+            keyframes: this.generateSpinKeyframes(5, MRESDK.Vector3.Up()),
             events: []
         }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
         lightParentActor.enableAnimation("spin");
-        await mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+        await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
-                shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
+                shape: MRESDK.PrimitiveShape.Sphere,
                 radius: 0.2
             },
             actor: {
@@ -376,7 +383,7 @@ class Demo {
         });
     }
     async setupTeleporter() {
-        const teleporterActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {
+        const teleporterActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
             resourceId: "Teleporter: 1133592462367917034",
             actor: {
                 name: 'teleporter',
@@ -385,7 +392,7 @@ class Demo {
                 }
             }
         });
-        await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'teleporter text',
                 parentId: teleporterActor.id,
@@ -394,7 +401,7 @@ class Demo {
                 },
                 text: {
                     contents: "Teleporter Test World",
-                    anchor: mixed_reality_extension_sdk_1.TextAnchorLocation.MiddleCenter,
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.2
                 }
@@ -402,12 +409,12 @@ class Demo {
         });
     }
     async setupVideoPlayer() {
-        const videoPlayer = await mixed_reality_extension_sdk_1.Actor.CreateEmpty(this.context, {
+        const videoPlayer = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 name: 'video player',
                 transform: {
                     position: { x: 0, y: 0.5, z: -6 },
-                    rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(mixed_reality_extension_sdk_1.Vector3.Up(), 180 * mixed_reality_extension_sdk_1.DegreesToRadians),
+                    rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 180 * MRESDK.DegreesToRadians),
                     scale: { x: 2, y: 2, z: 2 }
                 },
             }
@@ -419,9 +426,9 @@ class Demo {
         for (let x = -12; x <= -8; x = x + 2) {
             for (let y = 5; y <= 15; y = y + 1) {
                 for (let z = 10; z <= 15; z = z + 2) {
-                    const sphereActorPromise = mixed_reality_extension_sdk_1.Actor.CreatePrimitive(this.context, {
+                    const sphereActorPromise = MRESDK.Actor.CreatePrimitive(this.context, {
                         definition: {
-                            shape: mixed_reality_extension_sdk_1.PrimitiveShape.Sphere,
+                            shape: MRESDK.PrimitiveShape.Sphere,
                             radius: 0.4
                         },
                         addCollider: true,
@@ -445,13 +452,13 @@ class Demo {
     generateSpinKeyframes(duration, axis) {
         return [{
                 time: 0 * duration,
-                value: { transform: { rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(axis, 0) } }
+                value: { transform: { rotation: MRESDK.Quaternion.RotationAxis(axis, 0) } }
             }, {
                 time: 0.5 * duration,
-                value: { transform: { rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(axis, 180 * mixed_reality_extension_sdk_1.DegreesToRadians) } }
+                value: { transform: { rotation: MRESDK.Quaternion.RotationAxis(axis, 180 * MRESDK.DegreesToRadians) } }
             }, {
                 time: 1 * duration,
-                value: { transform: { rotation: mixed_reality_extension_sdk_1.Quaternion.RotationAxis(axis, 360 * mixed_reality_extension_sdk_1.DegreesToRadians) } }
+                value: { transform: { rotation: MRESDK.Quaternion.RotationAxis(axis, 360 * MRESDK.DegreesToRadians) } }
             }];
     }
 }
