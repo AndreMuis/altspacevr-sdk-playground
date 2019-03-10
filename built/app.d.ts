@@ -5,6 +5,7 @@ export default class Demo {
     private lastUser;
     private grassMaterial;
     private beachBallMaterial;
+    private userHeadActor;
     private isCesiumManWalking;
     private cabinActor;
     private skullActor;
@@ -16,6 +17,7 @@ export default class Demo {
     private userJoined;
     private addToLog;
     private loadMaterials;
+    private setupUserAttachments;
     setupScene(): Promise<void>;
     private setupCesiumMan;
     private setupSkull;

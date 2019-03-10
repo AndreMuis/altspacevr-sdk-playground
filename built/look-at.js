@@ -17,8 +17,8 @@ class LookAt {
     }
     async started() {
         await this.setupKitArtifacts();
-        this.frogActor.lookAt(this.lastUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
-        this.skullActor.lookAt(this.lastUser, mixed_reality_extension_sdk_1.LookAtMode.TargetXY);
+        //this.frogActor.lookAt(this.lastUser, LookAtMode.TargetXY);
+        //this.skullActor.lookAt(this.lastUser, LookAtMode.TargetXY);
     }
     async setupKitArtifacts() {
         this.frogActor = await mixed_reality_extension_sdk_1.Actor.CreateFromLibrary(this.context, {

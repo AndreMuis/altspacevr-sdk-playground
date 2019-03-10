@@ -7,6 +7,7 @@ export default class Demo {
     private grassMaterial: MRESDK.Material = null;
     private beachBallMaterial: MRESDK.Material = null;
 
+    private userHeadActor: MRESDK.Actor = null; 
     private isCesiumManWalking: Boolean = false;
     private cabinActor: MRESDK.Actor = null;
     private skullActor: MRESDK.Actor = null;
@@ -35,7 +36,8 @@ export default class Demo {
         await this.setupVideoPlayer();
 
         if (this.lastUser != null) {
-            this.skullActor.lookAt(this.lastUser, MRESDK.LookAtMode.TargetXY);
+            await this.setupUserAttachments();
+            this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
         }
     }
 
@@ -43,7 +45,8 @@ export default class Demo {
         this.lastUser = user;
 
         if (this.skullActor != null) {
-            this.skullActor.lookAt(this.lastUser, MRESDK.LookAtMode.TargetXY);
+            await this.setupUserAttachments();
+            this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true);
         }
 
         this.addToLog(user.name);
@@ -76,12 +79,22 @@ export default class Demo {
         });
     }
 
+    private async setupUserAttachments() {
+        this.userHeadActor = await MRESDK.Actor.CreateEmpty(this.context, {
+            actor: {
+                attachment: {
+                    userId: this.lastUser.id,
+                    attachPoint: 'head'
+                }
+            }
+        });
+    }
+
     public async setupScene()
     {
         // Title
         MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
-                name: 'Text',
                 transform: {
                     position: { x: 0, y: 5, z: 8 }
                 },
@@ -95,16 +108,15 @@ export default class Demo {
         });
 
         // Ground
-        this.grassMaterial.mainTextureScale.set(1000, 1000);
+        this.grassMaterial.mainTextureScale.set(10, 10);
 
         MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: MRESDK.PrimitiveShape.Plane,
-                dimensions: { x: 1000, y: 0, z: 1000 }
+                dimensions: { x: 100, y: 0, z: 100 }
             },
             addCollider: true,
             actor: {
-                name: 'Plane',
                 materialId: this.grassMaterial.id,
                 transform: {
                     position: { x: 0, y: -1.6, z: 0 }
@@ -116,7 +128,6 @@ export default class Demo {
         this.cabinActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
             resourceId: "artifact:993646440251130011",
             actor: {
-                name: 'Cabin',
                 transform: {
                     position: { x: 20, y: -1.5, z: 0.0 },
                     rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians),
@@ -128,7 +139,6 @@ export default class Demo {
         // Log
         this.logActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
-                name: 'Text',
                 transform: {
                     position: { x: -5, y: 0, z: 0 },
                     rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
@@ -162,7 +172,6 @@ export default class Demo {
             },
             addCollider: true,
             actor: {
-                name: 'Box',
                 transform: {
                     position: { x: 0.0, y: 1.2, z: 7 }
                 }
@@ -171,7 +180,6 @@ export default class Demo {
 
         const textActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
-                name: 'Text',
                 parentId: boxActor.id,
                 transform: {
                     position: { x: 0, y: 0, z: -0.01 }
@@ -231,7 +239,6 @@ export default class Demo {
     {
         const skullParentActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
-                name: 'Skull Parent',
                 parentId: this.cabinActor.id,
                 transform: {
                     position: { x: 0, y: 0, z: 0 }
@@ -248,9 +255,8 @@ export default class Demo {
         skullParentActor.enableAnimation("spin");
     
         this.skullActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
-            resourceId: "artifact:986410464940392936", // 1050090527044666141
+            resourceId: "artifact:1050090527044666141",
             actor: {
-                name: 'frog',
                 parentId: skullParentActor.id,
                 transform: {
                     position: { x: 0, y: 6, z: 9 },
@@ -271,7 +277,6 @@ export default class Demo {
             },
             addCollider: true,
             actor: {
-                name: 'Drop Box',
                 transform: {
                     position: { x: -10, y: 1, z: 7 }
                 }
@@ -280,7 +285,6 @@ export default class Demo {
 
         const dropTextActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
-                name: 'Text',
                 parentId: dropBoxActor.id,
                 transform: {
                     position: { x: 0, y: 0, z: -0.01 }
@@ -332,7 +336,6 @@ export default class Demo {
             },
             addCollider: true,
             actor: {
-                name: 'Reset Box',
                 transform: {
                     position: { x: -9, y: 1, z: 7 }
                 }
@@ -341,7 +344,6 @@ export default class Demo {
 
         const resetTextActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
-                name: 'Text',
                 parentId: resetBoxActor.id,
                 transform: {
                     position: { x: 0, y: 0, z: -0.01 }
@@ -434,7 +436,6 @@ export default class Demo {
         const teleporterActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
             resourceId: "teleporter:1133592462367917034",
             actor: {
-                name: 'teleporter',
                 transform: {
                     position: { x: 7, y: -1.6, z: 7 }
                 }
@@ -443,7 +444,6 @@ export default class Demo {
 
         await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
-                name: 'teleporter text',
                 parentId: teleporterActor.id,
                 transform: {
                     position: { x: 0, y: 2, z: 0 }
@@ -462,7 +462,6 @@ export default class Demo {
     {
         const videoPlayer = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
-                name: 'video player',
                 transform: {
                     position: { x: 0, y: 0.5, z: -6 },
                     rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 180 * MRESDK.DegreesToRadians),

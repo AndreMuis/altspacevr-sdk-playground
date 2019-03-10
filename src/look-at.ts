@@ -25,8 +25,8 @@ export default class LookAt {
     private async started() {
         await this.setupKitArtifacts();
 
-        this.frogActor.lookAt(this.lastUser, LookAtMode.TargetXY);
-        this.skullActor.lookAt(this.lastUser, LookAtMode.TargetXY);
+        //this.frogActor.lookAt(this.lastUser, LookAtMode.TargetXY);
+        //this.skullActor.lookAt(this.lastUser, LookAtMode.TargetXY);
     }
 
     private async setupKitArtifacts()
