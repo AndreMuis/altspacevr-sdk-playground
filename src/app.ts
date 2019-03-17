@@ -70,13 +70,9 @@ export default class Demo {
             mainTextureId: beachBallTexture.id
         });
 
-        const grassTexture = await this.context.assetManager.createTexture('grass', {
-            uri: `${this.baseUrl}/grass.png`
-        });
-
         this.grassMaterial = await this.context.assetManager.createMaterial('grass', {
-            mainTextureId: grassTexture.id
-        });
+            color: MRESDK.Color3.FromInts(0, 120, 0)
+        }).value;
     }
 
     private async setupUserAttachments() {
@@ -414,7 +410,7 @@ export default class Demo {
             keyframes: this.generateSpinKeyframes(5, MRESDK.Vector3.Up()),
             events: []
         });
-        
+
         lightParentActor.enableAnimation("spin");
     
         await MRESDK.Actor.CreatePrimitive(this.context, {
