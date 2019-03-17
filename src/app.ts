@@ -486,7 +486,7 @@ export default class Demo {
                         pitch: note
                     });
 
-                await this.delay(500);
+                await this.delay(300);
             }
         };
         notesButtonBehavior.onClick('released', playNotes);
