@@ -2,15 +2,19 @@ import * as MRESDK from '@microsoft/mixed-reality-extension-sdk';
 import * as MREEXT from '@microsoft/mixed-reality-extension-altspacevr-extras';
 
 export default class Demo {
+    private interval: NodeJS.Timeout;
+    
     private lastUser: MRESDK.User = null;
 
-    private grassMaterial: MRESDK.Material = null;
     private beachBallMaterial: MRESDK.Material = null;
+    private greenMaterial: MRESDK.Material = null;
+    private redMaterial: MRESDK.Material = null;
 
     private userHeadActor: MRESDK.Actor = null; 
     private isCesiumManWalking: Boolean = false;
     private cabinActor: MRESDK.Actor = null;
     private skullActor: MRESDK.Actor = null;
+    private redSphereActor: MRESDK.Actor = null;
     private sphereActorPromises: Array<MRESDK.ForwardPromise<MRESDK.Actor>> = [];
     private videoPlayerManager: MREEXT.VideoPlayerManager;
     private logActor: MRESDK.Actor = null;
@@ -32,6 +36,7 @@ export default class Demo {
         await this.setupSkull();
         await this.setupSpheres();
         await this.setupLight();
+        await this.setupVisibility();
         await this.setupSound();
         await this.setupTeleporter();
         await this.setupVideoPlayer();
@@ -71,8 +76,12 @@ export default class Demo {
             mainTextureId: beachBallTexture.id
         });
 
-        this.grassMaterial = await this.context.assetManager.createMaterial('grass', {
+        this.greenMaterial = await this.context.assetManager.createMaterial('green', {
             color: MRESDK.Color3.FromInts(0, 120, 0)
+        });
+
+        this.redMaterial = await this.context.assetManager.createMaterial('red', {
+            color: MRESDK.Color3.FromInts(255, 0, 0)
         });
     }
 
@@ -105,8 +114,6 @@ export default class Demo {
         });
 
         // Ground
-        this.grassMaterial.mainTextureScale.set(10, 10);
-
         MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: MRESDK.PrimitiveShape.Plane,
@@ -114,7 +121,7 @@ export default class Demo {
             },
             addCollider: true,
             actor: {
-                appearance: { materialId: this.grassMaterial.id },
+                appearance: { materialId: this.greenMaterial.id },
                 transform: {
                     position: { x: 0, y: -1.6, z: 0 }
                 }
@@ -129,6 +136,21 @@ export default class Demo {
                     position: { x: 20, y: -1.5, z: 0.0 },
                     rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians),
                     scale: { x: 0.8, y: 0.8, z: 0.8}
+                }
+            }
+        });
+
+        // Red Sphere
+        this.redSphereActor = await MRESDK.Actor.CreatePrimitive(this.context, {
+            definition: {
+                shape: MRESDK.PrimitiveShape.Sphere,
+                radius: 0.5
+            },
+            addCollider: true,
+            actor: {
+                appearance: { materialId: this.redMaterial.id },
+                transform: {
+                    position: { x: -8.0, y: 0.0, z: -1.0 }
                 }
             }
         });
@@ -429,6 +451,12 @@ export default class Demo {
         });
     }
 
+    public async setupVisibility () {
+        this.interval = setInterval(() => {
+            this.redSphereActor.appearance.enabled = !this.redSphereActor.appearance.enabled;
+        }, 1000);
+    }
+
     private async setupSound() {
         const boxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
@@ -486,7 +514,7 @@ export default class Demo {
                         pitch: note
                     });
 
-                await this.delay(300);
+                await this.delay(500);
             }
         };
         notesButtonBehavior.onClick('released', playNotes);
