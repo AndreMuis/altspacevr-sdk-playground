@@ -32,6 +32,7 @@ export default class Demo {
         await this.setupSkull();
         await this.setupSpheres();
         await this.setupLight();
+        await this.setupSound();
         await this.setupTeleporter();
         await this.setupVideoPlayer();
 
@@ -72,7 +73,7 @@ export default class Demo {
 
         this.grassMaterial = await this.context.assetManager.createMaterial('grass', {
             color: MRESDK.Color3.FromInts(0, 120, 0)
-        }).value;
+        });
     }
 
     private async setupUserAttachments() {
@@ -428,6 +429,69 @@ export default class Demo {
         });
     }
 
+    private async setupSound() {
+        const boxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
+            definition: {
+                shape: MRESDK.PrimitiveShape.Box,
+                dimensions: { x: 1.2, y: 0.25, z: 0.01 }
+            },
+            addCollider: true,
+            actor: {
+                transform: {
+                    position: { x: -5.0, y: 0.3, z: -2.0 },
+                    rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
+                }
+            }
+        });
+
+        await MRESDK.Actor.CreateEmpty(this.context, {
+            actor: {
+                parentId: boxActor.id,
+                transform: {
+                    position: { x: 0, y: 0, z: -0.01 }
+                },
+                text: {
+                    contents: "Play Notes",
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
+                    color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
+                    height: 0.2
+                }
+            }
+        });
+
+        await boxActor.createAnimation('expand', {
+            keyframes: this.expandAnimationData,
+            events: []
+        });
+
+        await boxActor.createAnimation('contract', {
+            keyframes: this.contractAnimationData,
+            events: []
+        });
+
+        let notes: number[] = [1, 3, 5, 6, 8, 10, 12, 13, 12, 10, 8, 6, 5, 3, 1];
+
+        const notesAsset = await this.context.assetManager.createSound(
+            'note',
+            { uri: `${this.baseUrl}/GTR_note_C3.wav` }
+        );
+
+        const notesButtonBehavior = boxActor.setBehavior(MRESDK.ButtonBehavior);
+        
+        const playNotes = async () => {
+            for (const note of notes) {
+                boxActor.startSound(notesAsset.id,
+                    {
+                        doppler: 0.0,
+                        pitch: note
+                    });
+
+                await this.delay(300);
+            }
+        };
+        notesButtonBehavior.onClick('released', playNotes);
+    }
+
     private async setupTeleporter() {
         const teleporterActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
             resourceId: "teleporter:1133592462367917034",
@@ -532,4 +596,10 @@ export default class Demo {
         time: 0.2,
         value: { transform: { scale: { x: 1, y: 1, z: 1 } } }
     }];
+
+    private delay(milliseconds: number): Promise<void> {
+        return new Promise<void>((resolve) => {
+            setTimeout(() => resolve(), milliseconds);
+        });
+    }
 }
