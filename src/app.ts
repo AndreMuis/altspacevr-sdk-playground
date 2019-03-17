@@ -144,13 +144,13 @@ export default class Demo {
         this.redSphereActor = await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: MRESDK.PrimitiveShape.Sphere,
-                radius: 0.5
+                radius: 0.3
             },
             addCollider: true,
             actor: {
                 appearance: { materialId: this.redMaterial.id },
                 transform: {
-                    position: { x: -8.0, y: 0.0, z: -1.0 }
+                    position: { x: -10.0, y: 2.0, z: -1.0 }
                 }
             }
         });
