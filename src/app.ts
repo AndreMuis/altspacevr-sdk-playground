@@ -109,7 +109,7 @@ export default class Demo {
         MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
                 shape: MRESDK.PrimitiveShape.Plane,
-                dimensions: { x: 100, y: 0, z: 100 }
+                dimensions: { x: 1000, y: 0, z: 1000 }
             },
             addCollider: true,
             actor: {

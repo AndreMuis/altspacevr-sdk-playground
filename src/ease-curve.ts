@@ -17,7 +17,6 @@ export default class EaseCurve {
     private async started() {
         const sphereParentActor = await Actor.CreateEmpty(this.context, {
             actor: {
-                name: 'sphere parent',
                 transform: {
                     position: { x: 0, y: 0, z: 5 }
                 }
@@ -41,7 +40,6 @@ export default class EaseCurve {
 
             },
             actor: {
-                name: 'sphere',
                 parentId: sphereParentActor.id,
                 transform: {
                     position: { x: 0, y: 3, z: 0 }
