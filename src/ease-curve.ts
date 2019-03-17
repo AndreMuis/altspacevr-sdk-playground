@@ -28,8 +28,8 @@ export default class EaseCurve {
             wrapMode: AnimationWrapMode.Loop,
             keyframes: this.generateSpinKeyframes(5, Vector3.Forward()),
             events: []
-        }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
-        
+        });
+
         sphereParentActor.enableAnimation("spin");
     
         await Actor.CreatePrimitive(this.context, {

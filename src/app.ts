@@ -117,7 +117,7 @@ export default class Demo {
             },
             addCollider: true,
             actor: {
-                materialId: this.grassMaterial.id,
+                appearance: { materialId: this.grassMaterial.id },
                 transform: {
                     position: { x: 0, y: -1.6, z: 0 }
                 }
@@ -196,12 +196,12 @@ export default class Demo {
         await boxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
-        }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
+        });
 
         await boxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
-        }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
+        });
 
         const buttonBehavior = boxActor.setBehavior(MRESDK.ButtonBehavior);
 
@@ -250,7 +250,7 @@ export default class Demo {
             wrapMode: MRESDK.AnimationWrapMode.Loop,
             keyframes: this.generateSpinKeyframes(10, MRESDK.Vector3.Up()),
             events: []
-        }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
+        })
         
         skullParentActor.enableAnimation("spin");
     
@@ -301,12 +301,12 @@ export default class Demo {
         await dropBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
-        }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
+        });
 
         await dropBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
-        }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
+        }); 
 
         const dropButtonBehavior = dropBoxActor.setBehavior(MRESDK.ButtonBehavior);
 
@@ -360,12 +360,12 @@ export default class Demo {
         await resetBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
-        }).catch(reason => console.log(`Failed to create expand animation: ${reason}`));
+        });
 
         await resetBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
-        }).catch(reason => console.log(`Failed to create contract animation: ${reason}`));
+        });
 
         const resetButtonBehavior = resetBoxActor.setBehavior(MRESDK.ButtonBehavior);
 
@@ -413,8 +413,8 @@ export default class Demo {
             wrapMode: MRESDK.AnimationWrapMode.Loop,
             keyframes: this.generateSpinKeyframes(5, MRESDK.Vector3.Up()),
             events: []
-        }).catch(reason => console.log(`Failed to create spin animation: ${reason}`));
-
+        });
+        
         lightParentActor.enableAnimation("spin");
     
         await MRESDK.Actor.CreatePrimitive(this.context, {
@@ -490,7 +490,7 @@ export default class Demo {
                         },
                         addCollider: true,
                         actor: {
-                            materialId: this.beachBallMaterial.id,
+                            appearance: { materialId: this.beachBallMaterial.id },
                             transform: {
                                 position: {
                                     x: x + Math.random() / 2.0, 
