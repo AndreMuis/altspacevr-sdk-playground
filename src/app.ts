@@ -1,68 +1,75 @@
-import * as MRESDK from '@microsoft/mixed-reality-extension-sdk';
-import * as MREEXT from '@microsoft/mixed-reality-extension-altspacevr-extras';
+import * as MRESDK from '@microsoft/mixed-reality-extension-sdk'
+import * as MREEXT from '@microsoft/mixed-reality-extension-altspacevr-extras'
 
 export default class Demo {
-    private interval: NodeJS.Timeout;
+    private interval: NodeJS.Timeout
     
-    private lastUser: MRESDK.User = null;
+    private lastUser: MRESDK.User = null
 
-    private beachBallMaterial: MRESDK.Material = null;
-    private greenMaterial: MRESDK.Material = null;
-    private redMaterial: MRESDK.Material = null;
+    private beachBallMaterial: MRESDK.Material = null
+    private greenMaterial: MRESDK.Material = null
+    private redMaterial: MRESDK.Material = null
 
-    private userHeadActor: MRESDK.Actor = null; 
-    private isCesiumManWalking: Boolean = false;
-    private cabinActor: MRESDK.Actor = null;
-    private skullActor: MRESDK.Actor = null;
-    private redSphereActor: MRESDK.Actor = null;
-    private sphereActorPromises: Array<MRESDK.ForwardPromise<MRESDK.Actor>> = [];
-    private videoPlayerManager: MREEXT.VideoPlayerManager;
-    private logActor: MRESDK.Actor = null;
+    private userHeadActor: MRESDK.Actor = null 
+    private isCesiumManWalking: Boolean = false
+    private cabinActor: MRESDK.Actor = null
+    private skullActor: MRESDK.Actor = null
+    private redSphereActor: MRESDK.Actor = null
+    private sphereActorPromises: Array<MRESDK.ForwardPromise<MRESDK.Actor>> = []
+    private videoPlayerManager: MREEXT.VideoPlayerManager
+    private logActor: MRESDK.Actor = null
 
     constructor(private context: MRESDK.Context, private baseUrl: string) {
-        this.context.onStarted(() => this.started());
+        this.context.onStarted(() => this.started())
 
-        this.userJoined = this.userJoined.bind(this);
-        this.context.onUserJoined(this.userJoined);
+        this.userJoined = this.userJoined.bind(this)
+        this.context.onUserJoined(this.userJoined)
 
         this.videoPlayerManager = new MREEXT.VideoPlayerManager(context)
     }
     
     private async started() {
-        await this.loadMaterials();
+        try 
+        {
+            await this.loadMaterials()
 
-        await this.setupScene();
-        await this.setupCesiumMan();
-        await this.setupSkull();
-        await this.setupSpheres();
-        await this.setupLight();
-        await this.setupVisibility();
-        await this.setupSound();
-        await this.setupTeleporter();
-        await this.setupVideoPlayer();
-
-        if (this.lastUser != null) {
-            await this.setupUserAttachments();
-            this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
+            await this.setupScene()
+            await this.setupCesiumMan()
+            await this.setupSkull()
+            await this.setupSpheres()
+            await this.setupLight()
+            await this.setupVisibility()
+            await this.setupSound()
+            await this.setupTeleporter()
+            await this.setupVideoPlayer()
+    
+            if (this.lastUser != null) {
+                await this.setupUserAttachments()
+                this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
+            }
+        } 
+        catch (e) 
+        {
+            console.log(e)
         }
     }
 
     private userJoined = async (user: MRESDK.User) => {
-        this.lastUser = user;
+        this.lastUser = user
 
         if (this.skullActor != null) {
-            await this.setupUserAttachments();
-            this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true);
+            await this.setupUserAttachments()
+            this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
         }
 
-        this.addToLog(user.name);
+        this.addToLog(user.name)
     }
 
     private addToLog(message: String) {
-        console.log(message);
+        console.log(message)
 
         if (this.logActor != null) { 
-            this.logActor.text.contents = message + "\n" + this.logActor.text.contents;
+            this.logActor.text.contents = message + "\n" + this.logActor.text.contents
         }
     }
 
@@ -70,19 +77,19 @@ export default class Demo {
     {
         const beachBallTexture = await this.context.assetManager.createTexture('beach-ball', {
             uri: `${this.baseUrl}/beach-ball.png`
-        });
+        })
 
         this.beachBallMaterial = await this.context.assetManager.createMaterial('beach-ball', {
             mainTextureId: beachBallTexture.id
-        });
+        })
 
         this.greenMaterial = await this.context.assetManager.createMaterial('green', {
             color: MRESDK.Color3.FromInts(0, 120, 0)
-        });
+        })
 
         this.redMaterial = await this.context.assetManager.createMaterial('red', {
             color: MRESDK.Color3.FromInts(255, 0, 0)
-        });
+        })
     }
 
     private async setupUserAttachments() {
@@ -93,7 +100,7 @@ export default class Demo {
                     attachPoint: 'head'
                 }
             }
-        });
+        })
     }
 
     public async setupScene()
@@ -111,7 +118,7 @@ export default class Demo {
                     height: 1.0
                 }
             }
-        });
+        })
 
         // Ground
         MRESDK.Actor.CreatePrimitive(this.context, {
@@ -126,7 +133,7 @@ export default class Demo {
                     position: { x: 0, y: -1.6, z: 0 }
                 }
             }
-        });
+        })
 
         // Cabin
         this.cabinActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
@@ -138,7 +145,7 @@ export default class Demo {
                     scale: { x: 0.8, y: 0.8, z: 0.8}
                 }
             }
-        });
+        })
 
         // Red Sphere
         this.redSphereActor = await MRESDK.Actor.CreatePrimitive(this.context, {
@@ -153,7 +160,7 @@ export default class Demo {
                     position: { x: -10.0, y: 2.0, z: -1.0 }
                 }
             }
-        });
+        })
 
         // Log
         this.logActor = await MRESDK.Actor.CreateEmpty(this.context, {
@@ -169,7 +176,7 @@ export default class Demo {
                     height: 0.1
                 }
             }
-        });
+        })
     }
 
     private async setupCesiumMan()
@@ -182,7 +189,7 @@ export default class Demo {
                     scale: {x: 1.5, y: 1.5, z: 1.5}
                 }
             }
-        });
+        })
 
         const boxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
@@ -195,7 +202,7 @@ export default class Demo {
                     position: { x: 0.0, y: 1.2, z: 7 }
                 }
             }
-        });
+        })
 
         const textActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
@@ -210,48 +217,48 @@ export default class Demo {
                     height: 0.2
                 }
             }
-        });
+        })
 
         await boxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
-        });
+        })
 
         await boxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
-        });
+        })
 
-        const buttonBehavior = boxActor.setBehavior(MRESDK.ButtonBehavior);
+        const buttonBehavior = boxActor.setBehavior(MRESDK.ButtonBehavior)
 
         buttonBehavior.onHover('enter', (userId: string) => {
-            boxActor.enableAnimation('expand');
-        });
+            boxActor.enableAnimation('expand')
+        })
 
         buttonBehavior.onHover('exit', (userId: string) => {
-            boxActor.enableAnimation('contract');
-        });
+            boxActor.enableAnimation('contract')
+        })
 
         buttonBehavior.onClick('pressed', (userId: string) => {
-            textActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
+            textActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
             if (this.isCesiumManWalking == true)
             {
-                this.isCesiumManWalking = false;
-                textActor.text.contents = "Start Walking";
-                cesiumManActor.disableAnimation('animation:0');
+                this.isCesiumManWalking = false
+                textActor.text.contents = "Start Walking"
+                cesiumManActor.disableAnimation('animation:0')
             }
             else
             {
-                this.isCesiumManWalking = true;   
-                textActor.text.contents = "Stop Walking";
-                cesiumManActor.enableAnimation('animation:0');
+                this.isCesiumManWalking = true   
+                textActor.text.contents = "Stop Walking"
+                cesiumManActor.enableAnimation('animation:0')
             } 
-        });
+        })
 
         buttonBehavior.onClick('released', (userId: string) => {
-            textActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
-        });
+            textActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 }
+        })
     }
 
     private async setupSkull()
@@ -263,7 +270,7 @@ export default class Demo {
                     position: { x: 0, y: 0, z: 0 }
                 }
             }
-        });
+        })
 
         await skullParentActor.createAnimation('spin', {
             wrapMode: MRESDK.AnimationWrapMode.Loop,
@@ -271,7 +278,7 @@ export default class Demo {
             events: []
         })
         
-        skullParentActor.enableAnimation("spin");
+        skullParentActor.enableAnimation("spin")
     
         this.skullActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
             resourceId: "artifact:1050090527044666141",
@@ -282,7 +289,7 @@ export default class Demo {
                     scale: { x: 3, y: 3, z: 3}
                 }
             }
-        });
+        })
     }
 
     public async setupSpheres() {
@@ -300,7 +307,7 @@ export default class Demo {
                     position: { x: -10, y: 1, z: 7 }
                 }
             }
-        });
+        })
 
         const dropTextActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
@@ -315,37 +322,37 @@ export default class Demo {
                     height: 0.2
                 }
             }
-        });
+        })
 
         await dropBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
-        });
+        })
 
         await dropBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
-        }); 
+        }) 
 
-        const dropButtonBehavior = dropBoxActor.setBehavior(MRESDK.ButtonBehavior);
+        const dropButtonBehavior = dropBoxActor.setBehavior(MRESDK.ButtonBehavior)
 
         dropButtonBehavior.onHover('enter', (userId: string) => {
-            dropBoxActor.enableAnimation('expand');
-        });
+            dropBoxActor.enableAnimation('expand')
+        })
 
         dropButtonBehavior.onHover('exit', (userId: string) => {
-            dropBoxActor.enableAnimation('contract');
-        });
+            dropBoxActor.enableAnimation('contract')
+        })
 
         dropButtonBehavior.onClick('pressed', (userId: string) => {
-            dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
+            dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
-            this.sphereActorPromises.forEach(promise => promise.value.rigidBody.useGravity = true);
-        });
+            this.sphereActorPromises.forEach(promise => promise.value.rigidBody.useGravity = true)
+        })
 
         dropButtonBehavior.onClick('released', (userId: string) => {
-            dropTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
-        });
+            dropTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 }
+        })
 
         // Reset Button
         const resetBoxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
@@ -359,7 +366,7 @@ export default class Demo {
                     position: { x: -9, y: 1, z: 7 }
                 }
             }
-        });
+        })
 
         const resetTextActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
@@ -374,39 +381,39 @@ export default class Demo {
                     height: 0.2
                 }
             }
-        });
+        })
 
         await resetBoxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
-        });
+        })
 
         await resetBoxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
-        });
+        })
 
-        const resetButtonBehavior = resetBoxActor.setBehavior(MRESDK.ButtonBehavior);
+        const resetButtonBehavior = resetBoxActor.setBehavior(MRESDK.ButtonBehavior)
 
         resetButtonBehavior.onHover('enter', (userId: string) => {
-            resetBoxActor.enableAnimation('expand');
-        });
+            resetBoxActor.enableAnimation('expand')
+        })
 
         resetButtonBehavior.onHover('exit', (userId: string) => {
-            resetBoxActor.enableAnimation('contract');
-        });
+            resetBoxActor.enableAnimation('contract')
+        })
 
         resetButtonBehavior.onClick('pressed', (userId: string) => {
-            resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 };
+            resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
-            this.sphereActorPromises.forEach(promise => promise.value.destroy());
+            this.sphereActorPromises.forEach(promise => promise.value.destroy())
 
-            this.setupSphereActors();
-        });
+            this.setupSphereActors()
+        })
 
         resetButtonBehavior.onClick('released', (userId: string) => {
-            resetTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 };
-        });
+            resetTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 }
+        })
     }
 
     public async setupLight() {
@@ -417,7 +424,7 @@ export default class Demo {
                     position: { x: -10, y: 0.5, z: -10 }
                 }
             }
-        });
+        })
 
         const lightParentActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
@@ -426,15 +433,15 @@ export default class Demo {
                     position: { x: 0, y: 0, z: 0 }
                 }
             }
-        });
+        })
 
         await lightParentActor.createAnimation('spin', {
             wrapMode: MRESDK.AnimationWrapMode.Loop,
             keyframes: this.generateSpinKeyframes(5, MRESDK.Vector3.Up()),
             events: []
-        });
+        })
 
-        lightParentActor.enableAnimation("spin");
+        lightParentActor.enableAnimation("spin")
     
         await MRESDK.Actor.CreatePrimitive(this.context, {
             definition: {
@@ -448,13 +455,13 @@ export default class Demo {
                 },
                 light: { type: 'point', intensity: 4, range: 10 }
             }
-        });
+        })
     }
 
     public async setupVisibility () {
         this.interval = setInterval(() => {
-            this.redSphereActor.appearance.enabled = !this.redSphereActor.appearance.enabled;
-        }, 2000);
+            this.redSphereActor.appearance.enabled = !this.redSphereActor.appearance.enabled
+        }, 2000)
     }
 
     private async setupSound() {
@@ -470,7 +477,7 @@ export default class Demo {
                     rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                 }
             }
-        });
+        })
 
         await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
@@ -485,26 +492,26 @@ export default class Demo {
                     height: 0.2
                 }
             }
-        });
+        })
 
         await boxActor.createAnimation('expand', {
             keyframes: this.expandAnimationData,
             events: []
-        });
+        })
 
         await boxActor.createAnimation('contract', {
             keyframes: this.contractAnimationData,
             events: []
-        });
+        })
 
-        let notes: number[] = [1, 3, 5, 6, 8, 10, 12, 13, 12, 10, 8, 6, 5, 3, 1];
+        let notes: number[] = [1, 3, 5, 6, 8, 10, 12, 13, 12, 10, 8, 6, 5, 3, 1]
 
         const notesAsset = await this.context.assetManager.createSound(
             'note',
             { uri: `${this.baseUrl}/GTR_note_C3.wav` }
-        );
+        )
 
-        const notesButtonBehavior = boxActor.setBehavior(MRESDK.ButtonBehavior);
+        const notesButtonBehavior = boxActor.setBehavior(MRESDK.ButtonBehavior)
         
         const playNotes = async () => {
             for (const note of notes) {
@@ -512,12 +519,12 @@ export default class Demo {
                     {
                         doppler: 0.0,
                         pitch: note
-                    });
+                    })
 
-                await this.delay(500);
+                await this.delay(500)
             }
-        };
-        notesButtonBehavior.onClick('released', playNotes);
+        }
+        notesButtonBehavior.onClick('released', playNotes)
     }
 
     private async setupTeleporter() {
@@ -528,7 +535,7 @@ export default class Demo {
                     position: { x: 7, y: -1.6, z: 7 }
                 }
             }
-        });
+        })
 
         await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
@@ -543,7 +550,7 @@ export default class Demo {
                     height: 0.2
                 }
             }
-        });
+        })
     }
 
     private async setupVideoPlayer() 
@@ -556,17 +563,17 @@ export default class Demo {
                     scale: { x: 2, y: 2, z: 2 }
                 },
             }
-        });
+        })
 
         this.videoPlayerManager.play(
             videoPlayer.id,
             'http://www.youtube.com/watch?v=L_LUpnjgPso&t=33s',
-            0.0);
+            0.0)
     }
 
     private async setupSphereActors()
     {
-        this.sphereActorPromises = [];
+        this.sphereActorPromises = []
 
         for (let x = -12; x <= -8; x = x + 2) {
             for (let y = 5; y <= 15; y = y + 1) {
@@ -586,14 +593,14 @@ export default class Demo {
                                     z: z + Math.random() / 2.0}
                             }
                         }
-                    });
+                    })
 
-                    this.sphereActorPromises.push(sphereActorPromise);
+                    this.sphereActorPromises.push(sphereActorPromise)
                 }
             }
         }
 
-        this.sphereActorPromises.forEach(promise => promise.value.enableRigidBody( { useGravity: false } ));
+        this.sphereActorPromises.forEach(promise => promise.value.enableRigidBody( { useGravity: false } ))
     }
 
     private generateSpinKeyframes(duration: number, axis: MRESDK.Vector3): MRESDK.AnimationKeyframe[] {
@@ -606,7 +613,7 @@ export default class Demo {
         }, {
             time: 1 * duration,
             value: { transform: { rotation: MRESDK.Quaternion.RotationAxis(axis, 360 * MRESDK.DegreesToRadians) } }
-        }];
+        }]
     }
 
     private expandAnimationData: MRESDK.AnimationKeyframe[] = [{
@@ -615,7 +622,7 @@ export default class Demo {
     }, {
         time: 0.2,
         value: { transform: { scale: { x: 1.1, y: 1.1, z: 1.1 } } }
-    }];
+    }]
 
     private contractAnimationData: MRESDK.AnimationKeyframe[] = [{
         time: 0,
@@ -623,11 +630,11 @@ export default class Demo {
     }, {
         time: 0.2,
         value: { transform: { scale: { x: 1, y: 1, z: 1 } } }
-    }];
+    }]
 
     private delay(milliseconds: number): Promise<void> {
         return new Promise<void>((resolve) => {
-            setTimeout(() => resolve(), milliseconds);
-        });
+            setTimeout(() => resolve(), milliseconds)
+        })
     }
 }
