@@ -454,7 +454,7 @@ export default class Demo {
     public async setupVisibility () {
         this.interval = setInterval(() => {
             this.redSphereActor.appearance.enabled = !this.redSphereActor.appearance.enabled;
-        }, 1000);
+        }, 2000);
     }
 
     private async setupSound() {
