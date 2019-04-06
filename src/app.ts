@@ -32,8 +32,8 @@ export default class Demo {
         await this.loadMaterials()
 
         await this.setupScene()
-        //await this.setupCesiumMan()
-        //await this.setupSkull()
+        await this.setupCesiumMan()
+        await this.setupSkull()
         //await this.setupSpheres()
         //await this.setupLight()
         //await this.setupVisibility()
