@@ -286,7 +286,7 @@ export default class Demo {
     }
 
     public async setupSpheres() {
-        // this.setupSphereActors()
+        this.setupSphereActors()
 
         // Drop Button
         const dropBoxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
