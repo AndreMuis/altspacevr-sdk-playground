@@ -34,7 +34,7 @@ export default class Demo {
         await this.setupScene()
         await this.setupCesiumMan()
         await this.setupSkull()
-        //await this.setupSpheres()
+        await this.setupSpheres()
         await this.setupLight()
         await this.setupVisibility()
         await this.setupSound()
@@ -286,7 +286,7 @@ export default class Demo {
     }
 
     public async setupSpheres() {
-        this.setupSphereActors()
+        //this.setupSphereActors()
 
         // Drop Button
         const dropBoxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
