@@ -578,7 +578,7 @@ export default class Demo {
                         },
                         addCollider: true,
                         actor: {
-                            // appearance: { materialId: this.beachBallMaterial.id },
+                            appearance: { materialId: this.beachBallMaterial.id },
                             transform: {
                                 position: {
                                     x: x + Math.random() / 2.0, 
@@ -593,7 +593,7 @@ export default class Demo {
             }
         }
 
-        this.sphereActorPromises.forEach(promise => promise.value.enableRigidBody( { useGravity: false } ))
+        // this.sphereActorPromises.forEach(promise => promise.value.enableRigidBody( { useGravity: false } ))
     }
 
     private generateSpinKeyframes(duration: number, axis: MRESDK.Vector3): MRESDK.AnimationKeyframe[] {
