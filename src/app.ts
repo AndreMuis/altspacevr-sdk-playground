@@ -29,12 +29,12 @@ export default class Demo {
     }
     
     private async started() {
-        //await this.loadMaterials()
+        await this.loadMaterials()
 
-        //await this.setupScene()
-        //await this.setupCesiumMan()
-        //await this.setupSkull()
-        //await this.setupSpheres()
+        await this.setupScene()
+        await this.setupCesiumMan()
+        await this.setupSkull()
+        await this.setupSpheres()
         //await this.setupLight()
         //await this.setupVisibility()
         //await this.setupSound()
