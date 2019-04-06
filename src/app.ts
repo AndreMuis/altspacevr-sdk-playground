@@ -22,10 +22,10 @@ export default class Demo {
     constructor(private context: MRESDK.Context, private baseUrl: string) {
         this.context.onStarted(() => this.started())
 
-        // this.userJoined = this.userJoined.bind(this)
-        // this.context.onUserJoined(this.userJoined)
+        this.userJoined = this.userJoined.bind(this)
+        this.context.onUserJoined(this.userJoined)
 
-        // this.videoPlayerManager = new MREEXT.VideoPlayerManager(context)
+        this.videoPlayerManager = new MREEXT.VideoPlayerManager(context)
     }
     
     private async started() {
@@ -36,15 +36,15 @@ export default class Demo {
         await this.setupSkull()
         //await this.setupSpheres()
         await this.setupLight()
-        //await this.setupVisibility()
-        //await this.setupSound()
-        //await this.setupTeleporter()
-        //await this.setupVideoPlayer()
+        await this.setupVisibility()
+        await this.setupSound()
+        await this.setupTeleporter()
+        await this.setupVideoPlayer()
 
-        //if (this.lastUser != null) {
-        //    await this.setupUserAttachments()
-        //    this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
-        //}
+        if (this.lastUser != null) {
+            await this.setupUserAttachments()
+            this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
+        }
     }
 
     private userJoined = async (user: MRESDK.User) => {
