@@ -578,7 +578,7 @@ export default class Demo {
                         },
                         addCollider: true,
                         actor: {
-                            appearance: { materialId: this.beachBallMaterial.id },
+                            // appearance: { materialId: this.beachBallMaterial.id },
                             transform: {
                                 position: {
                                     x: x + Math.random() / 2.0, 
