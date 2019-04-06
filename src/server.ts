@@ -9,8 +9,6 @@ import { resolve as resolvePath } from 'path';
 import Demo from './app';
 import EaseCurve from './ease-curve';
 
-import { userInfo } from 'os';
-
 process.on('uncaughtException', err => console.log('uncaughtException', err));
 process.on('unhandledRejection', reason => console.log('unhandledRejection', reason));
 

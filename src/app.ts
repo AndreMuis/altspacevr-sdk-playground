@@ -29,28 +29,21 @@ export default class Demo {
     }
     
     private async started() {
-        try 
-        {
-            await this.loadMaterials()
+        await this.loadMaterials()
 
-            await this.setupScene()
-            await this.setupCesiumMan()
-            await this.setupSkull()
-            await this.setupSpheres()
-            await this.setupLight()
-            await this.setupVisibility()
-            await this.setupSound()
-            await this.setupTeleporter()
-            await this.setupVideoPlayer()
-    
-            if (this.lastUser != null) {
-                await this.setupUserAttachments()
-                this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
-            }
-        } 
-        catch (e) 
-        {
-            console.log(e)
+        await this.setupScene()
+        await this.setupCesiumMan()
+        await this.setupSkull()
+        await this.setupSpheres()
+        await this.setupLight()
+        await this.setupVisibility()
+        await this.setupSound()
+        await this.setupTeleporter()
+        //await this.setupVideoPlayer()
+
+        if (this.lastUser != null) {
+            await this.setupUserAttachments()
+            this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
         }
     }
 
