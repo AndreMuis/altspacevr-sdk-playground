@@ -15,7 +15,7 @@ export default class Demo {
     private cabinActor: MRESDK.Actor = null
     private skullActor: MRESDK.Actor = null
     private redSphereActor: MRESDK.Actor = null
-    private sphereActorPromises: Array<MRESDK.ForwardPromise<MRESDK.Actor>> = []
+    private sphereActors: Array<MRESDK.Actor> = []
     private videoPlayerManager: MREEXT.VideoPlayerManager
     private logActor: MRESDK.Actor = null
 
@@ -340,7 +340,7 @@ export default class Demo {
         dropButtonBehavior.onClick('pressed', (userId: string) => {
             dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
-            this.sphereActorPromises.forEach(promise => promise.value.rigidBody.useGravity = true)
+            this.sphereActors.forEach(actor => actor.rigidBody.useGravity = true)
         })
 
         dropButtonBehavior.onClick('released', (userId: string) => {
@@ -399,7 +399,7 @@ export default class Demo {
         resetButtonBehavior.onClick('pressed', (userId: string) => {
             resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
-            this.sphereActorPromises.forEach(promise => promise.value.destroy())
+            this.sphereActors.forEach(actor => actor.destroy())
 
             this.setupSphereActors()
         })
@@ -566,12 +566,12 @@ export default class Demo {
 
     private async setupSphereActors()
     {
-        this.sphereActorPromises = []
+        this.sphereActors = []
 
         for (let x = -12; x <= -8; x = x + 2) {
             for (let y = 5; y <= 15; y = y + 1) {
                 for (let z = 10; z <= 15; z = z + 2) {
-                    const sphereActorPromise = MRESDK.Actor.CreatePrimitive(this.context, {
+                    const sphereActor = await MRESDK.Actor.CreatePrimitive(this.context, {
                         definition: {
                             shape: MRESDK.PrimitiveShape.Sphere,
                             radius: 0.4
@@ -588,12 +588,12 @@ export default class Demo {
                         }
                     })
 
-                    this.sphereActorPromises.push(sphereActorPromise)
+                    this.sphereActors.push(sphereActor)
                 }
             }
         }
 
-        // this.sphereActorPromises.forEach(promise => promise.value.enableRigidBody( { useGravity: false } ))
+        this.sphereActors.forEach(actor => actor.enableRigidBody( { useGravity: false } ))
     }
 
     private generateSpinKeyframes(duration: number, axis: MRESDK.Vector3): MRESDK.AnimationKeyframe[] {
