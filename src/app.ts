@@ -278,7 +278,7 @@ export default class Demo {
             actor: {
                 parentId: skullParentActor.id,
                 transform: {
-                    position: { x: 0, y: 6, z: 9 },
+                    position: { x: 0, y: 6, z: 10 },
                     scale: { x: 3, y: 3, z: 3}
                 }
             }
@@ -569,7 +569,7 @@ export default class Demo {
         this.sphereActors = []
 
         for (let x = -12; x <= -8; x = x + 2) {
-            for (let y = 5; y <= 15; y = y + 1) {
+            for (let y = 5; y <= 8; y = y + 1) {
                 for (let z = 10; z <= 15; z = z + 2) {
                     const sphereActor = await MRESDK.Actor.CreatePrimitive(this.context, {
                         definition: {
