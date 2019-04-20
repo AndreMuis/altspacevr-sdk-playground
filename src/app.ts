@@ -21,7 +21,7 @@ export default class Demo {
     private logActor: MRESDK.Actor = null
 
     constructor(private context: MRESDK.Context, private baseUrl: string) {
-        require('@microsoft/mixed-reality-extension-sdk/built/protocols/protocol').DefaultConnectionTimeoutSeconds = 60
+        require('@microsoft/mixed-reality-extension-sdk/built/protocols/protocol').DefaultConnectionTimeoutSeconds = 0
 
         this.context.onStarted(() => this.started())
         this.context.onUserJoined((user) => this.userJoined(user))
