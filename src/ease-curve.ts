@@ -18,7 +18,9 @@ export default class EaseCurve {
         const sphereParentActor = await Actor.CreateEmpty(this.context, {
             actor: {
                 transform: {
-                    position: { x: 0, y: 0, z: 5 }
+                    local: {
+                        position: { x: 0, y: 0, z: 5 }
+                    }
                 }
             }
         });
@@ -42,7 +44,9 @@ export default class EaseCurve {
             actor: {
                 parentId: sphereParentActor.id,
                 transform: {
-                    position: { x: 0, y: 3, z: 0 }
+                    local: {
+                        position: { x: 0, y: 3, z: 0 }
+                    }
                 }
             }
         });
@@ -51,13 +55,13 @@ export default class EaseCurve {
     private generateSpinKeyframes(duration: number, axis: Vector3): AnimationKeyframe[] {
         return [{
             time: 0 * duration,
-            value: { transform: { rotation: Quaternion.RotationAxis(axis, 0) } }
+            value: { transform: { local: { rotation: Quaternion.RotationAxis(axis, 0) } } }
         }, {
             time: 0.5 * duration,
-            value: { transform: { rotation: Quaternion.RotationAxis(axis, -180 * DegreesToRadians) } }
+            value: { transform: { local: { rotation: Quaternion.RotationAxis(axis, -180 * DegreesToRadians) } } }
         }, {
             time: 1 * duration,
-            value: { transform: { rotation: Quaternion.RotationAxis(axis, -360 * DegreesToRadians) } }
+            value: { transform: { local: { rotation: Quaternion.RotationAxis(axis, -360 * DegreesToRadians) } } }
         }];
     }
 }

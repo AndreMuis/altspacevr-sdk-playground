@@ -26,6 +26,8 @@ export default class Demo {
         this.context.onUserJoined(this.userJoined)
 
         this.videoPlayerManager = new MREEXT.VideoPlayerManager(context)
+
+        require('@microsoft/mixed-reality-extension-sdk/built/protocols/protocol').DefaultConnectionTimeoutSeconds = 60
     }
     
     private async started() {
@@ -102,7 +104,9 @@ export default class Demo {
         MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 transform: {
-                    position: { x: 0, y: 5, z: 8 }
+                    local: {
+                        position: { x: 0, y: 5, z: 8 }
+                    }
                 },
                 text: {
                     contents: "SDK Playground",
@@ -122,8 +126,10 @@ export default class Demo {
             addCollider: true,
             actor: {
                 appearance: { materialId: this.greenMaterial.id },
-                transform: {
-                    position: { x: 0, y: -1.6, z: 0 }
+                transform: { 
+                    local: {
+                        position: { x: 0, y: -1.6, z: 0 }
+                    }
                 }
             }
         })
@@ -133,9 +139,11 @@ export default class Demo {
             resourceId: "artifact:993646440251130011",
             actor: {
                 transform: {
-                    position: { x: 20, y: -1.5, z: 0.0 },
-                    rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians),
-                    scale: { x: 0.8, y: 0.8, z: 0.8}
+                    local: {
+                        position: { x: 20, y: -1.5, z: 0.0 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians),
+                        scale: { x: 0.8, y: 0.8, z: 0.8}
+                    }
                 }
             }
         })
@@ -150,7 +158,9 @@ export default class Demo {
             actor: {
                 appearance: { materialId: this.redMaterial.id },
                 transform: {
-                    position: { x: -10.0, y: 2.0, z: -1.0 }
+                    local: {
+                        position: { x: -10.0, y: 2.0, z: -1.0 }
+                    }
                 }
             }
         })
@@ -159,8 +169,10 @@ export default class Demo {
         this.logActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 transform: {
-                    position: { x: -5, y: 0, z: 0 },
-                    rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
+                    local: {
+                        position: { x: -5, y: 0, z: 0 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
+                    }
                 },
                 text: {
                     contents: "log start",
@@ -178,8 +190,10 @@ export default class Demo {
             resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
-                    position: { x: 0, y: -1.6, z: 7 },
-                    scale: {x: 1.5, y: 1.5, z: 1.5}
+                    local: {
+                        position: { x: 0, y: -1.6, z: 7 },
+                        scale: {x: 1.5, y: 1.5, z: 1.5}
+                    }
                 }
             }
         })
@@ -192,7 +206,9 @@ export default class Demo {
             addCollider: true,
             actor: {
                 transform: {
-                    position: { x: 0.0, y: 1.2, z: 7 }
+                    local: {
+                        position: { x: 0.0, y: 1.2, z: 7 }
+                    }
                 }
             }
         })
@@ -201,7 +217,9 @@ export default class Demo {
             actor: {
                 parentId: boxActor.id,
                 transform: {
-                    position: { x: 0, y: 0, z: -0.01 }
+                    local: {
+                        position: { x: 0, y: 0, z: -0.01 }
+                    }
                 },
                 text: {
                     contents: "Start Walking",
@@ -224,15 +242,15 @@ export default class Demo {
 
         const buttonBehavior = boxActor.setBehavior(MRESDK.ButtonBehavior)
 
-        buttonBehavior.onHover('enter', (userId: string) => {
+        buttonBehavior.onHover('enter', (user: MRESDK.User) => {
             boxActor.enableAnimation('expand')
         })
 
-        buttonBehavior.onHover('exit', (userId: string) => {
+        buttonBehavior.onHover('exit', (user: MRESDK.User) => {
             boxActor.enableAnimation('contract')
         })
 
-        buttonBehavior.onClick('pressed', (userId: string) => {
+        buttonBehavior.onClick('pressed', (user: MRESDK.User) => {
             textActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
             if (this.isCesiumManWalking == true)
@@ -249,7 +267,7 @@ export default class Demo {
             } 
         })
 
-        buttonBehavior.onClick('released', (userId: string) => {
+        buttonBehavior.onClick('released', (user: MRESDK.User) => {
             textActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 }
         })
     }
@@ -260,7 +278,9 @@ export default class Demo {
             actor: {
                 parentId: this.cabinActor.id,
                 transform: {
-                    position: { x: 0, y: 0, z: 0 }
+                    local: {
+                        position: { x: 0, y: 0, z: 0 }
+                    }
                 }
             }
         })
@@ -278,8 +298,10 @@ export default class Demo {
             actor: {
                 parentId: skullParentActor.id,
                 transform: {
-                    position: { x: 0, y: 6, z: 10 },
-                    scale: { x: 3, y: 3, z: 3}
+                    local: {
+                        position: { x: 0, y: 6, z: 10 },
+                        scale: { x: 3, y: 3, z: 3}
+                    }
                 }
             }
         })
@@ -297,7 +319,9 @@ export default class Demo {
             addCollider: true,
             actor: {
                 transform: {
-                    position: { x: -10, y: 1, z: 7 }
+                    local: {
+                        position: { x: -10, y: 1, z: 7 }
+                    }
                 }
             }
         })
@@ -306,7 +330,9 @@ export default class Demo {
             actor: {
                 parentId: dropBoxActor.id,
                 transform: {
-                    position: { x: 0, y: 0, z: -0.01 }
+                    local: {
+                        position: { x: 0, y: 0, z: -0.01 }
+                    }
                 },
                 text: {
                     contents: "Drop",
@@ -329,21 +355,21 @@ export default class Demo {
 
         const dropButtonBehavior = dropBoxActor.setBehavior(MRESDK.ButtonBehavior)
 
-        dropButtonBehavior.onHover('enter', (userId: string) => {
+        dropButtonBehavior.onHover('enter', (user: MRESDK.User) => {
             dropBoxActor.enableAnimation('expand')
         })
 
-        dropButtonBehavior.onHover('exit', (userId: string) => {
+        dropButtonBehavior.onHover('exit', (user: MRESDK.User) => {
             dropBoxActor.enableAnimation('contract')
         })
 
-        dropButtonBehavior.onClick('pressed', (userId: string) => {
+        dropButtonBehavior.onClick('pressed', (user: MRESDK.User) => {
             dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
             this.sphereActors.forEach(actor => actor.rigidBody.useGravity = true)
         })
 
-        dropButtonBehavior.onClick('released', (userId: string) => {
+        dropButtonBehavior.onClick('released', (user: MRESDK.User) => {
             dropTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 }
         })
 
@@ -356,7 +382,9 @@ export default class Demo {
             addCollider: true,
             actor: {
                 transform: {
-                    position: { x: -9, y: 1, z: 7 }
+                    local: {
+                        position: { x: -9, y: 1, z: 7 }
+                    }
                 }
             }
         })
@@ -365,7 +393,9 @@ export default class Demo {
             actor: {
                 parentId: resetBoxActor.id,
                 transform: {
-                    position: { x: 0, y: 0, z: -0.01 }
+                    local: {
+                        position: { x: 0, y: 0, z: -0.01 }
+                    }
                 },
                 text: {
                     contents: "Reset",
@@ -388,15 +418,15 @@ export default class Demo {
 
         const resetButtonBehavior = resetBoxActor.setBehavior(MRESDK.ButtonBehavior)
 
-        resetButtonBehavior.onHover('enter', (userId: string) => {
+        resetButtonBehavior.onHover('enter', (user: MRESDK.User) => {
             resetBoxActor.enableAnimation('expand')
         })
 
-        resetButtonBehavior.onHover('exit', (userId: string) => {
+        resetButtonBehavior.onHover('exit', (user: MRESDK.User) => {
             resetBoxActor.enableAnimation('contract')
         })
 
-        resetButtonBehavior.onClick('pressed', (userId: string) => {
+        resetButtonBehavior.onClick('pressed', (user: MRESDK.User) => {
             resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
             this.sphereActors.forEach(actor => actor.destroy())
@@ -404,7 +434,7 @@ export default class Demo {
             this.setupSphereActors()
         })
 
-        resetButtonBehavior.onClick('released', (userId: string) => {
+        resetButtonBehavior.onClick('released', (user: MRESDK.User) => {
             resetTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 }
         })
     }
@@ -414,7 +444,9 @@ export default class Demo {
             resourceUrl: `${this.baseUrl}/DamagedHelmet.glb`,
             actor: {
                 transform: {
-                    position: { x: -10, y: 0.5, z: -10 }
+                    local: {
+                        position: { x: -10, y: 0.5, z: -10 }
+                    }
                 }
             }
         })
@@ -423,7 +455,9 @@ export default class Demo {
             actor: {
                 parentId: helmetActor.id,
                 transform: {
-                    position: { x: 0, y: 0, z: 0 }
+                    local: {
+                        position: { x: 0, y: 0, z: 0 }
+                    }
                 }
             }
         })
@@ -444,7 +478,9 @@ export default class Demo {
             actor: {
                 parentId: lightParentActor.id,
                 transform: {
-                    position: { x: 3, y: 0, z: 0 }
+                    local: {
+                        position: { x: 3, y: 0, z: 0 }
+                    }
                 },
                 light: { type: 'point', intensity: 4, range: 10 }
             }
@@ -466,8 +502,10 @@ export default class Demo {
             addCollider: true,
             actor: {
                 transform: {
-                    position: { x: -5.0, y: 0.3, z: -2.0 },
-                    rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
+                    local: {
+                        position: { x: -5.0, y: 0.3, z: -2.0 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
+                    }
                 }
             }
         })
@@ -476,7 +514,9 @@ export default class Demo {
             actor: {
                 parentId: boxActor.id,
                 transform: {
-                    position: { x: 0, y: 0, z: -0.01 }
+                    local: {
+                        position: { x: 0, y: 0, z: -0.01 }
+                    }
                 },
                 text: {
                     contents: "Play Notes",
@@ -525,7 +565,9 @@ export default class Demo {
             resourceId: "teleporter:1133592462367917034",
             actor: {
                 transform: {
-                    position: { x: 7, y: -1.6, z: 7 }
+                    local: {
+                        position: { x: 7, y: -1.6, z: 7 }
+                    }
                 }
             }
         })
@@ -534,7 +576,9 @@ export default class Demo {
             actor: {
                 parentId: teleporterActor.id,
                 transform: {
-                    position: { x: 0, y: 2, z: 0 }
+                    local: {
+                        position: { x: 0, y: 2, z: 0 }
+                    }
                 },
                 text: {
                     contents: "Teleporter Test World",
@@ -551,9 +595,11 @@ export default class Demo {
         const videoPlayer = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 transform: {
-                    position: { x: 0, y: 0.5, z: -6 },
-                    rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 180 * MRESDK.DegreesToRadians),
-                    scale: { x: 2, y: 2, z: 2 }
+                    local: {
+                        position: { x: 0, y: 0.5, z: -6 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 180 * MRESDK.DegreesToRadians),
+                        scale: { x: 2, y: 2, z: 2 }
+                    }
                 },
             }
         })
@@ -580,10 +626,12 @@ export default class Demo {
                         actor: {
                             appearance: { materialId: this.beachBallMaterial.id },
                             transform: {
-                                position: {
-                                    x: x + Math.random() / 2.0, 
-                                    y: y, 
-                                    z: z + Math.random() / 2.0}
+                                local: {
+                                    position: {
+                                        x: x + Math.random() / 2.0, 
+                                        y: y, 
+                                        z: z + Math.random() / 2.0}
+                                }
                             }
                         }
                     })
@@ -599,30 +647,30 @@ export default class Demo {
     private generateSpinKeyframes(duration: number, axis: MRESDK.Vector3): MRESDK.AnimationKeyframe[] {
         return [{
             time: 0 * duration,
-            value: { transform: { rotation: MRESDK.Quaternion.RotationAxis(axis, 0) } }
+            value: { transform: { local: { rotation: MRESDK.Quaternion.RotationAxis(axis, 0) } } }
         }, {
             time: 0.5 * duration,
-            value: { transform: { rotation: MRESDK.Quaternion.RotationAxis(axis, 180 * MRESDK.DegreesToRadians) } }
+            value: { transform: { local: { rotation: MRESDK.Quaternion.RotationAxis(axis, 180 * MRESDK.DegreesToRadians) } } }
         }, {
             time: 1 * duration,
-            value: { transform: { rotation: MRESDK.Quaternion.RotationAxis(axis, 360 * MRESDK.DegreesToRadians) } }
+            value: { transform: { local: { rotation: MRESDK.Quaternion.RotationAxis(axis, 360 * MRESDK.DegreesToRadians) } } }
         }]
     }
 
     private expandAnimationData: MRESDK.AnimationKeyframe[] = [{
         time: 0,
-        value: { transform: { scale: { x: 1, y: 1, z: 1 } } }
+        value: { transform: { local: { scale: { x: 1, y: 1, z: 1 } } } }
     }, {
         time: 0.2,
-        value: { transform: { scale: { x: 1.1, y: 1.1, z: 1.1 } } }
+        value: { transform: { local: { scale: { x: 1.1, y: 1.1, z: 1.1 } } } }
     }]
 
     private contractAnimationData: MRESDK.AnimationKeyframe[] = [{
         time: 0,
-        value: { transform: { scale: { x: 1.1, y: 1.1, z: 1.1 } } }
+        value: { transform: { local: { scale: { x: 1.1, y: 1.1, z: 1.1 } } } }
     }, {
         time: 0.2,
-        value: { transform: { scale: { x: 1, y: 1, z: 1 } } }
+        value: { transform: { local: { scale: { x: 1, y: 1, z: 1 } } } }
     }]
 
     private delay(milliseconds: number): Promise<void> {
