@@ -3,21 +3,23 @@
  * Licensed under the MIT License.
  */
 
-import { WebHost } from '@microsoft/mixed-reality-extension-sdk';
-import { resolve as resolvePath } from 'path';
+import { WebHost } from '@microsoft/mixed-reality-extension-sdk'
+import { resolve as resolvePath } from 'path'
 
-import Demo from './app';
-import EaseCurve from './ease-curve';
+import Demo from './app'
+import EaseCurve from './ease-curve'
+import ManyObjects from './many-objects'
 
-process.on('uncaughtException', err => console.log('uncaughtException', err));
-process.on('unhandledRejection', reason => console.log('unhandledRejection', reason));
+process.on('uncaughtException', err => console.log('uncaughtException', err))
+process.on('unhandledRejection', reason => console.log('unhandledRejection', reason))
 
 // Start listening for connections, and serve static files
 const server = new WebHost({
     baseDir: resolvePath(__dirname, '../public')
-});
+})
 
-server.adapter.onConnection(context => new Demo(context, server.baseUrl));
-// server.adapter.onConnection(context => new EaseCurve(context, server.baseUrl));
+// server.adapter.onConnection(context => new Demo(context, server.baseUrl))
+// server.adapter.onConnection(context => new EaseCurve(context, server.baseUrl))
+server.adapter.onConnection(context => new ManyObjects(context, server.baseUrl))
 
-export default server;
+export default server
