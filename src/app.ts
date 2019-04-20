@@ -1,5 +1,6 @@
 import * as MRESDK from '@microsoft/mixed-reality-extension-sdk'
 import * as MREEXT from '@microsoft/mixed-reality-extension-altspacevr-extras'
+import { ForwardPromise } from '@microsoft/mixed-reality-extension-sdk';
 
 export default class Demo {
     private interval: NodeJS.Timeout
@@ -15,19 +16,17 @@ export default class Demo {
     private cabinActor: MRESDK.Actor = null
     private skullActor: MRESDK.Actor = null
     private redSphereActor: MRESDK.Actor = null
-    private sphereActors: Array<MRESDK.Actor> = []
+    private sphereActors: Array<ForwardPromise<MRESDK.Actor>> = []
     private videoPlayerManager: MREEXT.VideoPlayerManager
     private logActor: MRESDK.Actor = null
 
     constructor(private context: MRESDK.Context, private baseUrl: string) {
-        this.context.onStarted(() => this.started())
+        require('@microsoft/mixed-reality-extension-sdk/built/protocols/protocol').DefaultConnectionTimeoutSeconds = 60
 
-        this.userJoined = this.userJoined.bind(this)
-        this.context.onUserJoined(this.userJoined)
+        this.context.onStarted(() => this.started())
+        this.context.onUserJoined((user) => this.userJoined(user))
 
         this.videoPlayerManager = new MREEXT.VideoPlayerManager(context)
-
-        require('@microsoft/mixed-reality-extension-sdk/built/protocols/protocol').DefaultConnectionTimeoutSeconds = 60
     }
     
     private async started() {
@@ -46,6 +45,8 @@ export default class Demo {
         if (this.lastUser != null) {
             await this.setupUserAttachments()
             this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
+
+            this.addToLog(this.lastUser.name)
         }
     }
 
@@ -366,7 +367,7 @@ export default class Demo {
         dropButtonBehavior.onClick('pressed', (user: MRESDK.User) => {
             dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
-            this.sphereActors.forEach(actor => actor.rigidBody.useGravity = true)
+            this.sphereActors.forEach(actorPromise => actorPromise.value.rigidBody.useGravity = true)
         })
 
         dropButtonBehavior.onClick('released', (user: MRESDK.User) => {
@@ -429,7 +430,7 @@ export default class Demo {
         resetButtonBehavior.onClick('pressed', (user: MRESDK.User) => {
             resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
-            this.sphereActors.forEach(actor => actor.destroy())
+            this.sphereActors.forEach(actorPromise => actorPromise.value.destroy())
 
             this.setupSphereActors()
         })
@@ -615,9 +616,9 @@ export default class Demo {
         this.sphereActors = []
 
         for (let x = -12; x <= -8; x = x + 2) {
-            for (let y = 5; y <= 8; y = y + 1) {
+            for (let y = 5; y <= 15; y = y + 1) {
                 for (let z = 10; z <= 15; z = z + 2) {
-                    const sphereActor = await MRESDK.Actor.CreatePrimitive(this.context, {
+                    const sphereActorPromise = MRESDK.Actor.CreatePrimitive(this.context, {
                         definition: {
                             shape: MRESDK.PrimitiveShape.Sphere,
                             radius: 0.4
@@ -636,12 +637,12 @@ export default class Demo {
                         }
                     })
 
-                    this.sphereActors.push(sphereActor)
+                    this.sphereActors.push(sphereActorPromise)
                 }
             }
         }
 
-        this.sphereActors.forEach(actor => actor.enableRigidBody( { useGravity: false } ))
+        this.sphereActors.forEach(actorPromise => actorPromise.value.enableRigidBody( { useGravity: false } ))
     }
 
     private generateSpinKeyframes(duration: number, axis: MRESDK.Vector3): MRESDK.AnimationKeyframe[] {
