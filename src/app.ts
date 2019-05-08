@@ -20,8 +20,6 @@ export default class Demo {
     private logActor: MRESDK.Actor = null
 
     constructor(private context: MRESDK.Context, private baseUrl: string) {
-        require('@microsoft/mixed-reality-extension-sdk/built/protocols/protocol').DefaultConnectionTimeoutSeconds = 0
-
         this.context.onStarted(() => this.started())
         this.context.onUserJoined((user) => this.userJoined(user))
 
@@ -94,7 +92,7 @@ export default class Demo {
                     local: {
                         position: { x: 0, y: -0.3, z: 0.1 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 90 * MRESDK.DegreesToRadians),
-                        scale: { x: 0.5, y: 0.5, z: 0.5 }
+                        scale: { x: 0.6, y: 0.6, z: 0.6 }
                     }
                 },
                 attachment: {
