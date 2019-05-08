@@ -171,7 +171,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -5, y: 0, z: -3 },
+                        position: { x: -5, y: 0, z: -4 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 },
@@ -506,7 +506,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -5.0, y: 0.3, z: -6.0 },
+                        position: { x: -5.0, y: 0.3, z: -8.0 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 }
@@ -580,7 +580,8 @@ export default class Demo {
                 parentId: teleporterActor.id,
                 transform: {
                     local: {
-                        position: { x: 0, y: 2, z: 0 }
+                        position: { x: 0, y: 2, z: 0 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 90 * MRESDK.DegreesToRadians)
                     }
                 },
                 text: {
@@ -599,7 +600,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: 11, y: 0.5, z: -15 },
+                        position: { x: 11, y: 0.0, z: -17 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 90 * MRESDK.DegreesToRadians),
                         scale: { x: 2, y: 2, z: 2 }
                     }
