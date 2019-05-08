@@ -16,7 +16,7 @@ export default class Demo {
     private cabinActor: MRESDK.Actor = null
     private skullActor: MRESDK.Actor = null
     private redSphereActor: MRESDK.Actor = null
-    private sphereActors: Array<ForwardPromise<MRESDK.Actor>> = []
+    private sphereActors: Array<MRESDK.Actor> = []
     private videoPlayerManager: MREEXT.VideoPlayerManager
     private logActor: MRESDK.Actor = null
 
@@ -35,7 +35,7 @@ export default class Demo {
         await this.setupScene()
         await this.setupCesiumMan()
         await this.setupSkull()
-        // await this.setupSpheres()
+        await this.setupSpheres()
         await this.setupLight()
         await this.setupVisibility()
         await this.setupSound()
@@ -160,7 +160,7 @@ export default class Demo {
                 appearance: { materialId: this.redMaterial.id },
                 transform: {
                     local: {
-                        position: { x: -10.0, y: 2.0, z: -1.0 }
+                        position: { x: -3.0, y: 2.0, z: -11.0 }
                     }
                 }
             }
@@ -171,7 +171,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -5, y: 0, z: 0 },
+                        position: { x: -5, y: 0, z: -10 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 },
@@ -321,7 +321,8 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -10, y: 1, z: 7 }
+                        position: { x: -3, y: 1, z: -0.5 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 }
             }
@@ -367,7 +368,7 @@ export default class Demo {
         dropButtonBehavior.onClick('pressed', (user: MRESDK.User) => {
             dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
-            this.sphereActors.forEach(actorPromise => actorPromise.value.rigidBody.useGravity = true)
+            this.sphereActors.forEach(actor => actor.rigidBody.useGravity = true)
         })
 
         dropButtonBehavior.onClick('released', (user: MRESDK.User) => {
@@ -384,7 +385,8 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -9, y: 1, z: 7 }
+                        position: { x: -3, y: 1, z: 0.5 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 }
             }
@@ -430,7 +432,7 @@ export default class Demo {
         resetButtonBehavior.onClick('pressed', (user: MRESDK.User) => {
             resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
-            this.sphereActors.forEach(actorPromise => actorPromise.value.destroy())
+            this.sphereActors.forEach(actor => actor.destroy())
 
             this.setupSphereActors()
         })
@@ -446,7 +448,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -10, y: 0.5, z: -10 }
+                        position: { x: -10, y: 0.5, z: -20 }
                     }
                 }
             }
@@ -504,7 +506,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -5.0, y: 0.3, z: -2.0 },
+                        position: { x: -5.0, y: 0.3, z: -12.0 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 }
@@ -567,7 +569,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: 7, y: -1.6, z: 7 }
+                        position: { x: 7, y: -1.6, z: -10 }
                     }
                 }
             }
@@ -597,8 +599,8 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: 0, y: 0.5, z: -6 },
-                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 180 * MRESDK.DegreesToRadians),
+                        position: { x: 0, y: 0.5, z: -16 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 90 * MRESDK.DegreesToRadians),
                         scale: { x: 2, y: 2, z: 2 }
                     }
                 },
@@ -614,35 +616,31 @@ export default class Demo {
     private async setupSphereActors()
     {
         this.sphereActors = []
-
-        for (let x = -12; x <= -8; x = x + 2) {
-            for (let y = 5; y <= 15; y = y + 1) {
-                for (let z = 10; z <= 15; z = z + 2) {
-                    const sphereActorPromise = MRESDK.Actor.CreatePrimitive(this.context, {
-                        definition: {
-                            shape: MRESDK.PrimitiveShape.Sphere,
-                            radius: 0.4
-                        },
-                        addCollider: true,
-                        actor: {
-                            appearance: { materialId: this.beachBallMaterial.id },
-                            transform: {
-                                local: {
-                                    position: {
-                                        x: x + Math.random() / 2.0, 
-                                        y: y, 
-                                        z: z + Math.random() / 2.0}
-                                }
-                            }
+            
+        for (let y = 1; y <= 8; y = y + 1) {
+            const sphereActor = await MRESDK.Actor.CreatePrimitive(this.context, {
+                definition: {
+                    shape: MRESDK.PrimitiveShape.Sphere,
+                    radius: 0.4
+                },
+                addCollider: true,
+                actor: {
+                    appearance: { materialId: this.beachBallMaterial.id },
+                    transform: {
+                        local: {
+                            position: {
+                                x: -6 + Math.random() / 2.0, 
+                                y: y, 
+                                z: 0 + Math.random() / 2.0}
                         }
-                    })
-
-                    this.sphereActors.push(sphereActorPromise)
+                    }
                 }
-            }
+            })
+
+            this.sphereActors.push(sphereActor)
         }
 
-        this.sphereActors.forEach(actorPromise => actorPromise.value.enableRigidBody( { useGravity: false } ))
+        this.sphereActors.forEach(actor => actor.enableRigidBody( { useGravity: false } ))
     }
 
     private generateSpinKeyframes(duration: number, axis: MRESDK.Vector3): MRESDK.AnimationKeyframe[] {
