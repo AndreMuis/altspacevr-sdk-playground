@@ -1,6 +1,5 @@
 import * as MRESDK from '@microsoft/mixed-reality-extension-sdk'
 import * as MREEXT from '@microsoft/mixed-reality-extension-altspacevr-extras'
-import { ForwardPromise } from '@microsoft/mixed-reality-extension-sdk';
 
 export default class Demo {
     private interval: NodeJS.Timeout
@@ -43,10 +42,9 @@ export default class Demo {
         await this.setupTeleporter()
         await this.setupVideoPlayer()
 
-        if (this.lastUser != null) {
-            await this.setupUserAttachments()
-            this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
+        await this.setupSkullLookAt()
 
+        if (this.lastUser != null) {
             this.addToLog(this.lastUser.name)
         }
     }
@@ -54,10 +52,9 @@ export default class Demo {
     private userJoined = async (user: MRESDK.User) => {
         this.lastUser = user
 
-        if (this.skullActor != null) {
-            await this.setupUserAttachments()
-            this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
-        }
+        await this.setupSkullLookAt()
+
+        this.addDuckToUser(user)
 
         this.addToLog(user.name)
     }
@@ -89,15 +86,38 @@ export default class Demo {
         })
     }
 
-    private async setupUserAttachments() {
-        this.userHeadActor = await MRESDK.Actor.CreateEmpty(this.context, {
+    private async addDuckToUser(user: MRESDK.User) {
+        await MRESDK.Actor.CreateFromGltf(this.context, {
+            resourceUrl: `${this.baseUrl}/Duck.glb`,
             actor: {
+                transform: {
+                    local: {
+                        position: { x: 0, y: -0.3, z: 0.1 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 90 * MRESDK.DegreesToRadians),
+                        scale: { x: 0.5, y: 0.5, z: 0.5 }
+                    }
+                },
                 attachment: {
-                    userId: this.lastUser.id,
-                    attachPoint: 'head'
+                    userId: user.id,
+                    attachPoint: 'hips'
                 }
             }
         })
+    }
+
+    private async setupSkullLookAt() {
+        if (this.skullActor && this.lastUser) {
+            this.userHeadActor = await MRESDK.Actor.CreateEmpty(this.context, {
+                actor: {
+                    attachment: {
+                        userId: this.lastUser.id,
+                        attachPoint: 'head'
+                    }
+                }
+            })    
+
+            this.skullActor.enableLookAt(this.userHeadActor, MRESDK.LookAtMode.TargetXY, true)
+        }
     }
 
     public async setupScene()
