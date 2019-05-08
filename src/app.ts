@@ -36,6 +36,7 @@ export default class Demo {
         await this.setupCesiumMan()
         await this.setupSkull()
         await this.setupSpheres()
+        await this.setupGrabbable()
         await this.setupLight()
         await this.setupVisibility()
         await this.setupSound()
@@ -442,13 +443,30 @@ export default class Demo {
         })
     }
 
+    public async setupGrabbable() {
+        const monkeyActor = await MRESDK.Actor.CreateFromGltf(this.context, {
+            resourceUrl: `${this.baseUrl}/monkey.glb`,
+            colliderType: 'box',
+            actor: {
+                transform: {
+                    local: {
+                        scale: { x: 0.2, y: 0.2, z: 0.2 },
+                        position: { x: 0, y: 0, z: 0 }
+                    }
+                }
+            }
+        })
+
+        monkeyActor.grabbable = true
+    }
+
     public async setupLight() {
         const helmetActor = await MRESDK.Actor.CreateFromGltf(this.context, {
             resourceUrl: `${this.baseUrl}/DamagedHelmet.glb`,
             actor: {
                 transform: {
                     local: {
-                        position: { x: -8, y: 0.5, z: -13 }
+                        position: { x: -9, y: 0.5, z: -14 }
                     }
                 }
             }
