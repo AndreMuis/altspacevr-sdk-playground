@@ -160,7 +160,7 @@ export default class Demo {
                 appearance: { materialId: this.redMaterial.id },
                 transform: {
                     local: {
-                        position: { x: -3.0, y: 2.0, z: -11.0 }
+                        position: { x: 11.0, y: 2.0, z: -19.0 }
                     }
                 }
             }
@@ -448,7 +448,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -10, y: 0.5, z: -20 }
+                        position: { x: -8, y: 0.5, z: -17 }
                     }
                 }
             }
