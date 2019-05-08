@@ -451,13 +451,30 @@ export default class Demo {
                 transform: {
                     local: {
                         scale: { x: 0.2, y: 0.2, z: 0.2 },
-                        position: { x: 0, y: 0, z: 0 }
+                        position: { x: -11, y: 0, z: -23 }
                     }
                 }
             }
         })
-
         monkeyActor.grabbable = true
+
+        await MRESDK.Actor.CreateEmpty(this.context, {
+            actor: {
+                parentId: monkeyActor.id,
+                transform: {
+                    local: {
+                        position: { x: 0, y: 0, z: 0 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 90 * MRESDK.DegreesToRadians)
+                    }
+                },
+                text: {
+                    contents: "Grab the Monkey",
+                    anchor: MRESDK.TextAnchorLocation.MiddleCenter,
+                    color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
+                    height: 0.2
+                }
+            }
+        })
     }
 
     public async setupLight() {
