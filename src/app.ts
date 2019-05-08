@@ -444,8 +444,6 @@ export default class Demo {
     }
 
     public async setupGrabbable() {
-        const scale = 0.2
-
         const monkeyActor = await MRESDK.Actor.CreateFromGltf(this.context, {
             resourceUrl: `${this.baseUrl}/monkey.glb`,
             colliderType: 'box',
@@ -454,7 +452,7 @@ export default class Demo {
                     local: {
                         position: { x: 11, y: 0, z: -24 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians),
-                        scale: { x: scale, y: scale, z: scale }
+                        scale: { x: 0.2, y: 0.2, z: 0.2 }
                     }
                 }
             }
@@ -463,12 +461,10 @@ export default class Demo {
 
         await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
-                parentId: monkeyActor.id,
                 transform: {
                     local: {
-                        position: { x: 0, y: 3, z: 0 },
-                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 180 * MRESDK.DegreesToRadians),
-                        scale: { x: 1.0 / scale, y: 1.0 / scale, z: 1.0 / scale }
+                        position: { x: 11, y: 0.6, z: -24 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 90 * MRESDK.DegreesToRadians)
                     }
                 },
                 text: {
