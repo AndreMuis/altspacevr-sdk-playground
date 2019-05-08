@@ -321,7 +321,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -3, y: 1, z: -0.5 },
+                        position: { x: -4, y: 1, z: -0.5 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 }
@@ -385,7 +385,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -3, y: 1, z: 0.5 },
+                        position: { x: -4, y: 1, z: 0.5 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 }
@@ -569,7 +569,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: 7, y: -1.6, z: -10 }
+                        position: { x: 10, y: -1.6, z: -12 }
                     }
                 }
             }
@@ -629,7 +629,7 @@ export default class Demo {
                     transform: {
                         local: {
                             position: {
-                                x: -6 + Math.random() / 2.0, 
+                                x: -7 + Math.random() / 2.0, 
                                 y: y, 
                                 z: 0 + Math.random() / 2.0}
                         }
