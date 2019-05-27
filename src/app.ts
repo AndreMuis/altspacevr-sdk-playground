@@ -477,6 +477,8 @@ export default class Demo {
         })
         monkeyActor.grabbable = true
 
+        monkeyActor.enableRigidBody()
+
         await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 transform: {
