@@ -2,6 +2,8 @@ import * as MRESDK from '@microsoft/mixed-reality-extension-sdk'
 import * as MREEXT from '@microsoft/mixed-reality-extension-altspacevr-extras'
 
 export default class Demo {
+    private assetContainer: MRESDK.AssetContainer
+
     private interval: NodeJS.Timeout
     
     private lastUser: MRESDK.User = null
@@ -20,10 +22,11 @@ export default class Demo {
     private logActor: MRESDK.Actor = null
 
     constructor(private context: MRESDK.Context, private baseUrl: string) {
+        this.assetContainer = new MRESDK.AssetContainer(this.context)
+        this.videoPlayerManager = new MREEXT.VideoPlayerManager(context)
+
         this.context.onStarted(() => this.started())
         this.context.onUserJoined((user) => this.userJoined(user))
-
-        this.videoPlayerManager = new MREEXT.VideoPlayerManager(context)
     }
     
     private async started() {
@@ -67,37 +70,37 @@ export default class Demo {
 
     private async loadMaterials()
     {
-        const beachBallTexture = await this.context.assetManager.createTexture('beach-ball', {
+        const beachBallTexture = await this.assetContainer.createTexture('beach-ball', {
             uri: `${this.baseUrl}/beach-ball.png`
         })
 
-        this.beachBallMaterial = await this.context.assetManager.createMaterial('beach-ball', {
+        this.beachBallMaterial = await this.assetContainer.createMaterial('beach-ball', {
             mainTextureId: beachBallTexture.id
         })
 
-        this.greenMaterial = await this.context.assetManager.createMaterial('green', {
+        this.greenMaterial = await this.assetContainer.createMaterial('green', {
             color: MRESDK.Color3.FromInts(0, 120, 0)
         })
 
-        this.redMaterial = await this.context.assetManager.createMaterial('red', {
+        this.redMaterial = await this.assetContainer.createMaterial('red', {
             color: MRESDK.Color3.FromInts(255, 0, 0)
         })
     }
 
     private async addDuckToUser(user: MRESDK.User) {
-        await MRESDK.Actor.CreateFromGltf(this.context, {
-            resourceUrl: `${this.baseUrl}/Duck.glb`,
+        await MRESDK.Actor.CreateFromGltf(this.assetContainer, {
+            uri: `${this.baseUrl}/Duck.glb`,
             actor: {
                 transform: {
                     local: {
                         position: { x: 0, y: -0.3, z: 0.1 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 90 * MRESDK.DegreesToRadians),
-                        scale: { x: 0.6, y: 0.6, z: 0.6 }
+                        scale: { x: 0.1, y: 0.1, z: 0.1 }
                     }
                 },
                 attachment: {
                     userId: user.id,
-                    attachPoint: 'hips'
+                    attachPoint: 'right-hand'
                 }
             }
         })
@@ -138,14 +141,13 @@ export default class Demo {
         })
 
         // Ground
-        MRESDK.Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: MRESDK.PrimitiveShape.Plane,
-                dimensions: { x: 1000, y: 0, z: 1000 }
-            },
-            addCollider: true,
+        MRESDK.Actor.Create(this.context, {
             actor: {
-                appearance: { materialId: this.greenMaterial.id },
+                appearance: { 
+                    meshId: this.assetContainer.createPlaneMesh('plane', 1000, 1000, 1, 1).id,
+                    materialId: this.greenMaterial.id
+                },
+                collider: {geometry: {shape: 'auto'} },
                 transform: { 
                     local: {
                         position: { x: 0, y: -1.6, z: 0 }
@@ -169,14 +171,13 @@ export default class Demo {
         })
 
         // Red Sphere
-        this.redSphereActor = await MRESDK.Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: MRESDK.PrimitiveShape.Sphere,
-                radius: 0.3
-            },
-            addCollider: true,
+        this.redSphereActor = await MRESDK.Actor.Create(this.context, {
             actor: {
-                appearance: { materialId: this.redMaterial.id },
+                appearance: {
+                    meshId: this.assetContainer.createSphereMesh('sphere', 0.3, 8, 4).id,
+                    materialId: this.redMaterial.id 
+                },
+                collider: { geometry: { shape: 'auto' } },
                 transform: {
                     local: {
                         position: { x: 11.0, y: 0.0, z: -21.0 }
@@ -206,8 +207,8 @@ export default class Demo {
 
     private async setupCesiumMan()
     {
-        const cesiumManActor = await MRESDK.Actor.CreateFromGltf(this.context, {
-            resourceUrl: `${this.baseUrl}/CesiumMan.glb`,
+        const cesiumManActor = await MRESDK.Actor.CreateFromGltf(this.assetContainer, {
+            uri: `${this.baseUrl}/CesiumMan.glb`,
             actor: {
                 transform: {
                     local: {
@@ -218,13 +219,12 @@ export default class Demo {
             }
         })
 
-        const boxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: MRESDK.PrimitiveShape.Box,
-                dimensions: { x: 1.5, y: 0.25, z: 0.01 }
-            },
-            addCollider: true,
+        const boxActor = await MRESDK.Actor.Create(this.context, {
             actor: {
+                appearance: {
+                    meshId: this.assetContainer.createBoxMesh(`cesiumManBox`, 1.5, 0.25, 0.01).id
+                },
+                collider: { geometry: { shape: 'auto' } },
                 transform: {
                     local: {
                         position: { x: 0.0, y: 1.2, z: 7 }
@@ -270,7 +270,7 @@ export default class Demo {
             boxActor.enableAnimation('contract')
         })
 
-        buttonBehavior.onClick('pressed', (user: MRESDK.User) => {
+        buttonBehavior.onButton('pressed', (user: MRESDK.User) => {
             textActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
             if (this.isCesiumManWalking == true)
@@ -287,7 +287,7 @@ export default class Demo {
             } 
         })
 
-        buttonBehavior.onClick('released', (user: MRESDK.User) => {
+        buttonBehavior.onButton ('released', (user: MRESDK.User) => {
             textActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 }
         })
     }
@@ -331,13 +331,12 @@ export default class Demo {
         this.setupSphereActors()
 
         // Drop Button
-        const dropBoxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: MRESDK.PrimitiveShape.Box,
-                dimensions: { x: 0.6, y: 0.25, z: 0.01 }
-            },
-            addCollider: true,
+        const dropBoxActor = await MRESDK.Actor.Create(this.context, {
             actor: {
+                appearance: {
+                    meshId: this.assetContainer.createBoxMesh(`dropBox`, 0.6, 0.25, 0.01).id
+                },
+                collider: { geometry: { shape: 'auto' } },
                 transform: {
                     local: {
                         position: { x: -5, y: 1, z: -0.5 },
@@ -384,24 +383,23 @@ export default class Demo {
             dropBoxActor.enableAnimation('contract')
         })
 
-        dropButtonBehavior.onClick('pressed', (user: MRESDK.User) => {
+        dropButtonBehavior.onButton('pressed', (user: MRESDK.User) => {
             dropTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
             this.sphereActors.forEach(actor => actor.rigidBody.useGravity = true)
         })
 
-        dropButtonBehavior.onClick('released', (user: MRESDK.User) => {
+        dropButtonBehavior.onButton('released', (user: MRESDK.User) => {
             dropTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 }
         })
 
         // Reset Button
-        const resetBoxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: MRESDK.PrimitiveShape.Box,
-                dimensions: { x: 0.7, y: 0.25, z: 0.01 }
-            },
-            addCollider: true,
+        const resetBoxActor = await MRESDK.Actor.Create(this.context, {
             actor: {
+                appearance: {
+                    meshId: this.assetContainer.createBoxMesh(`resetBox`, 0.7, 0.25, 0.01).id
+                },
+                collider: { geometry: { shape: 'auto' } },
                 transform: {
                     local: {
                         position: { x: -5, y: 1, z: 0.5 },
@@ -448,7 +446,7 @@ export default class Demo {
             resetBoxActor.enableAnimation('contract')
         })
 
-        resetButtonBehavior.onClick('pressed', (user: MRESDK.User) => {
+        resetButtonBehavior.onButton('pressed', (user: MRESDK.User) => {
             resetTextActor.text.color = { r: 255 / 255, g: 0 / 255, b: 0 / 255 }
 
             this.sphereActors.forEach(actor => actor.destroy())
@@ -456,14 +454,14 @@ export default class Demo {
             this.setupSphereActors()
         })
 
-        resetButtonBehavior.onClick('released', (user: MRESDK.User) => {
+        resetButtonBehavior.onButton('released', (user: MRESDK.User) => {
             resetTextActor.text.color = { r: 0 / 255, g: 0 / 255, b: 255 / 255 }
         })
     }
 
     public async setupGrabbable() {
-        const monkeyActor = await MRESDK.Actor.CreateFromGltf(this.context, {
-            resourceUrl: `${this.baseUrl}/monkey.glb`,
+        const monkeyActor = await MRESDK.Actor.CreateFromGltf(this.assetContainer, {
+            uri: `${this.baseUrl}/monkey.glb`,
             colliderType: 'box',
             actor: {
                 transform: {
@@ -496,8 +494,8 @@ export default class Demo {
     }
 
     public async setupLight() {
-        const helmetActor = await MRESDK.Actor.CreateFromGltf(this.context, {
-            resourceUrl: `${this.baseUrl}/DamagedHelmet.glb`,
+        const helmetActor = await MRESDK.Actor.CreateFromGltf(this.assetContainer, {
+            uri: `${this.baseUrl}/DamagedHelmet.glb`,
             actor: {
                 transform: {
                     local: {
@@ -526,12 +524,12 @@ export default class Demo {
 
         lightParentActor.enableAnimation("spin")
     
-        await MRESDK.Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: MRESDK.PrimitiveShape.Sphere,
-                radius: 0.2
-            },
+        await MRESDK.Actor.Create(this.context, {
             actor: {
+                appearance: {
+                    meshId: this.assetContainer.createSphereMesh('sphere', 0.2, 8, 4).id
+                },
+                collider: { geometry: { shape: 'auto' } },
                 parentId: lightParentActor.id,
                 transform: {
                     local: {
@@ -550,13 +548,12 @@ export default class Demo {
     }
 
     private async setupSound() {
-        const boxActor = await MRESDK.Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: MRESDK.PrimitiveShape.Box,
-                dimensions: { x: 1.2, y: 0.25, z: 0.01 }
-            },
-            addCollider: true,
+        const boxActor = await MRESDK.Actor.Create(this.context, {
             actor: {
+                appearance: {
+                    meshId: this.assetContainer.createBoxMesh(`soundBox`, 1.2, 0.25, 0.01).id
+                },
+                collider: { geometry: { shape: 'auto' } },
                 transform: {
                     local: {
                         position: { x: -5.0, y: 0.3, z: -8.0 },
@@ -595,7 +592,7 @@ export default class Demo {
 
         let notes: number[] = [1, 3, 5, 6, 8, 10, 12, 13, 12, 10, 8, 6, 5, 3, 1]
 
-        const notesAsset = await this.context.assetManager.createSound(
+        const notesAsset = await this.assetContainer.createSound(
             'note',
             { uri: `${this.baseUrl}/GTR_note_C3.wav` }
         )
@@ -613,7 +610,7 @@ export default class Demo {
                 await this.delay(500)
             }
         }
-        notesButtonBehavior.onClick('released', playNotes)
+        notesButtonBehavior.onButton('released', playNotes)
     }
 
     private async setupTeleporter() {
@@ -672,14 +669,13 @@ export default class Demo {
         this.sphereActors = []
             
         for (let y = 1; y <= 8; y = y + 1) {
-            const sphereActor = await MRESDK.Actor.CreatePrimitive(this.context, {
-                definition: {
-                    shape: MRESDK.PrimitiveShape.Sphere,
-                    radius: 0.4
-                },
-                addCollider: true,
+            const sphereActor = await MRESDK.Actor.Create(this.context, {
                 actor: {
-                    appearance: { materialId: this.beachBallMaterial.id },
+                    appearance: {
+                        meshId: this.assetContainer.createSphereMesh('sphere', 0.4, 8, 4).id,
+                        materialId: this.beachBallMaterial.id
+                    },
+                    collider: { geometry: { shape: 'auto' } },
                     transform: {
                         local: {
                             position: {

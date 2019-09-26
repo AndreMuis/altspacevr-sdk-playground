@@ -1,21 +1,12 @@
-import {
-    Actor,
-    AnimationKeyframe,
-    AnimationWrapMode,
-    Context,
-    DegreesToRadians,
-    PrimitiveShape,  
-    Quaternion,
-    Vector3
-} from '@microsoft/mixed-reality-extension-sdk';
+import * as MRESDK from '@microsoft/mixed-reality-extension-sdk'
 
 export default class EaseCurve {
-    constructor(private context: Context, private baseUrl: string) {
+    constructor(private context: MRESDK.Context, private baseUrl: string) {
         this.context.onStarted(() => this.started());
     }
 
     private async started() {
-        const sphereParentActor = await Actor.CreateEmpty(this.context, {
+        const sphereParentActor = await MRESDK.Actor.CreateEmpty(this.context, {
             actor: {
                 transform: {
                     local: {
@@ -26,23 +17,21 @@ export default class EaseCurve {
         });
 
         await sphereParentActor.createAnimation('spin', {
-            wrapMode: AnimationWrapMode.Loop,
-            keyframes: this.generateSpinKeyframes(5, Vector3.Forward()),
+            wrapMode: MRESDK.AnimationWrapMode.Loop,
+            keyframes: this.generateSpinKeyframes(5, MRESDK.Vector3.Forward()),
             events: []
         });
 
         sphereParentActor.enableAnimation("spin");
     
-        await Actor.CreatePrimitive(this.context, {
-            definition: {
-                shape: PrimitiveShape.Sphere,
-                radius: 0.5,
-                uSegments: 10,
-                vSegments: 10
-
-            },
+        const assetContainer = new MRESDK.AssetContainer(this.context)
+        await MRESDK.Actor.Create(this.context, {
             actor: {
                 parentId: sphereParentActor.id,
+                appearance: {
+                    meshId: assetContainer.createSphereMesh('sphere', 0.5, 10, 10).id
+                },
+                collider: { geometry: { shape: 'auto' } },
                 transform: {
                     local: {
                         position: { x: 0, y: 3, z: 0 }
@@ -52,16 +41,16 @@ export default class EaseCurve {
         });
     }
 
-    private generateSpinKeyframes(duration: number, axis: Vector3): AnimationKeyframe[] {
+    private generateSpinKeyframes(duration: number, axis: MRESDK.Vector3): MRESDK.AnimationKeyframe[] {
         return [{
             time: 0 * duration,
-            value: { transform: { local: { rotation: Quaternion.RotationAxis(axis, 0) } } }
+            value: { transform: { local: { rotation: MRESDK.Quaternion.RotationAxis(axis, 0) } } }
         }, {
             time: 0.5 * duration,
-            value: { transform: { local: { rotation: Quaternion.RotationAxis(axis, -180 * DegreesToRadians) } } }
+            value: { transform: { local: { rotation: MRESDK.Quaternion.RotationAxis(axis, -180 * MRESDK.DegreesToRadians) } } }
         }, {
             time: 1 * duration,
-            value: { transform: { local: { rotation: Quaternion.RotationAxis(axis, -360 * DegreesToRadians) } } }
+            value: { transform: { local: { rotation: MRESDK.Quaternion.RotationAxis(axis, -360 * MRESDK.DegreesToRadians) } } }
         }];
     }
 }

@@ -1,9 +1,12 @@
 import * as MRESDK from '@microsoft/mixed-reality-extension-sdk'
 
 export default class Demo {
+    private assetContainer: MRESDK.AssetContainer = null
     private beachBallMaterial: MRESDK.Material = null
 
     constructor(private context: MRESDK.Context, private baseUrl: string) {
+        this.assetContainer = new MRESDK.AssetContainer(this.context)
+
         this.context.onStarted(() => this.started())
     }
     
@@ -12,15 +15,15 @@ export default class Demo {
         this.setupSphereActors()
     }
 
-    private loadMaterials()
+    private async loadMaterials()
     {
-        const beachBallTexture = this.context.assetManager.createTexture('beach-ball', {
+        const beachBallTexture = await this.assetContainer.createTexture('beach-ball', {
             uri: `${this.baseUrl}/beach-ball.png`
         })
 
-        this.beachBallMaterial = this.context.assetManager.createMaterial('beach-ball', {
-            mainTextureId: beachBallTexture.value.id
-        }).value
+        this.beachBallMaterial = await this.assetContainer.createMaterial('beach-ball', {
+            mainTextureId: beachBallTexture.id
+        })
     }
 
     private setupSphereActors()
@@ -28,14 +31,13 @@ export default class Demo {
         for (let x = -2; x <= 2; x = x + 2) {
             for (let y = 0; y <= 10; y = y + 1) {
                 for (let z = -2; z <= 2; z = z + 2) {
-                    MRESDK.Actor.CreatePrimitive(this.context, {
-                        definition: {
-                            shape: MRESDK.PrimitiveShape.Sphere,
-                            radius: 0.4
-                        },
-                        addCollider: true,
+                    MRESDK.Actor.Create(this.context, {
                         actor: {
-                            appearance: { materialId: this.beachBallMaterial.id },
+                            appearance: {
+                                meshId: this.assetContainer.createSphereMesh('sphere', 0.4, 10, 10).id,
+                                materialId: this.beachBallMaterial.id
+                            },
+                            collider: { geometry: { shape: 'auto' } },
                             transform: {
                                 local: {
                                     position: {
