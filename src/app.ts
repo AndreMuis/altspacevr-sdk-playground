@@ -93,9 +93,9 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: 0.0, y: 0.0, z: 0.0 },
+                        position: { x: 0.0, y: 0.05, z: 0.0 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 90 * MRESDK.DegreesToRadians),
-                        scale: { x: 0.02, y: 0.02, z: 0.02 }
+                        scale: { x: 0.05, y: 0.05, z: 0.05 }
                     }
                 },
                 attachment: {
