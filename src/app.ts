@@ -1,7 +1,7 @@
 import * as MRESDK from '@microsoft/mixed-reality-extension-sdk'
 import * as MREEXT from '@microsoft/mixed-reality-extension-altspacevr-extras'
 
-export default class Demo {
+export default class SDKPlayground {
     private assetContainer: MRESDK.AssetContainer
 
     private interval: NodeJS.Timeout

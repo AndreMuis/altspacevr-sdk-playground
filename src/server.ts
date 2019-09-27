@@ -6,7 +6,7 @@
 import { WebHost } from '@microsoft/mixed-reality-extension-sdk'
 import { resolve as resolvePath } from 'path'
 
-import Demo from './app'
+import SDKPlayground from './app'
 import EaseCurve from './ease-curve'
 import ManyObjects from './many-objects'
 
@@ -18,7 +18,7 @@ const server = new WebHost({
     baseDir: resolvePath(__dirname, '../public')
 })
 
-server.adapter.onConnection(context => new Demo(context, server.baseUrl))
+server.adapter.onConnection(context => new SDKPlayground(context, server.baseUrl))
 // server.adapter.onConnection(context => new EaseCurve(context, server.baseUrl))
 // server.adapter.onConnection(context => new ManyObjects(context, server.baseUrl))
 
