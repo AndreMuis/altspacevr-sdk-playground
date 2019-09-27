@@ -93,8 +93,8 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: 0, y: -0.3, z: 0.1 },
-                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 90 * MRESDK.DegreesToRadians),
+                        position: { x: 0.0, y: 0.0, z: 0.0 },
+                        rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 0 * MRESDK.DegreesToRadians),
                         scale: { x: 0.1, y: 0.1, z: 0.1 }
                     }
                 },
@@ -147,10 +147,10 @@ export default class Demo {
                     meshId: this.assetContainer.createPlaneMesh('plane', 1000, 1000, 1, 1).id,
                     materialId: this.greenMaterial.id
                 },
-                collider: {geometry: {shape: 'auto'} },
+                collider: { geometry: { shape: 'auto' } },
                 transform: { 
                     local: {
-                        position: { x: 0, y: -1.6, z: 0 }
+                        position: { x: 0, y: -1.3, z: 0 }
                     }
                 }
             }
@@ -162,7 +162,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: 20, y: -1.5, z: 0.0 },
+                        position: { x: 20, y: -1.2, z: 0.0 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians),
                         scale: { x: 0.8, y: 0.8, z: 0.8}
                     }
@@ -174,7 +174,7 @@ export default class Demo {
         this.redSphereActor = await MRESDK.Actor.Create(this.context, {
             actor: {
                 appearance: {
-                    meshId: this.assetContainer.createSphereMesh('sphere', 0.3, 8, 4).id,
+                    meshId: this.assetContainer.createSphereMesh('sphere', 0.3, 15, 15).id,
                     materialId: this.redMaterial.id 
                 },
                 collider: { geometry: { shape: 'auto' } },
@@ -191,7 +191,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -5, y: 0, z: -4 },
+                        position: { x: -5, y: 0.0, z: -4 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 },
@@ -212,7 +212,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: 0, y: -1.6, z: 7 },
+                        position: { x: 0, y: -1.3, z: 7 },
                         scale: {x: 1.5, y: 1.5, z: 1.5}
                     }
                 }
@@ -227,7 +227,7 @@ export default class Demo {
                 collider: { geometry: { shape: 'auto' } },
                 transform: {
                     local: {
-                        position: { x: 0.0, y: 1.2, z: 7 }
+                        position: { x: 0.0, y: 1.5, z: 7 }
                     }
                 }
             }
@@ -339,7 +339,7 @@ export default class Demo {
                 collider: { geometry: { shape: 'auto' } },
                 transform: {
                     local: {
-                        position: { x: -5, y: 1, z: -0.5 },
+                        position: { x: -5, y: 0, z: -0.5 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 }
@@ -402,7 +402,7 @@ export default class Demo {
                 collider: { geometry: { shape: 'auto' } },
                 transform: {
                     local: {
-                        position: { x: -5, y: 1, z: 0.5 },
+                        position: { x: -5, y: 0, z: 0.5 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 }
@@ -479,7 +479,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: 11, y: 0.6, z: -24 },
+                        position: { x: 11, y: 0.9, z: -24 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), 90 * MRESDK.DegreesToRadians)
                     }
                 },
@@ -499,7 +499,7 @@ export default class Demo {
             actor: {
                 transform: {
                     local: {
-                        position: { x: -9, y: 0.5, z: -14 }
+                        position: { x: -9, y: 0.8, z: -14 }
                     }
                 }
             }
@@ -526,11 +526,11 @@ export default class Demo {
     
         await MRESDK.Actor.Create(this.context, {
             actor: {
+                parentId: lightParentActor.id,
                 appearance: {
-                    meshId: this.assetContainer.createSphereMesh('sphere', 0.2, 8, 4).id
+                    meshId: this.assetContainer.createSphereMesh('sphere', 0.2, 15, 15).id
                 },
                 collider: { geometry: { shape: 'auto' } },
-                parentId: lightParentActor.id,
                 transform: {
                     local: {
                         position: { x: 3, y: 0, z: 0 }
@@ -556,7 +556,7 @@ export default class Demo {
                 collider: { geometry: { shape: 'auto' } },
                 transform: {
                     local: {
-                        position: { x: -5.0, y: 0.3, z: -8.0 },
+                        position: { x: -5.0, y: 0.0, z: -8.0 },
                         rotation: MRESDK.Quaternion.RotationAxis(MRESDK.Vector3.Up(), -90 * MRESDK.DegreesToRadians)
                     }
                 }
@@ -615,11 +615,11 @@ export default class Demo {
 
     private async setupTeleporter() {
         const teleporterActor = await MRESDK.Actor.CreateFromLibrary(this.context, {
-            resourceId: "teleporter:1133592462367917034",
+            resourceId: "teleporter:1148791394312127008",
             actor: {
                 transform: {
                     local: {
-                        position: { x: 11, y: -1.6, z: -13 }
+                        position: { x: 11, y: -1.3, z: -13 }
                     }
                 }
             }
@@ -635,7 +635,7 @@ export default class Demo {
                     }
                 },
                 text: {
-                    contents: "Teleporter Test World",
+                    contents: "Campfire",
                     anchor: MRESDK.TextAnchorLocation.MiddleCenter,
                     color: { r: 0 / 255, g: 0 / 255, b: 255 / 255 },
                     height: 0.2
@@ -672,7 +672,7 @@ export default class Demo {
             const sphereActor = await MRESDK.Actor.Create(this.context, {
                 actor: {
                     appearance: {
-                        meshId: this.assetContainer.createSphereMesh('sphere', 0.4, 8, 4).id,
+                        meshId: this.assetContainer.createSphereMesh('sphere', 0.4, 15, 15).id,
                         materialId: this.beachBallMaterial.id
                     },
                     collider: { geometry: { shape: 'auto' } },
