@@ -29,8 +29,8 @@ export default class ManyObjects {
     private async setupSphereActors()
     {
         for (let x = -2; x <= 2; x = x + 2) {
-            for (let y = 0; y <= 2; y = y + 1) {
-                for (let z = -2; z <= 2; z = z + 2) {
+            //for (let y = 0; y <= 2; y = y + 1) {
+                //for (let z = -2; z <= 2; z = z + 2) {
                     MRESDK.Actor.Create(this.context, {
                         actor: {
                             appearance: {
@@ -40,13 +40,13 @@ export default class ManyObjects {
                             collider: { geometry: { shape: 'auto' } },
                             transform: {
                                 local: {
-                                    position: {x: x, y: y, z: z}
+                                    position: {x: x, y: 1, z: 1}
                                 }
                             }
                         }
                     })
-                }
-            }
+                //}
+            //}
         }
     }
 }
