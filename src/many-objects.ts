@@ -1,6 +1,6 @@
 import * as MRESDK from '@microsoft/mixed-reality-extension-sdk'
 
-export default class Demo {
+export default class ManyObjects {
     private assetContainer: MRESDK.AssetContainer = null
     private beachBallMaterial: MRESDK.Material = null
 
@@ -10,8 +10,8 @@ export default class Demo {
         this.context.onStarted(() => this.started())
     }
     
-    private started() {
-        this.loadMaterials()
+    private async started() {
+        await this.loadMaterials()
         this.setupSphereActors()
     }
 
@@ -26,7 +26,7 @@ export default class Demo {
         })
     }
 
-    private setupSphereActors()
+    private async setupSphereActors()
     {
         for (let x = -2; x <= 2; x = x + 2) {
             for (let y = 0; y <= 10; y = y + 1) {
@@ -40,10 +40,7 @@ export default class Demo {
                             collider: { geometry: { shape: 'auto' } },
                             transform: {
                                 local: {
-                                    position: {
-                                        x: x + Math.random() / 2.0, 
-                                        y: y, 
-                                        z: z + Math.random() / 2.0}
+                                    position: {x: x, y: y, z: z}
                                 }
                             }
                         }
