@@ -28,7 +28,7 @@ export default class ManyObjects {
 
     private async setupSphereActors()
     {
-        for (let x = 1; x <= 100; x = x + 1) {
+        for (let x = 1; x <= 26; x = x + 1) {
             //for (let y = 0; y <= 2; y = y + 1) {
                 //for (let z = -2; z <= 2; z = z + 2) {
                     MRESDK.Actor.Create(this.context, {
