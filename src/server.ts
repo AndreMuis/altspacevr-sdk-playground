@@ -15,7 +15,7 @@ process.on('unhandledRejection', reason => console.log('unhandledRejection', rea
 
 // Start listening for connections, and serve static files
 const server = new WebHost({
-    baseUrl: 'https://altspacevr-sdk-playground.azurewebsites.net'
+    baseDir: resolvePath(__dirname, '../public')
 })
 
 // server.adapter.onConnection(context => new SDKPlayground(context, server.baseUrl))
