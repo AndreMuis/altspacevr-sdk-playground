@@ -15,15 +15,14 @@ export default class ManyObjects {
 
     private setupSphereActors()
     {
-        for (let x = 1; x <= 200; x = x + 1) {
-            try {
-                console.log(this.assetContainer.createSphereMesh('sphere', 0.4, 10, 10).id)
+        var meshId = this.assetContainer.createSphereMesh('sphere', 0.4, 10, 10).id
 
-                /*
+        for (let x = 1; x <= 200; x = x + 1) {
+            Promise.resolve(
                 MRESDK.Actor.Create(this.context, {
                     actor: {
                         appearance: {
-                            meshId: this.assetContainer.createSphereMesh('sphere', 0.4, 10, 10).id
+                            meshId: meshId
                         },
                         transform: {
                             local: {
@@ -32,12 +31,9 @@ export default class ManyObjects {
                         }
                     }
                 })
-                */
-            }
-            catch (e) {
-                console.log("caught error")
-                console.log(e)
-            }
+            ).catch(function(error) {
+                console.error(error)
+            })
         }
     }
 }
