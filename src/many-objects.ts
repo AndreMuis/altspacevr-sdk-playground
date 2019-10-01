@@ -31,6 +31,7 @@ export default class ManyObjects {
                 })
             }
             catch (e) {
+                console.log("caught error")
                 console.log(e)
             }
         }
