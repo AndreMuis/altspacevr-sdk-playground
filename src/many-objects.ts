@@ -17,6 +17,9 @@ export default class ManyObjects {
     {
         for (let x = 1; x <= 200; x = x + 1) {
             try {
+                console.log(this.assetContainer.createSphereMesh('sphere', 0.4, 10, 10).id)
+
+                /*
                 MRESDK.Actor.Create(this.context, {
                     actor: {
                         appearance: {
@@ -29,6 +32,7 @@ export default class ManyObjects {
                         }
                     }
                 })
+                */
             }
             catch (e) {
                 console.log("caught error")
