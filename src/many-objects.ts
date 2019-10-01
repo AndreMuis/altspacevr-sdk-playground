@@ -15,7 +15,7 @@ export default class ManyObjects {
 
     private setupSphereActors()
     {
-        for (let x = 1; x <= 100; x = x + 1) {
+        for (let x = 1; x <= 200; x = x + 1) {
             MRESDK.Actor.Create(this.context, {
                 actor: {
                     appearance: {
