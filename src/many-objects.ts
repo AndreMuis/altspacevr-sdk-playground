@@ -4,6 +4,8 @@ export default class ManyObjects {
     private assetContainer: MRESDK.AssetContainer = null
 
     constructor(private context: MRESDK.Context, private baseUrl: string) {
+        console.log(baseUrl)
+
         this.assetContainer = new MRESDK.AssetContainer(this.context)
 
         this.context.onStarted(() => this.started())
