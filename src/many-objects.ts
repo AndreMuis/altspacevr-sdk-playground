@@ -21,7 +21,6 @@ export default class ManyObjects {
                     appearance: {
                         meshId: this.assetContainer.createSphereMesh('sphere', 0.4, 10, 10).id
                     },
-                    collider: { geometry: { shape: 'auto' } },
                     transform: {
                         local: {
                             position: {x: x, y: 1, z: 0}
