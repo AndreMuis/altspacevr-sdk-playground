@@ -6,7 +6,7 @@ export default class ManyObjects {
     constructor(private context: MRESDK.Context, private baseUrl: string) {
         this.assetContainer = new MRESDK.AssetContainer(this.context)
 
-        this.context.offUserJoined(() => this.setupSphereActors())
+        this.context.onUserJoined(() => this.setupSphereActors())
     }
     
     private setupSphereActors()
