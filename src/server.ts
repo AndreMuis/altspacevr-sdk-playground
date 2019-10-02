@@ -3,6 +3,8 @@
  * Licensed under the MIT License.
  */
 
+ // network, network-content, app
+
 import { WebHost } from '@microsoft/mixed-reality-extension-sdk'
 import { resolve as resolvePath } from 'path'
 
