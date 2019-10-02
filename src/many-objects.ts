@@ -13,7 +13,7 @@ export default class ManyObjects {
     {
         var meshId = this.assetContainer.createSphereMesh('sphere', 0.4, 10, 10).id
 
-        for (let x = 1; x <= 26; x = x + 1) {
+        for (let x = 1; x <= 100; x = x + 1) {
             MRESDK.Actor.Create(this.context, {
                 actor: {
                     appearance: {
