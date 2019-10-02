@@ -6,13 +6,9 @@ export default class ManyObjects {
     constructor(private context: MRESDK.Context, private baseUrl: string) {
         this.assetContainer = new MRESDK.AssetContainer(this.context)
 
-        this.context.onUserJoined(() => this.userJoined())
+        this.context.onStarted(() => this.setupSphereActors())
     }
     
-    private userJoined() {
-        this.setupSphereActors()
-    }
-
     private setupSphereActors()
     {
         var meshId = this.assetContainer.createSphereMesh('sphere', 0.4, 10, 10).id
