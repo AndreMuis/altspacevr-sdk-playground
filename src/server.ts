@@ -5,12 +5,14 @@
 
  // network, network-content, app
 
-import { WebHost } from '@microsoft/mixed-reality-extension-sdk'
+import { WebHost, log } from '@microsoft/mixed-reality-extension-sdk'
 import { resolve as resolvePath } from 'path'
 
 import SDKPlayground from './app'
 import EaseCurve from './ease-curve'
 import ManyObjects from './many-objects'
+
+log.enable('network')
 
 process.on('uncaughtException', err => console.log('uncaughtException', err))
 process.on('unhandledRejection', reason => console.log('unhandledRejection', reason))
